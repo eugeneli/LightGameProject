@@ -45,8 +45,8 @@ public class RedGiant extends NPC
 		circleFixture.density = 1.0f;
 		circleFixture.friction = 1.0f;
 		circleFixture.restitution = 0.0f;
-		circleFixture.filter.categoryBits = LightGameFilters.CATEGORY_ENEMY;
-		circleFixture.filter.maskBits = LightGameFilters.MASK_ENEMY;
+		//circleFixture.filter.categoryBits = LightGameFilters.CATEGORY_ENEMY;
+		//circleFixture.filter.maskBits = LightGameFilters.MASK_ENEMY;
 		
 		circleBody.createFixture(circleFixture);
 		

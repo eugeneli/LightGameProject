@@ -1,5 +1,6 @@
 package com.eli.lightgame.entities;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import box2dLight.Light;
@@ -23,10 +24,15 @@ public abstract class Entity
 	protected float lightSize;
 	protected float criticalRadius; //Radius when explosion occurs
 	
+	private float growthRate;
+	private float maxGrowingRadius; //Puts a cap on how much a bullet can increase entity's size
+	private boolean growing = false;
+	
 	protected boolean canChangeColor;
 	protected boolean canChangeSize;
 	
 	protected boolean waitingToUpdateSize = false; //Can't change Box2D fixture while it's updating so set flag to change the fixture after it's done
+	protected boolean waitingToBeDeleted = false;
 	
 	//Array to hold the lights
 	protected ArrayList<Light> lights = new ArrayList<Light>();
@@ -52,7 +58,6 @@ public abstract class Entity
 		entityBody = b;
 		radius = rad;
 		size = 2 * radius;
-		lightSize = size + 10;
 		
 		sprite.setSize(size, size);
 		sprite.setRotation(entityBody.getAngle());
@@ -67,9 +72,24 @@ public abstract class Entity
 		entityBody.applyForceToCenter(force, true);
 	}
 	
+	public void isWaitingToUpdateSize(boolean resize)
+	{
+		waitingToUpdateSize = resize;
+	}
+	
 	public boolean waitingToUpdateSize()
 	{
 		return waitingToUpdateSize;
+	}
+	
+	public boolean waitingToBeDeleted()
+	{
+		return waitingToBeDeleted;
+	}
+	
+	public void toBeDeleted(boolean delete)
+	{
+		waitingToBeDeleted = delete;
 	}
 	
 	public Body getBody()
@@ -77,16 +97,30 @@ public abstract class Entity
 		return entityBody;
 	}
 	
-	public void setRadius(float rad)
-	{
-		radius = rad;
-	}
-	
 	public float getRadius()
 	{
 		return radius;
 	}
 	
+	public void setRadius(float rad)
+	{
+		radius = rad;
+		updateSizes();
+	}
+	
+	public void addToRadius(float rad)
+	{
+		radius += rad;
+		updateSizes();
+	}
+	
+	public void grow(float targetRadius, float growingRate)
+	{
+		growthRate = growingRate;
+		maxGrowingRadius = targetRadius;
+		growing = true;
+	}
+
 	public Vector2 getMiddleOfSprite()
 	{
 		Rectangle boundingRect = sprite.getBoundingRectangle();
@@ -145,6 +179,17 @@ public abstract class Entity
 	
 	public void update()
 	{
+		if(growing && radius < maxGrowingRadius)
+		{
+			//setRadius(maxGrowingRadius);
+			addToRadius(growthRate);
+		}
+		else
+		{
+			growing = false;
+			maxGrowingRadius = radius;
+		}
+		
 		sprite.setPosition(entityBody.getPosition().x - radius, entityBody.getPosition().y - radius); //Make sure the sprite's drawn where the physical body is
 		//sprite.setOrigin(getMiddleOfSprite().x, getMiddleOfSprite().y);
 		//sprite.setRotation(entityBody.getAngle());

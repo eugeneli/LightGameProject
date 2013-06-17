@@ -15,9 +15,12 @@ public class Bullet extends Entity
 	private float angle;
 	private boolean startShrinking = false;
 	
-	public Bullet(String spritePath, Color aColor, float rad, Body b, ArrayList<Light> pl, int laifu, float ang)
+	private Entity source;
+	
+	public Bullet(Entity bulletSource, String spritePath, Color aColor, float rad, Body b, ArrayList<Light> pl, int laifu, float ang)
 	{
 		super(spritePath, b, pl, rad);
+		source = bulletSource;
 		originalLife = life = laifu;
 		angle = ang;
 		color = aColor;
@@ -30,7 +33,7 @@ public class Bullet extends Entity
 	public void updateSizes()
 	{
 		size = 2 * radius;
-		lightSize = 20.5f * radius;
+		lightSize = 3.5f * radius;
 		
 		//increase the distance of the lights based on entity's size
 		for(Light aLight : lights)
@@ -47,6 +50,11 @@ public class Bullet extends Entity
 	public void setDying(boolean isDying)
 	{
 		startShrinking = isDying;
+	}
+	
+	public void kill()
+	{
+		life = 0;
 	}
 	
 	public int getLife()
@@ -82,6 +90,11 @@ public class Bullet extends Entity
 	public float getAngleY()
 	{
 		return (float) Math.sin(angle);
+	}
+	
+	public Entity getSource()
+	{
+		return source;
 	}
 	
 	public void update()

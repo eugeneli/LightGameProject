@@ -76,6 +76,7 @@ public class Level
 					float dVelocity = enemy.getFloat("Velocity");
 					
 					entityHandler.createEntity(EntityType.DRIFTER, dColor, dRadius, dSpawnX, dSpawnY, dFacingDirec, dVelocity); //create a drifter
+					break;
 			}
 		}
 	}

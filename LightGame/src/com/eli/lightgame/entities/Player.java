@@ -49,19 +49,19 @@ public class Player extends Entity
 		circleFixture.shape = circleShape;
 		circleFixture.density = 0.4f;
 		circleFixture.friction = 1.0f;
-		circleFixture.restitution = 0.8f;
-		circleFixture.filter.categoryBits = LightGameFilters.CATEGORY_PLAYER;
-		circleFixture.filter.maskBits = LightGameFilters.MASK_PLAYER;
+		circleFixture.restitution = 0.0f;
+		//circleFixture.filter.categoryBits = LightGameFilters.CATEGORY_PLAYER;
+		//circleFixture.filter.maskBits = LightGameFilters.MASK_PLAYER;
 		
 		circleBody.createFixture(circleFixture);
 		
 		//player lights
 		ArrayList<Light> playerLights = new ArrayList<Light>();
-		ConeLight cl = new ConeLight(rayHandler, 50, color, 20, 0, 0, 0, 30);
+		ConeLight cl = new ConeLight(rayHandler, 50, color, lightSize, 0, 0, 0, 30);
 		cl.attachToBody(circleBody, 2, 0);
 		playerLights.add(cl);
 		
-		PointLight pl = new PointLight(rayHandler, 60, color, 20, 0, 0);
+		PointLight pl = new PointLight(rayHandler, 60, color, lightSize, 0, 0);
 		//PointLight pl2 = new PointLight(rayHandler, 100, Color.DARK_GRAY, 10, 0, 0);
 		pl.attachToBody(circleBody, 0,  0);
 		//pl2.attachToBody(circleBody, 0, 0);
@@ -80,7 +80,10 @@ public class Player extends Entity
 	
 	public void fire(Pattern pattern, int forceScalar)
 	{
-		bulletHandler.createBulletsAndFire(pattern, radius, color, getPosition().x, getPosition().y, forceScalar, entityBody.getAngle());
+		bulletHandler.createBulletsAndFire(this, pattern, radius, color, getPosition().x, getPosition().y, forceScalar, entityBody.getAngle());
+		
+		addToRadius(-radius/10); //Decrease in radius equal to bullet's radius
+		System.out.println("Shrunk radius: " + radius);
 	}
 	
 	public void move(float rotAngle)
@@ -97,8 +100,8 @@ public class Player extends Entity
 			float newAngle = entityBody.getAngle() + Math.min(change,  Math.max(-change,totalRotation));
 			
 			entityBody.setTransform(entityBody.getPosition(), newAngle);
-			entityBody.applyForceToCenter(new Vector2((float)(Math.cos(entityBody.getAngle()) * 50),(float)(Math.sin(entityBody.getAngle()) * 50)), true);
-			entityBody.setLinearVelocity(new Vector2((float)(Math.cos(entityBody.getAngle()) * 20),(float)(Math.sin(entityBody.getAngle()) * 20)));
+			entityBody.applyForceToCenter(new Vector2((float)(Math.cos(entityBody.getAngle()) * (10*radius)),(float)(Math.sin(entityBody.getAngle()) * (10*radius))), true);
+			entityBody.setLinearVelocity(new Vector2((float)(Math.cos(entityBody.getAngle()) * (20)),(float)(Math.sin(entityBody.getAngle()) * (20))));
 		}
 
 		this.update();
@@ -107,6 +110,8 @@ public class Player extends Entity
 	@Override
 	public void updateSizes()
 	{
+		waitingToUpdateSize = true;
+		
 		size = 2 * radius;
 		lightSize = 4 * radius;
 		
@@ -115,6 +120,11 @@ public class Player extends Entity
 		{
 			aLight.setDistance(lightSize);
 		}
+		
+		//Increase texture size
+		sprite.setSize(size, size);
+		
+		System.out.println("Update radius: " + radius);
 	}
 	
 	public void update()

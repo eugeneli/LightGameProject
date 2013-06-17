@@ -17,6 +17,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.World;
 import com.eli.lightgame.Patterns.Pattern;
 import com.eli.lightgame.entities.Bullet;
+import com.eli.lightgame.entities.Entity;
 
 public class BulletHandler
 {
@@ -32,33 +33,33 @@ public class BulletHandler
 		bullets = new ArrayList<Bullet>();
 	}
 	
-	public void createBulletsAndFire(Pattern bulletPattern, float shooterRadius, Color aColor, float entityX, float entityY, int forceScalar, float rotAngle)
+	public void createBulletsAndFire(Entity bulletSource, Pattern bulletPattern, float shooterRadius, Color aColor, float entityX, float entityY, int forceScalar, float rotAngle)
 	{
 		for(int i = 0; i < bulletPattern.numBullets; i++)
 		{	
 			//Box2D stuff
 			BodyDef bulletDef = new BodyDef();
 			bulletDef.type = BodyType.DynamicBody;
-			bulletDef.position.set(entityX, entityY);
+			bulletDef.position.set((float)(entityX + (2*shooterRadius)*Math.cos(rotAngle)), (float)(entityY + (2*shooterRadius)*Math.sin(rotAngle)));
 			
 			Body bulletBody = world.createBody(bulletDef);
 			
 			CircleShape circleShape = new CircleShape();
-			circleShape.setRadius(0.5f);
+			circleShape.setRadius(shooterRadius/10);
 			
 			FixtureDef bulletFixture = new FixtureDef();
 			bulletFixture.shape = circleShape;
 			bulletFixture.density = 0.1f;
 			bulletFixture.friction = 1.0f;
 			bulletFixture.restitution = 0.0f;
-			bulletFixture.filter.categoryBits = LightGameFilters.CATEGORY_PLAYER;
-			bulletFixture.filter.maskBits = LightGameFilters.MASK_PLAYER;
+			//bulletFixture.filter.categoryBits = LightGameFilters.CATEGORY_PLAYER;
+			//bulletFixture.filter.maskBits = LightGameFilters.MASK_PLAYER;
 			
 			bulletBody.createFixture(bulletFixture);
 			
 			//Lighting stuff
 			ArrayList<Light> bulletLights = new ArrayList<Light>();
-			PointLight bl = new PointLight(rayHandler, 10, aColor, shooterRadius*20.5f, 0, 0);
+			PointLight bl = new PointLight(rayHandler, 10, aColor, shooterRadius*5f, 0, 0);
 			bl.attachToBody(bulletBody, 0,  0);
 			bulletLights.add(bl);
 			
@@ -67,7 +68,7 @@ public class BulletHandler
 			bulletBody.setAngularVelocity(0);
 			
 			//Bullet b = new Bullet("data/blankbullet.png", bulletBody, bulletLights, 200, bulletPattern.angles.get(i).floatValue());
-			Bullet b = new Bullet("data/blankbullet.png", aColor, shooterRadius, bulletBody, bulletLights, (int)(shooterRadius*70), bulletBody.getAngle());
+			Bullet b = new Bullet(bulletSource, "data/blankbullet.png", aColor, shooterRadius/10, bulletBody, bulletLights, (int)(shooterRadius*50), bulletBody.getAngle());
 			bullets.add(b);
 			
 			//Let the bullet body carry a pointer back to the bullet object

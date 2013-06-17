@@ -27,9 +27,9 @@
         },
         "Drifter": {
             "EnemyType": "1",
-            "Color": "YELLOW",
+            "Color": "BLUE",
             "x": "-15",
-            "y": "55",
+            "y": "80",
             "Radius": 5,
             "Direction": 20,
             "Velocity": 0

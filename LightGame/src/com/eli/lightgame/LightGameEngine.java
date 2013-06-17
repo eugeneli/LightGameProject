@@ -1,35 +1,21 @@
 package com.eli.lightgame;
 
-import java.util.Iterator;
-
 import box2dLight.RayHandler;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.physics.box2d.EdgeShape;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
-import com.eli.lightgame.EntityHandler.EntityType;
 import com.eli.lightgame.entities.Bullet;
+import com.eli.lightgame.entities.NPC;
 import com.eli.lightgame.entities.Player;
 
 public class LightGameEngine
@@ -71,7 +57,7 @@ public class LightGameEngine
 		//Create Box2D world
 		world = new World(new Vector2(0,0), false);
 		renderer = new Box2DDebugRenderer();
-		renderer.setDrawBodies(false);
+		//renderer.setDrawBodies(false);
 		rayHandler = new RayHandler(world);
 		rayHandler.setCombinedMatrix(camera.combined);
 		
@@ -178,15 +164,24 @@ public class LightGameEngine
         		
         		if(ObjA != null && ObjB != null)
         		{
-        			//Check which body is a bullet
-                	if(ObjA instanceof Bullet)
+        			//Check bullet collision
+                	if(ObjA instanceof Bullet && !(ObjB instanceof Bullet))
                 	{
                 		entityHandler.collideWithBullet((Integer)contact.getFixtureB().getBody().getUserData(), (Bullet) contact.getFixtureA().getBody().getUserData());
                 	}
-                	else if(ObjB instanceof Bullet)
+                	else if(ObjB instanceof Bullet && !(ObjA instanceof Bullet))
                 	{
                 		entityHandler.collideWithBullet((Integer)contact.getFixtureA().getBody().getUserData(), (Bullet) contact.getFixtureB().getBody().getUserData());
                 	}
+                	else if(ObjA instanceof Integer || ObjB instanceof Integer) //Check body collision
+                	{
+						int objAId = (Integer)ObjA;
+						int objBId = (Integer)ObjB;
+						
+						if(objAId != 0 && objBId != 0) //Collide two NPCs
+							entityHandler.collideNPCs(objAId, objBId);
+                	}
+                	
         		}
             }
 

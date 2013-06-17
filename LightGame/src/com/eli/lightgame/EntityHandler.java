@@ -28,6 +28,7 @@ public class EntityHandler
 	private HashMap<Integer, Entity> entities = new HashMap<Integer, Entity>();
 	
 	private final float COLOR_CHANGE_RATE = 0.1f;
+	private final float SIZE_CHANGE_RATE = 0.5f;
 	
 	public static enum EntityType{
 		PLAYER, RED_GIANT, DRIFTER
@@ -47,7 +48,7 @@ public class EntityHandler
 			case PLAYER:
 				player = new Player(world, rayHandler, bulletHandler, aColor, radius, xPos, yPos);
 				player.setID(currentEntityID);
-				entities.put(currentEntityID, player);
+				entities.put(currentEntityID, player); //Player always has ID of 0
 				currentEntityID++;
 				return player;
 			case RED_GIANT:
@@ -91,8 +92,7 @@ public class EntityHandler
 			float b = entity.getColor().b;
 			float a = entity.getColor().a;
 			
-			if(bulletColor.r > 
-			r)
+			if(bulletColor.r > r)
 				r += COLOR_CHANGE_RATE;
 			else if(bulletColor.r < r)
 				r -= COLOR_CHANGE_RATE;
@@ -113,21 +113,78 @@ public class EntityHandler
 	
 	public void changeSize(Entity entity, float newRad)
 	{
-		entity.setRadius(entity.getRadius()+newRad/2); //Absorb the bullet
+		entity.setRadius(entity.getRadius()+newRad); //Absorb the bullet
 		entity.updateSizes();
 	}
 	
 	public void collideWithBullet(int entityID, Bullet aBullet)
 	{
 		Entity entity = entities.get(entityID);
+		System.out.println("Current radius: " + entity.getRadius());
+		System.out.println("Bul Radius:" + aBullet.getRadius());
+		System.out.println("New radius: " + (float)(entity.getRadius()+aBullet.getRadius()));
+		entity.grow(entity.getRadius()+aBullet.getRadius(), aBullet.getRadius()/20);
 		
-		if(entity.canChangeColor())
-			changeColor(entity, aBullet.getColor());
+		aBullet.kill();
 		
-		if(entity.canChangeSize())
-			changeSize(entity, aBullet.getRadius());
+		//if(entity.canChangeColor())
+		//	changeColor(entity, aBullet.getColor());
 		
-		aBullet.setDying(true);
+		//if(entity.canChangeSize())
+			//changeSize(entity, aBullet.getRadius());
+		
+		//aBullet.setDying(true);
+		//aBullet.kill();
+	}
+	
+	public void collideNPCs(int firstEnt, int secondEnt)
+	{
+		Entity firstEntity = entities.get(firstEnt);
+		Entity secondEntity = entities.get(secondEnt);
+		
+		//Collision between two NPCs
+		if(firstEntity.getColor().equals(secondEntity.getColor())) //Bigger entity absorbs smaller one if they are same color
+		{
+			if(firstEntity.getRadius() > secondEntity.getRadius())
+			{
+				float tmpRadius = secondEntity.getRadius()-SIZE_CHANGE_RATE;
+				if(tmpRadius <= 1)
+				{
+					firstEntity.addToRadius(SIZE_CHANGE_RATE);
+					removeEntity(secondEntity);
+				}
+				else
+				{
+					firstEntity.addToRadius(SIZE_CHANGE_RATE);
+					secondEntity.addToRadius(-SIZE_CHANGE_RATE);
+				
+					if(secondEntity.getRadius() <= 1)
+						removeEntity(secondEntity);
+				}
+			}
+			else
+			{
+				float tmpRadius = secondEntity.getRadius()-SIZE_CHANGE_RATE;
+				if(tmpRadius <= 1)
+				{
+					secondEntity.addToRadius(SIZE_CHANGE_RATE);
+					removeEntity(firstEntity);
+				}
+				else
+				{
+					secondEntity.addToRadius(SIZE_CHANGE_RATE);
+					firstEntity.addToRadius(-SIZE_CHANGE_RATE);
+					
+					if(firstEntity.getRadius() <= 1)
+						removeEntity(firstEntity);
+				}
+			}
+		}
+	}
+	
+	public void removeEntity(Entity entity)
+	{
+		entity.toBeDeleted(true);
 	}
 		
 	public void update()
@@ -153,10 +210,18 @@ public class EntityHandler
 				circleFixture.density = 1.0f;
 				circleFixture.friction = 1.0f;
 				circleFixture.restitution = 0.0f;
-				circleFixture.filter.categoryBits = LightGameFilters.CATEGORY_ENEMY;
-				circleFixture.filter.maskBits = LightGameFilters.MASK_ENEMY;
 				
 				entity.getBody().createFixture(circleFixture);
+				
+				entity.isWaitingToUpdateSize(false);
+	    	}
+	    	
+	    	if(entity.waitingToBeDeleted())
+	    	{
+	    		entity.dispose();
+	    		world.destroyBody(entity.getBody());
+	    		
+	    		it.remove();
 	    	}
 	    }
 	}
