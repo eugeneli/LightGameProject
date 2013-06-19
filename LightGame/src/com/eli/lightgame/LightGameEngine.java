@@ -7,7 +7,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
@@ -31,8 +33,10 @@ public class LightGameEngine
 	private Box2DDebugRenderer renderer;
 	private RayHandler rayHandler; //handles lights
 	
-	//UI stuff
+	//Touch stuff
 	private LightGameStage LGstage;
+	private LGInput input;
+	private boolean usingOnScreenControls = false;
 	
 	//Game Stuff
 	Level level;
@@ -57,7 +61,7 @@ public class LightGameEngine
 		//Create Box2D world
 		world = new World(new Vector2(0,0), false);
 		renderer = new Box2DDebugRenderer();
-		//renderer.setDrawBodies(false);
+		renderer.setDrawBodies(false);
 		rayHandler = new RayHandler(world);
 		rayHandler.setCombinedMatrix(camera.combined);
 		
@@ -71,6 +75,12 @@ public class LightGameEngine
 		level.loadLevel(Gdx.files.internal("data/levels/level1/level1.json"));
 		player = level.getPlayer();
 		
+		input = new LGInput(camera, entityHandler);
+		Gdx.input.setInputProcessor(new GestureDetector(input));
+		
+		//Create the stage for UI objects
+		LGstage = new LightGameStage("data/touchBackground.png", "data/touchKnob.png", camera, batch, player);
+        //Gdx.input.setInputProcessor(LGstage.getStage());
 		
 		//The ground. remove this later
 		/*BodyDef groundBodyDef = new BodyDef();
@@ -90,10 +100,6 @@ public class LightGameEngine
 		//System.out.println(jsonVal.get("Enemies").next().get("x").asString());
 		//System.out.println(jsonVal.get("Enemies").next().get("x").asString());
 			
-		//Create the stage for UI objects
-		LGstage = new LightGameStage("data/touchBackground.png", "data/touchKnob.png", camera, batch, player);
-        Gdx.input.setInputProcessor(LGstage.getStage());
-        
         //rayHandler.setAmbientLight(0.2f, 0.1f, 0.5f, 0.3f);
 	}
 	
@@ -108,14 +114,15 @@ public class LightGameEngine
 	{
 		//Step box2D physics
 		world.step(1/30f, 8, 3);
-				
-		player.move((float)Math.atan2(LGstage.getTouchpad().getKnobPercentY(),LGstage.getTouchpad().getKnobPercentX()));
 
 		//Update bullets
 		bulletHandler.updateBullets();
 		
 		//Update Entities
 		entityHandler.update();
+		
+		if(usingOnScreenControls)
+			player.moveJoystick((float)Math.atan2(LGstage.getTouchpad().getKnobPercentY(),LGstage.getTouchpad().getKnobPercentX()));
 		
 		camera.position.set(player.getPosition().x, player.getPosition().y, 0);
 	}
@@ -148,14 +155,16 @@ public class LightGameEngine
 		rayHandler.updateAndRender();
 		
 		//Draw the UI
-		LGstage.getStage().act(Gdx.graphics.getDeltaTime());        
-		LGstage.getStage().draw();
+		if(usingOnScreenControls)
+		{
+			LGstage.getStage().act(Gdx.graphics.getDeltaTime());        
+			LGstage.getStage().draw();
+		}
 	}
 	
 	public void createCollisionListener()
 	{
 		world.setContactListener(new ContactListener() {
-
             @Override
             public void beginContact(Contact contact)
             {
@@ -178,10 +187,9 @@ public class LightGameEngine
 						int objAId = (Integer)ObjA;
 						int objBId = (Integer)ObjB;
 						
-						if(objAId != 0 && objBId != 0) //Collide two NPCs
-							entityHandler.collideNPCs(objAId, objBId);
+						//f(objAId != 0 && objBId != 0) //Collide two NPCs
+						entityHandler.collideNPCs(objAId, objBId);
                 	}
-                	
         		}
             }
 

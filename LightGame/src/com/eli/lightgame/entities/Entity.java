@@ -1,6 +1,5 @@
 package com.eli.lightgame.entities;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import box2dLight.Light;
@@ -13,9 +12,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.eli.lightgame.BulletHandler;
 
 public abstract class Entity
 {
+	protected BulletHandler bulletHandler;
+	
 	protected Sprite sprite;
 	protected Body entityBody;
 	protected Color color;
@@ -36,6 +38,8 @@ public abstract class Entity
 	
 	//Array to hold the lights
 	protected ArrayList<Light> lights = new ArrayList<Light>();
+	protected float flickerRate = 0.1f;
+	protected boolean dimCoreLight = false;
 	
 	public Entity(String spritePath, Color aColor, float rad)
 	{
@@ -44,7 +48,7 @@ public abstract class Entity
 		
 		radius = rad;
 		size = 2 * radius;
-		
+
 		sprite.setSize(size, size);
 	}
 	
@@ -97,6 +101,11 @@ public abstract class Entity
 		return entityBody;
 	}
 	
+	public float getCritRadius()
+	{
+		return criticalRadius;
+	}
+	
 	public float getRadius()
 	{
 		return radius;
@@ -140,7 +149,8 @@ public abstract class Entity
 		
 		for(Light light : lights)
 		{
-			light.setColor(color);
+			if(!light.equals(Color.CYAN))
+				light.setColor(color);
 		}
 	}
 	
@@ -169,6 +179,17 @@ public abstract class Entity
 		return (Integer)(entityBody.getUserData());
 	}
 	
+	public void explode()
+	{
+		bulletHandler.createBulletsAndFire(this,radius+5, color, getPosition().x, getPosition().y, 10, 0f);
+		bulletHandler.createBulletsAndFire(this, radius+5, color, getPosition().x, getPosition().y, 10, 5.0f);
+		bulletHandler.createBulletsAndFire(this, radius+5, color, getPosition().x, getPosition().y, 10, 10.0f);
+		bulletHandler.createBulletsAndFire(this, radius+5, color, getPosition().x, getPosition().y, 10, 15f);
+		
+		radius = 0;
+		updateSizes();
+	}
+	
 	public void dispose()
 	{
 		for(Light light : lights)
@@ -191,12 +212,13 @@ public abstract class Entity
 		}
 		
 		sprite.setPosition(entityBody.getPosition().x - radius, entityBody.getPosition().y - radius); //Make sure the sprite's drawn where the physical body is
-		//sprite.setOrigin(getMiddleOfSprite().x, getMiddleOfSprite().y);
+		sprite.setOrigin(getMiddleOfSprite().x, getMiddleOfSprite().y);
 		//sprite.setRotation(entityBody.getAngle());
 	}
 	
 	public void draw(SpriteBatch batch)
 	{
-		sprite.draw(batch);
+		//sprite.draw(batch);
+		batch.draw(sprite, sprite.getX(), sprite.getY(), sprite.getOriginX(), sprite.getOriginY(), sprite.getWidth(), sprite.getHeight(), sprite.getScaleX(), sprite.getScaleY(), (float)Math.toDegrees(entityBody.getAngle()));
 	}
 }

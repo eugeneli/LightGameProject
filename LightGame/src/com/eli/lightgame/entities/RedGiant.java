@@ -16,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.eli.lightgame.BulletHandler;
 import com.eli.lightgame.LightGameFilters;
 
 public class RedGiant extends NPC
@@ -23,9 +24,11 @@ public class RedGiant extends NPC
 	private ParticleEffect redGiantEffect;
 
 	@SuppressWarnings("unchecked")
-	public RedGiant(World world, RayHandler rayHandler, Color aColor, float rad, float critSize, float xPos, float yPos)
+	public RedGiant(World world, RayHandler rayHandler, BulletHandler bh, Color aColor, float rad, float critSize, float xPos, float yPos)
 	{
 		super("data/particle-fire.png", aColor, rad);
+		
+		bulletHandler = bh;
 		criticalRadius = critSize;
 		canChangeColor = false;
 		canChangeSize = true;
@@ -45,23 +48,23 @@ public class RedGiant extends NPC
 		circleFixture.density = 1.0f;
 		circleFixture.friction = 1.0f;
 		circleFixture.restitution = 0.0f;
-		//circleFixture.filter.categoryBits = LightGameFilters.CATEGORY_ENEMY;
-		//circleFixture.filter.maskBits = LightGameFilters.MASK_ENEMY;
+		circleFixture.filter.categoryBits = LightGameFilters.CATEGORY_ENTITY;
+		circleFixture.filter.maskBits = LightGameFilters.MASK_ENTITY;
 		
 		circleBody.createFixture(circleFixture);
 		
 		//Lights
 		ArrayList<Light> redGiantLights = new ArrayList<Light>();
-		PointLight pl = new PointLight(rayHandler, 1000, color, rad*10, 0, 0);
+		PointLight pl = new PointLight(rayHandler, 400, color, rad*10, 0, 0);
 		pl.attachToBody(circleBody, 0,  0);
 		redGiantLights.add(pl);
 		
 		//Set the variables in Entity
 		entityBody = circleBody;
-		lights = (ArrayList<Light>) redGiantLights.clone();
+		lights = redGiantLights;
 		
 		redGiantEffect = new ParticleEffect();
-		redGiantEffect.load(Gdx.files.internal("data/particleeffects/redgiant.p"), Gdx.files.internal("data"));
+		redGiantEffect.load(Gdx.files.internal("data/particleeffects/redgiant2.p"), Gdx.files.internal("data"));
 		redGiantEffect.setPosition(entityBody.getPosition().x, entityBody.getPosition().y);
 		redGiantEffect.start();
 	}
