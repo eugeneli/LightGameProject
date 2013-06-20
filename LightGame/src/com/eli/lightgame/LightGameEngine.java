@@ -28,6 +28,8 @@ public class LightGameEngine
 	private float width;
 	private float height;
 	
+	private boolean presentationMode = false;
+	
 	//Box2D stuff
 	private World world;
 	private Box2DDebugRenderer renderer;
@@ -36,7 +38,7 @@ public class LightGameEngine
 	//Touch stuff
 	private LightGameStage LGstage;
 	private LGInput input;
-	private boolean usingOnScreenControls = false;
+	private boolean usingOnScreenControls = true;
 	
 	//Game Stuff
 	Level level;
@@ -45,42 +47,15 @@ public class LightGameEngine
 	EntityHandler entityHandler;
 	Player player;
 		
-	public LightGameEngine(SpriteBatch sb, float w, float h)
+	public LightGameEngine(SpriteBatch sb, float w, float h, boolean presentation)
 	{
+		presentationMode = presentation;
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		width = w;
 		height = h;
 		batch = sb;
 		
-		//Create and position camera
-		camera = new OrthographicCamera(width, height);
-		camera.position.set(width*0.5f, height*0.5f, 0);
-		camera.zoom = 2.5f;
-		camera.update();
-		
-		//Create Box2D world
-		world = new World(new Vector2(0,0), false);
-		renderer = new Box2DDebugRenderer();
-		renderer.setDrawBodies(false);
-		rayHandler = new RayHandler(world);
-		rayHandler.setCombinedMatrix(camera.combined);
-		
-		//Create handlers and game objects
-		createCollisionListener();
-		bulletHandler = new BulletHandler(world, rayHandler);
-		entityHandler = new EntityHandler(world, rayHandler, bulletHandler, width, height);
-		
-		//Create level
-		level = new Level(entityHandler, world, width, height);
-		level.loadLevel(Gdx.files.internal("data/levels/level1/level1.json"));
-		player = level.getPlayer();
-		
-		input = new LGInput(camera, entityHandler);
-		Gdx.input.setInputProcessor(new GestureDetector(input));
-		
-		//Create the stage for UI objects
-		LGstage = new LightGameStage("data/touchBackground.png", "data/touchKnob.png", camera, batch, player);
-        //Gdx.input.setInputProcessor(LGstage.getStage());
+		initialize(presentation, "data/levels/presentation.json");
 		
 		//The ground. remove this later
 		/*BodyDef groundBodyDef = new BodyDef();
@@ -103,10 +78,57 @@ public class LightGameEngine
         //rayHandler.setAmbientLight(0.2f, 0.1f, 0.5f, 0.3f);
 	}
 	
+	public void initialize(boolean presentation, String levelJsonPath)
+	{
+		presentationMode = presentation;
+		
+		//Create and position camera
+		camera = new OrthographicCamera(width, height);
+		camera.position.set(width*0.5f, height*0.5f, 0);
+		camera.zoom = 2.5f;
+		camera.update();
+		
+		//Create Box2D world
+		world = new World(new Vector2(0,0), false);
+		renderer = new Box2DDebugRenderer();
+		renderer.setDrawBodies(false);
+		rayHandler = new RayHandler(world);
+		rayHandler.setCombinedMatrix(camera.combined);
+		
+		//Create handlers and game objects
+		createCollisionListener();
+		bulletHandler = new BulletHandler(world, rayHandler);
+		entityHandler = new EntityHandler(world, rayHandler, bulletHandler, width, height);
+		
+		//Create level object
+		level = new Level(entityHandler, world, width, height);
+		
+		if(!presentationMode)
+		{
+			level.loadLevel(Gdx.files.internal(levelJsonPath));
+			player = level.getPlayer();
+			
+			input = new LGInput(camera, entityHandler);
+			//Gdx.input.setInputProcessor(new GestureDetector(input));
+			
+			//Create the stage for UI objects
+			LGstage = new LightGameStage("data/touchBackground.png", "data/touchKnob.png", camera, batch, player);
+	        Gdx.input.setInputProcessor(LGstage.getStage());
+		}
+		else
+		{
+			level.loadLevel(Gdx.files.internal("data/levels/presentation.json"));
+			rayHandler.setAmbientLight(0.2f, 0.1f, 0.5f, 0.3f);
+			camera.zoom = 8.0f;
+			camera.position.set(0, 0, 0);
+		}
+	}
+	
 	public void dispose()
 	{
 		renderer.dispose();
 		world.dispose();
+		entityHandler.dispose();
 		rayHandler.dispose();
 	}
 	
@@ -121,10 +143,13 @@ public class LightGameEngine
 		//Update Entities
 		entityHandler.update();
 		
-		if(usingOnScreenControls)
-			player.moveJoystick((float)Math.atan2(LGstage.getTouchpad().getKnobPercentY(),LGstage.getTouchpad().getKnobPercentX()));
-		
-		camera.position.set(player.getPosition().x, player.getPosition().y, 0);
+		if(!presentationMode)
+		{
+			if(usingOnScreenControls)
+				player.moveJoystick((float)Math.atan2(LGstage.getTouchpad().getKnobPercentY(),LGstage.getTouchpad().getKnobPercentX()));
+			
+			camera.position.set(player.getPosition().x, player.getPosition().y, 0);
+		}
 	}
 	
 	public void render()
@@ -155,7 +180,7 @@ public class LightGameEngine
 		rayHandler.updateAndRender();
 		
 		//Draw the UI
-		if(usingOnScreenControls)
+		if(!presentationMode && usingOnScreenControls)
 		{
 			LGstage.getStage().act(Gdx.graphics.getDeltaTime());        
 			LGstage.getStage().draw();

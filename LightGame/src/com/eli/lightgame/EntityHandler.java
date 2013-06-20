@@ -349,4 +349,15 @@ public class EntityHandler
 	    	entities.get(entityID).draw(batch);
 	    }
 	}
+	
+	public void dispose()
+	{
+		Iterator<Integer> it = entities.keySet().iterator();
+		while (it.hasNext())
+	    {
+	    	entities.get((Integer)it.next()).dispose();
+	    }
+		
+		entities = null;
+	}
 }

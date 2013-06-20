@@ -47,11 +47,15 @@ public class Level
 			createWorldBoundary(0);
 		
 		//Get player data and create player
-		Color PlayerColor = convertStringToColor(jsonVal.get("PlayerColor").asString());
-		float playerRadius = jsonVal.get("PlayerRadius").asFloat();
-		float playerSpawnX = jsonVal.get("PlayerSpawn").getFloat(0);
-		float playerSpawnY = jsonVal.get("PlayerSpawn").getFloat(1);
-		entityHandler.createEntity(EntityType.PLAYER, PlayerColor, playerRadius, playerSpawnX, playerSpawnY, 0f, 0f); //create player
+		if(!levelType.equals("NONE"))
+		{
+			Color PlayerColor = convertStringToColor(jsonVal.get("PlayerColor").asString());
+			float playerRadius = jsonVal.get("PlayerRadius").asFloat();
+			float playerSpawnX = jsonVal.get("PlayerSpawn").getFloat(0);
+			float playerSpawnY = jsonVal.get("PlayerSpawn").getFloat(1);
+			entityHandler.createEntity(EntityType.PLAYER, PlayerColor, playerRadius, playerSpawnX, playerSpawnY, 0f, 0f); //create player
+		}
+		
 		
 		for(int i = 0; i < jsonVal.get("Enemies").size; i++)
 		{

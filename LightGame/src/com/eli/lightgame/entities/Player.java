@@ -114,7 +114,7 @@ public class Player extends Entity
 	{
 		if(rotAngle != 0)
 		{
-			
+			entityBody.setAngularVelocity(0);
 			float totalRotation = rotAngle - entityBody.getAngle();
 
 			while ( totalRotation < Math.toRadians(-180)) totalRotation += Math.toRadians(360);
@@ -125,7 +125,7 @@ public class Player extends Entity
 
 			entityBody.setTransform(entityBody.getPosition(), newAngle);
 			entityBody.applyForceToCenter(new Vector2((float)(Math.cos(entityBody.getAngle()) * (10*radius)),(float)(Math.sin(entityBody.getAngle()) * (10*radius))), true);
-			entityBody.setLinearVelocity(new Vector2((float)(Math.cos(entityBody.getAngle()) * (40 + 1 * radius)),(float)(Math.sin(entityBody.getAngle()) * (40 + 1 * radius))));
+			entityBody.setLinearVelocity(new Vector2((float)(Math.cos(entityBody.getAngle()) * (30 + 1 * radius)),(float)(Math.sin(entityBody.getAngle()) * (30 + 1 * radius))));
 		}
 	}
 	
@@ -141,7 +141,7 @@ public class Player extends Entity
 			entityBody.setAngularVelocity(0);
 			entityBody.setTransform(entityBody.getPosition(), rotAngle);
 			entityBody.applyForceToCenter(new Vector2((float)(Math.cos(entityBody.getAngle()) * (10*radius)),(float)(Math.sin(entityBody.getAngle()) * (10*radius))), true);
-			entityBody.setLinearVelocity(new Vector2((float)(Math.cos(entityBody.getAngle()) * (40 + 1 * radius)),(float)(Math.sin(entityBody.getAngle()) * (40 + 1 * radius))));
+			entityBody.setLinearVelocity(new Vector2((float)(Math.cos(entityBody.getAngle()) * (30 + 1 * radius)),(float)(Math.sin(entityBody.getAngle()) * (30 + 1 * radius))));
 		}
 	}
 	
