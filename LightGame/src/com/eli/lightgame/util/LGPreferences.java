@@ -9,60 +9,57 @@ public class LGPreferences
     private static final String PREF_VOLUME = "volume";
     private static final String PREF_MUSIC_ENABLED = "music.enabled";
     private static final String PREF_SOUND_ENABLED = "sound.enabled";
-    private static final String PREF_ONSCREENCONTROLS_ENABLED = "onscreencontrols.enabled";
+    private static final String PREF_SCREENCONTROLS_ENABLED = "screencontrols.enabled";
     private static final String PREFS_NAME = "Lumiverse";
+    private Preferences pref;
  
     public LGPreferences()
     {
-    }
- 
-    protected Preferences getPrefs()
-    {
-        return Gdx.app.getPreferences( PREFS_NAME );
+    	pref = Gdx.app.getPreferences(PREFS_NAME);
     }
  
     public boolean isSoundEffectsEnabled()
     {
-        return getPrefs().getBoolean( PREF_SOUND_ENABLED, true );
+        return pref.getBoolean( PREF_SOUND_ENABLED, true );
     }
  
     public void setSoundEffectsEnabled(boolean soundEffectsEnabled )
     {
-        getPrefs().putBoolean( PREF_SOUND_ENABLED, soundEffectsEnabled );
-        getPrefs().flush();
+    	pref.putBoolean( PREF_SOUND_ENABLED, soundEffectsEnabled );
+    	pref.flush();
     }
  
     public boolean isMusicEnabled()
     {
-        return getPrefs().getBoolean( PREF_MUSIC_ENABLED, true );
+        return pref.getBoolean( PREF_MUSIC_ENABLED, true );
     }
  
     public void setMusicEnabled(boolean musicEnabled)
     {
-        getPrefs().putBoolean( PREF_MUSIC_ENABLED, musicEnabled );
-        getPrefs().flush();
+    	pref.putBoolean( PREF_MUSIC_ENABLED, musicEnabled );
+    	pref.flush();
     }
     
     public boolean useOnScreenControls()
     {
-    	return getPrefs().getBoolean(PREF_ONSCREENCONTROLS_ENABLED,true);
+    	return pref.getBoolean(PREF_SCREENCONTROLS_ENABLED,true);
     }
     
     public void setOnScreenControls(boolean oscEnabled)
     {
-    	getPrefs().putBoolean(PREF_ONSCREENCONTROLS_ENABLED, oscEnabled);
-        getPrefs().flush();
+    	pref.putBoolean(PREF_SCREENCONTROLS_ENABLED, oscEnabled);
+    	pref.flush();
     }
  
     public float getVolume()
     {
-        return getPrefs().getFloat( PREF_VOLUME, 0.5f );
+        return pref.getFloat( PREF_VOLUME, 0.5f );
     }
  
     public void setVolume(
         float volume )
     {
-        getPrefs().putFloat( PREF_VOLUME, volume );
-        getPrefs().flush();
+    	pref.putFloat( PREF_VOLUME, volume );
+    	pref.flush();
     }
 }

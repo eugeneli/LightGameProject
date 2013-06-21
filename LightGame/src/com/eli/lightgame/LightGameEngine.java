@@ -19,6 +19,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.eli.lightgame.entities.Bullet;
 import com.eli.lightgame.entities.NPC;
 import com.eli.lightgame.entities.Player;
+import com.eli.lightgame.ui.LGInput;
+import com.eli.lightgame.ui.LightGameStage;
+import com.eli.lightgame.util.LGPreferences;
 
 public class LightGameEngine
 {
@@ -28,6 +31,7 @@ public class LightGameEngine
 	private float width;
 	private float height;
 	
+	private LGPreferences preferences;
 	private boolean presentationMode = false;
 	
 	//Box2D stuff
@@ -37,7 +41,6 @@ public class LightGameEngine
 	
 	//Touch stuff
 	private LightGameStage LGstage;
-	private LGInput input;
 	private boolean usingOnScreenControls = true;
 	
 	//Game Stuff
@@ -47,13 +50,14 @@ public class LightGameEngine
 	EntityHandler entityHandler;
 	Player player;
 		
-	public LightGameEngine(SpriteBatch sb, float w, float h, boolean presentation)
+	public LightGameEngine(SpriteBatch sb, float w, float h, LGPreferences pref, boolean presentation)
 	{
 		presentationMode = presentation;
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		width = w;
 		height = h;
 		batch = sb;
+		preferences = pref;
 		
 		initialize(presentation, "data/levels/presentation.json");
 		
@@ -108,11 +112,8 @@ public class LightGameEngine
 			level.loadLevel(Gdx.files.internal(levelJsonPath));
 			player = level.getPlayer();
 			
-			input = new LGInput(camera, entityHandler);
-			//Gdx.input.setInputProcessor(new GestureDetector(input));
-			
 			//Create the stage for UI objects
-			LGstage = new LightGameStage("data/touchBackground.png", "data/touchKnob.png", camera, batch, player);
+			LGstage = new LightGameStage("data/touchBackground.png", "data/touchKnob.png", camera, batch, entityHandler, preferences.useOnScreenControls());
 	        Gdx.input.setInputProcessor(LGstage.getStage());
 		}
 		else
@@ -122,6 +123,16 @@ public class LightGameEngine
 			camera.zoom = 8.0f;
 			camera.position.set(0, 0, 0);
 		}
+	}
+	
+	public void setOnScreenControls(boolean bool)
+	{
+		usingOnScreenControls = bool;
+	/*	
+		if(usingOnScreenControls)
+			Gdx.input.setInputProcessor(LGstage.getStage());
+		else
+			Gdx.input.setInputProcessor(new GestureDetector(input));*/
 	}
 	
 	public void dispose()

@@ -1,18 +1,21 @@
-package com.eli.lightgame;
+package com.eli.lightgame.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.eli.lightgame.EntityHandler;
 import com.eli.lightgame.entities.Player;
-import com.eli.lightgame.ui.LGTriangleAttackButton;
 
 public class LightGameStage
 {
@@ -27,12 +30,33 @@ public class LightGameStage
     private Drawable touchKnob;
     
     private final Player player;
+    private LGInput input;
+    private boolean usingOnScreenControls;
     
-    public LightGameStage(String touchpadBackground, String touchpadKnob, OrthographicCamera cam, SpriteBatch sb, Player p)
+    private ActorGestureListener zoom = new ActorGestureListener()
+    {
+    	public void zoom(InputEvent event, float initialDistance, float distance)
+    	{
+    		float scalar = ((initialDistance-distance)/initialDistance)/2;
+
+            camera.zoom += scalar;
+            if(camera.zoom <= 2.5f)
+                    camera.zoom = 2.5f;
+            if(camera.zoom >= 8.0f)
+                    camera.zoom = 8.0f;
+            camera.update();
+    	}
+    };
+    
+    public LightGameStage(String touchpadBackground, String touchpadKnob, OrthographicCamera cam, SpriteBatch sb, EntityHandler eh, boolean onScreenControls)
     {
     	camera = cam;
     	batch = sb;
-    	player = p;
+    	player = eh.getPlayer();
+    	usingOnScreenControls = onScreenControls;
+    	
+    	stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true, batch);
+    	input = new LGInput(camera, stage, eh);
     	
 		//Create a touchpad skin    
         touchpadSkin = new Skin();
@@ -53,29 +77,24 @@ public class LightGameStage
         //setBounds(x,y,width,height)
         touchpad.setBounds(15, 15, 200, 200);
 
-        //Create a Stage and add TouchPad
-        stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true, batch);
-        stage.addActor(touchpad);
-        
-        //Button to shoot bullets
-        LGTriangleAttackButton triangleAttack = new LGTriangleAttackButton("data/buttonup.png", "data/buttondown.png", player);
-        triangleAttack.setBounds(stage.getWidth()-triangleAttack.width, 15, triangleAttack.width, triangleAttack.height);
-        stage.addActor(triangleAttack);
-        
-        //Add pinch to zoom listener
-        stage.addListener(new ActorGestureListener() {
-        	public void zoom(InputEvent event, float initialDistance, float distance) {
-        		float scalar = ((initialDistance-distance)/initialDistance)/2;
-                System.out.println(scalar);
-                camera.zoom += scalar;
-                if(camera.zoom <= 2.5f)
-                        camera.zoom = 2.5f;
-                if(camera.zoom >= 8.0f)
-                        camera.zoom = 8.0f;
-                camera.update();
-                //System.out.println(camera.zoom);
+        if(usingOnScreenControls)
+        {
+        	//add TouchPad
+            stage.addActor(touchpad);
+            
+            //Button to shoot bullets
+            LGTriangleAttackButton triangleAttack = new LGTriangleAttackButton("data/buttonup.png", "data/buttondown.png", player);
+            triangleAttack.setBounds(stage.getWidth()-triangleAttack.width, 15, triangleAttack.width, triangleAttack.height);
+            stage.addActor(triangleAttack);
+            
+            //Add pinch to zoom listener
+            stage.addListener(zoom);
         }
-        });
+        else
+        {
+        	stage.addListener(input);
+        	stage.addListener(input.getDragListener());
+        }
     }
     
     public Stage getStage()

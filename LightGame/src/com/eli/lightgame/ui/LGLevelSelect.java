@@ -1,8 +1,6 @@
 package com.eli.lightgame.ui;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -17,23 +15,19 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.eli.lightgame.LightGame;
 import com.eli.lightgame.LightGame.GAMESTATE;
 import com.eli.lightgame.LightGameEngine;
+import com.eli.lightgame.util.LGPreferences;
 
-public class LGLevelSelect extends ApplicationAdapter
+public class LGLevelSelect extends LGMenu
 {
-	
-	private Stage stage;
 	private Table scrollTable;
-	private LightGameEngine Engine;
+	private LGPreferences preferences;
 	
-	public LGLevelSelect(LightGameEngine eng)
+	public LGLevelSelect(LightGameEngine eng, LGPreferences pref)
 	{
-		Engine = eng;
-	}
-
-    @Override public void create() {
-        this.stage = new Stage();
-        Gdx.input.setInputProcessor(this.stage);
-        
+		super(eng);
+		
+		preferences = pref;
+		stage = new Stage();
         scrollTable = new Table();
         
         BitmapFont fontType = new BitmapFont(Gdx.files.internal("data/default.fnt"), false);
@@ -66,22 +60,8 @@ public class LGLevelSelect extends ApplicationAdapter
         table.setFillParent(true);
         table.add(scroller).fill().expand();*/
 
-        this.stage.addActor(scroller);
-    }
-
-    @Override public void render()
-    {
-        this.stage.act();
-        Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-        Engine.render();
-        this.stage.draw();
-        
-    }
-
-    @Override public void resize(final int width, final int height) {}
-    @Override public void pause() {}
-    @Override public void resume() {}
-    @Override public void dispose() {}
+        stage.addActor(scroller);
+	}
     
 	public ClickListener levelClickListener = new ClickListener() {
 		@Override
@@ -89,6 +69,7 @@ public class LGLevelSelect extends ApplicationAdapter
 		{
 			Engine.dispose();
 			Engine.initialize(false, event.getListenerActor().getName());
+			Engine.setOnScreenControls(preferences.useOnScreenControls());
 			LightGame.CURRENT_GAMESTATE = GAMESTATE.INGAME;
 		}
 	};

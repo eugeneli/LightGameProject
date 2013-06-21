@@ -23,8 +23,6 @@ public class Drifter extends NPC
 	private float originalDirection;
 	private float originalVelocity;
 	
-	
-	@SuppressWarnings("unchecked")
 	public Drifter(World world, RayHandler rayHandler, BulletHandler bh, Color aColor, float rad, float critSize, float xPos, float yPos, float facingDirection, float velocity)
 	{
 		super("data/drifter.png", aColor, rad);
@@ -119,7 +117,6 @@ public class Drifter extends NPC
 		}
 		else
 			lights.get(1).setDistance(currentCoreLightDistance+flickerRate);
-		
 	}
 
 	@Override

@@ -21,28 +21,21 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.eli.lightgame.LightGame;
 import com.eli.lightgame.LightGame.GAMESTATE;
 import com.eli.lightgame.LightGameEngine;
+import com.eli.lightgame.ui.LGMenuHandler.Menu;
 import com.eli.lightgame.util.LGPreferences;
 
-public class LGOptions extends ApplicationAdapter
+public class LGOptions extends LGMenu
 {
-	private Stage stage;
 	private Table table;
-	
-	private LightGameEngine Engine;
 	private LGPreferences preferences;
 	
 	public LGOptions(LightGameEngine eng, LGPreferences pref)
 	{
-		Engine = eng;
+		super(eng);
 		preferences = pref;
-	}
-
-    @Override
-    public void create()
-    {
-    	table = new Table();
+		
+		table = new Table();
         stage = new Stage();
-        Gdx.input.setInputProcessor(stage);
         
         Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
         table = new Table( skin );
@@ -62,7 +55,7 @@ public class LGOptions extends ApplicationAdapter
         table.row();
 
         final CheckBox musicCheckbox = new CheckBox("                                 Music", skin);
-        musicCheckbox.setChecked(preferences.isMusicEnabled() );
+        musicCheckbox.setChecked(preferences.isMusicEnabled());
         musicCheckbox.addListener( new ClickListener() {
             @Override
             public void clicked (InputEvent event, float x, float y)
@@ -75,7 +68,7 @@ public class LGOptions extends ApplicationAdapter
         table.row();
         
         final CheckBox oscCheckbox = new CheckBox("        Onscreen controls", skin);
-        oscCheckbox.setChecked(preferences.useOnScreenControls() );
+        oscCheckbox.setChecked(preferences.useOnScreenControls());
         oscCheckbox.addListener( new ClickListener() {
             @Override
             public void clicked (InputEvent event, float x, float y)
@@ -97,8 +90,7 @@ public class LGOptions extends ApplicationAdapter
             @Override
             public void clicked (InputEvent event, float x, float y)
     		{
-                boolean enabled = soundEffectsCheckbox.isChecked();
-                preferences.setSoundEffectsEnabled( enabled );
+            	menuHandler.setMenu(Menu.MAIN);
             }
         } );
         
@@ -144,19 +136,5 @@ public class LGOptions extends ApplicationAdapter
         table.add(scroller).fill().expand();
 
         this.stage.addActor(scroller);*/
-    }
-
-    @Override public void render()
-    {
-    	stage.act();
-        Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-        Engine.render();
-        stage.draw();
-        
-    }
-
-    @Override public void resize(final int width, final int height) {}
-    @Override public void pause() {}
-    @Override public void resume() {}
-    @Override public void dispose() {}
+	}
 }

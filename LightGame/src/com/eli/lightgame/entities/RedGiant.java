@@ -23,7 +23,6 @@ public class RedGiant extends NPC
 {
 	private ParticleEffect redGiantEffect;
 
-	@SuppressWarnings("unchecked")
 	public RedGiant(World world, RayHandler rayHandler, BulletHandler bh, Color aColor, float rad, float critSize, float xPos, float yPos)
 	{
 		super("data/particle-fire.png", aColor, rad);

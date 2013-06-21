@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.eli.lightgame.entities.Blinker;
 import com.eli.lightgame.entities.Bullet;
 import com.eli.lightgame.entities.Drifter;
 import com.eli.lightgame.entities.Entity;
@@ -47,7 +48,7 @@ public class EntityHandler
 	private Queue<EntityDefinition> queuedEntities = new LinkedList<EntityDefinition>();
 	
 	public static enum EntityType{
-		PLAYER, RED_GIANT, DRIFTER, CORE
+		PLAYER, RED_GIANT, DRIFTER, CORE, BLINKER
 	}
 	
 	public EntityHandler(World w, RayHandler rh, BulletHandler bh, float theWidth, float theHeight)
@@ -83,9 +84,14 @@ public class EntityHandler
 				LightCore core = new LightCore(world, rayHandler, bulletHandler, aColor, radius, 10f*radius, xPos, yPos, facingDirection, velocity);
 				core.setID(currentEntityID);
 				entities.put(currentEntityID, core);
-				//System.out.println("id: " + currentEntityID);
 				currentEntityID++;
 				return core;
+			case BLINKER:
+				Blinker blinker = new Blinker(world, rayHandler, bulletHandler, aColor, radius, xPos, yPos);
+				blinker.setID(currentEntityID);
+				entities.put(currentEntityID, blinker);
+				currentEntityID++;
+				return blinker;
 			default:
 				return null;
 		}

@@ -4,6 +4,8 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.eli.lightgame.ui.LGLevelSelect;
+import com.eli.lightgame.ui.LGMainMenu;
+import com.eli.lightgame.ui.LGMenuHandler;
 import com.eli.lightgame.ui.LGOptions;
 import com.eli.lightgame.util.LGPreferences;
 
@@ -11,15 +13,18 @@ public class LightGame extends Game
 {
 	private SpriteBatch batch;
 
-	private LGOptions options;
+	private LGMenuHandler menuHandler;
 	private LGPreferences preferences;
+	private LGMainMenu mainMenu;
+	private LGOptions options;
 	private LGLevelSelect levelSelect;
+	
 	private LightGameEngine Engine;
 	
 	public static GAMESTATE CURRENT_GAMESTATE;
 	
 	public static enum GAMESTATE{
-		MAIN_MENU, LEVEL_SELECT, INGAME
+		IN_MENU, INGAME
 	}
 	
 	@Override
@@ -29,17 +34,21 @@ public class LightGame extends Game
 		float width = Gdx.graphics.getWidth()/10;
 		float height = Gdx.graphics.getHeight()/10;
 		
-		CURRENT_GAMESTATE = GAMESTATE.MAIN_MENU;
+		CURRENT_GAMESTATE = GAMESTATE.IN_MENU;
 		
 		preferences = new LGPreferences();
+		Engine = new LightGameEngine(batch, width, height, preferences, true);	
 		
-		Engine = new LightGameEngine(batch, width, height, true);	
+		mainMenu = new LGMainMenu(Engine, batch);
+		mainMenu.create();
 		
-		levelSelect = new LGLevelSelect(Engine);
+		levelSelect = new LGLevelSelect(Engine, preferences);
 		levelSelect.create();
 		
 		options = new LGOptions(Engine, preferences);
 		options.create();
+		
+		menuHandler = new LGMenuHandler(mainMenu, levelSelect, options);
 	}
 
 	@Override
@@ -54,11 +63,8 @@ public class LightGame extends Game
 	{
 		switch(CURRENT_GAMESTATE)
 		{
-			case MAIN_MENU:
-				options.render();
-				break;
-			case LEVEL_SELECT:
-				levelSelect.render();
+			case IN_MENU:
+				menuHandler.render();
 				break;
 			case INGAME:
 				Engine.render();

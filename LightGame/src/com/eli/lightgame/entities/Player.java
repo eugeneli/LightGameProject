@@ -33,7 +33,6 @@ public class Player extends Entity
 	private boolean moveQueued = false;
 	private boolean shotQueued = false;
 	
-	@SuppressWarnings("unchecked")
 	public Player(World world, RayHandler rayHandler, BulletHandler bh, Color aColor, float rad, float critRadius, float xPos, float yPos)
 	{
 		super("data/galaxy2.png", aColor, rad);

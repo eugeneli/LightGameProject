@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.eli.lightgame.EntityHandler.EntityType;
+import com.eli.lightgame.entities.Blinker;
 import com.eli.lightgame.entities.Player;
 
 public class Level
@@ -80,6 +81,16 @@ public class Level
 					float dVelocity = enemy.getFloat("Velocity");
 					
 					entityHandler.createEntity(EntityType.DRIFTER, dColor, dRadius, dSpawnX, dSpawnY, dFacingDirec, dVelocity); //create a drifter
+					break;
+				case 2: //Case 2: Blinker
+					Color bColor = convertStringToColor(enemy.getString("Color"));
+					float bRadius = enemy.getFloat("Radius");
+					float bSpawnX = enemy.getFloat("x");
+					float bSpawnY = enemy.getFloat("y");
+					float bFlickerRate = enemy.getFloat("FlickerRate");
+					
+					Blinker bl = (Blinker) entityHandler.createEntity(EntityType.BLINKER, bColor, bRadius, bSpawnX, bSpawnY,  0f, 0f); //create a drifter
+					bl.setFlickerRate(bFlickerRate);
 					break;
 			}
 		}

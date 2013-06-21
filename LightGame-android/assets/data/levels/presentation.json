@@ -36,6 +36,15 @@
         },
         "Drifter": {
             "EnemyType": "1",
+            "Color": "RED",
+            "x": "-100",
+            "y": "-50",
+            "Radius": 10,
+            "Direction": 3.0,
+            "Velocity": 160
+        },
+        "Drifter": {
+            "EnemyType": "1",
             "Color": "ORANGE",
             "x": "100",
             "y": "-50",
@@ -45,10 +54,10 @@
         },
         "Drifter": {
             "EnemyType": "1",
-            "Color": "GREEN",
+            "Color": "ORANGE",
             "x": "-30",
             "y": "5",
-            "Radius": 6,
+            "Radius": 7,
             "Direction": -0.5,
             "Velocity": 40
         },
@@ -60,6 +69,23 @@
             "Radius": 8,
             "Direction": -0.5,
             "Velocity": 70
+        },
+        "Drifter": {
+            "EnemyType": "1",
+            "Color": "GREEN",
+            "x": "60",
+            "y": "-100",
+            "Radius": 20,
+            "Direction": 0.75,
+            "Velocity": 130
+        },
+        "Blinker": {
+            "EnemyType": "2",
+            "Color": "WHITE",
+            "x": "180",
+            "y": "100",
+            "FlickerRate": 2,
+            "Radius": 20,
         },
     }
 }
