@@ -15,6 +15,8 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.eli.lightgame.EntityHandler.EntityType;
 import com.eli.lightgame.entities.Blinker;
+import com.eli.lightgame.entities.Bullet;
+import com.eli.lightgame.entities.Entity;
 import com.eli.lightgame.entities.Player;
 
 public class Level
@@ -25,14 +27,18 @@ public class Level
 	private float width;
 	private float height;
 	
+	private LevelStateManager levelState;
 	private EntityHandler entityHandler;
+	private BulletHandler bulletHandler;
 	
-	public Level(EntityHandler eh, World theWorld, float w, float h)
+	public Level(LevelStateManager levstate, EntityHandler eh, BulletHandler bh, World theWorld, float w, float h)
 	{
 		entityHandler = eh;
+		bulletHandler = bh;
 		world = theWorld;
 		width = w;
 		height = h;
+		levelState = levstate;
 	}
 	
 	public void loadLevel(FileHandle levelJson)
@@ -92,6 +98,19 @@ public class Level
 					Blinker bl = (Blinker) entityHandler.createEntity(EntityType.BLINKER, bColor, bRadius, bSpawnX, bSpawnY,  0f, 0f); //create a drifter
 					bl.setFlickerRate(bFlickerRate);
 					break;
+				case 3: //Case 3: Bullet-like entities that don't die over time
+					Color bulColor = convertStringToColor(enemy.getString("Color"));
+					float bulRadius = enemy.getFloat("Radius");
+					float bulSpawnX = enemy.getFloat("x");
+					float bulSpawnY = enemy.getFloat("y");
+					float bulFlickerRate = enemy.getFloat("FlickerRate");
+					float bulFacingDirec = enemy.getFloat("Direction");
+					int bulVelocity = enemy.getInt("Velocity");
+					
+					Bullet b = bulletHandler.createBulletsAndFire(entityHandler.getPlayer(), bulRadius, bulColor, bulSpawnX, bulSpawnY, bulVelocity, bulFacingDirec);
+					b.setFlickerRate(bulFlickerRate);
+					b.setImmortal(true);
+					break;
 			}
 		}
 	}
@@ -137,28 +156,6 @@ public class Level
 				
 				borderEdge.set(background.getWidth()/2, background.getHeight()/2, background.getWidth()/2, -background.getHeight()/2);
 				worldEdgeBody.createFixture(worldEdgeFixture);
-				
-				
-				/*EdgeShape topEdge = new EdgeShape();
-				EdgeShape bottomEdge = new EdgeShape();
-				EdgeShape leftEdge = new EdgeShape();
-				EdgeShape rightEdge = new EdgeShape();
-				
-				topEdge.set(-background.getWidth()/2, background.getHeight()/2, background.getWidth()/2, background.getHeight()/2);
-				worldEdgeFixture.shape = topEdge;
-				worldEdgeBody.createFixture(worldEdgeFixture);
-				
-				bottomEdge.set(-background.getWidth()/2, -background.getHeight()/2, background.getWidth()/2, -background.getHeight()/2);
-				worldEdgeFixture.shape = bottomEdge;
-				worldEdgeBody.createFixture(worldEdgeFixture);
-				
-				leftEdge.set(-background.getWidth()/2, background.getHeight()/2, -background.getWidth()/2, -background.getHeight()/2);
-				worldEdgeFixture.shape = leftEdge;
-				worldEdgeBody.createFixture(worldEdgeFixture);
-				
-				rightEdge.set(background.getWidth()/2, background.getHeight()/2, background.getWidth()/2, -background.getHeight()/2);
-				worldEdgeFixture.shape = rightEdge;
-				worldEdgeBody.createFixture(worldEdgeFixture);*/
 				break;
 		}
 	}

@@ -54,11 +54,6 @@ public class Blinker extends NPC
 		lights = blinkerLights;
 	}
 	
-	public void setFlickerRate(float flicker)
-	{
-		flickerRate = flicker;
-	}
-	
 	public void update()
 	{
 		super.update();

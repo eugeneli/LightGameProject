@@ -223,7 +223,7 @@ public class EntityHandler
 			}
 			removeEntity(secondEntity);
 		}
-		else if(firstEntity.getColor().equals(secondEntity.getColor())) //Bigger entity absorbs smaller one if they are same color
+		else if(firstEntity.getColor().equals(secondEntity.getColor()))
 		{
 			if(firstEntity.getRadius() > secondEntity.getRadius())
 			{
@@ -278,6 +278,33 @@ public class EntityHandler
 		queuedEntities.add(ed);
 		
 		entity.explode();
+	}
+	
+	public boolean playerIsLargest()
+	{
+		float largestRadius = 0;
+		Entity largestEntity = null;
+		Iterator<Integer> it = entities.keySet().iterator();
+	    while (it.hasNext())
+	    {
+	    	Integer entityID = (Integer)it.next();
+	    	
+	    	if(!entities.get(entityID).ignoreSize())
+	    	{
+	    		float currentRadius = entities.get(entityID).getRadius();
+		    	if(currentRadius > largestRadius)
+		    	{
+		    		largestEntity = entities.get(entityID);
+		    		largestRadius = currentRadius;
+		    	}
+	    	}
+	    }
+	    return largestEntity instanceof Player;
+	}
+	
+	public int getEntityNumber()
+	{
+		return entities.size();
 	}
 		
 	public void update()

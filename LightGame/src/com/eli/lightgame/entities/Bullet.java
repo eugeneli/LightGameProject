@@ -14,6 +14,7 @@ public class Bullet extends Entity
 	private int originalLife;
 	private float angle;
 	private boolean startShrinking = false;
+	private boolean immortal = false;
 	
 	private Entity source;
 	
@@ -67,6 +68,16 @@ public class Bullet extends Entity
 		life--;
 	}
 	
+	public boolean isImmortal()
+	{
+		return immortal;
+	}
+	
+	public void setImmortal(boolean bool)
+	{
+		immortal = bool;
+	}
+	
 	public Body getBody()
 	{
 		return entityBody;
@@ -99,6 +110,8 @@ public class Bullet extends Entity
 	
 	public void update()
 	{
+		super.update();
+		
 		if(startShrinking)
 		{
 			radius -= 0.5f;
@@ -106,15 +119,34 @@ public class Bullet extends Entity
 			
 			if(radius <= 0)
 				life = 0;
-			
-			super.update();
 		}
 		else if(life <= 0.65f * originalLife)
 		{
 			startShrinking = true;
-			super.update();
+		}
+		//flicker the core's light
+		float currentCoreLightDistance = lights.get(0).getDistance();
+		
+		if(currentCoreLightDistance <= radius*10)
+		{
+			dimCoreLight = false;
+		}
+		else if(currentCoreLightDistance >= radius*50) //5 * 10 because /10 shooter radius and /5 shooter radius
+		{
+			System.out.println("radius: "+radius);
+			System.out.println(currentCoreLightDistance);
+			dimCoreLight = true;
+		}
+		
+		if(dimCoreLight)
+		{
+			lights.get(0).setDistance(currentCoreLightDistance-flickerRate);
+			
 		}
 		else
-			super.update();
+		{
+			lights.get(0).setDistance(currentCoreLightDistance+flickerRate);
+			
+		}
 	}
 }

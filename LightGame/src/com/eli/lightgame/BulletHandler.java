@@ -37,7 +37,7 @@ public class BulletHandler
 		createBulletsAndFire(null, shooterRadius, aColor, entityX, entityY, forceScalar, rotAngle);
 	}
 	
-	public void createBulletsAndFire(Entity bulletSource, float shooterRadius, Color aColor, float entityX, float entityY, int forceScalar, float rotAngle)
+	public Bullet createBulletsAndFire(Entity bulletSource, float shooterRadius, Color aColor, float entityX, float entityY, int forceScalar, float rotAngle)
 	{
 		//Box2D stuff
 		BodyDef bulletDef = new BodyDef();
@@ -77,6 +77,8 @@ public class BulletHandler
 		bulletBody.setUserData(b);
 		
 		fireSingle(b, forceScalar);
+		
+		return b;
 	}
 	
 	public void fireSingle(Bullet bullet, int forceScalar)
@@ -107,12 +109,19 @@ public class BulletHandler
 		bullets.remove(b);
 	}
 	
+	public int getBulletNumber()
+	{
+		return bullets.size();
+	}
+	
 	public void updateBullets()
 	{
 		for(int i = 0; i < bullets.size(); i++)
 		{
 			bullets.get(i).update();
-			bullets.get(i).decrementLife();
+			
+			if(!bullets.get(i).isImmortal())	
+				bullets.get(i).decrementLife();
 			
 			if(bullets.get(i).getLife() <= 0)
 			{

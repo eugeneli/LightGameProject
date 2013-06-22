@@ -36,6 +36,8 @@ public abstract class Entity
 	protected boolean waitingToUpdateSize = false; //Can't change Box2D fixture while it's updating so set flag to change the fixture after it's done
 	protected boolean waitingToBeDeleted = false;
 	
+	protected boolean ignoreSize = false;
+	
 	//Array to hold the lights
 	protected ArrayList<Light> lights = new ArrayList<Light>();
 	protected float flickerRate = 0.1f;
@@ -76,6 +78,11 @@ public abstract class Entity
 		entityBody.applyForceToCenter(force, true);
 	}
 	
+	public void setFlickerRate(float flicker)
+	{
+		flickerRate = flicker;
+	}
+	
 	public void isWaitingToUpdateSize(boolean resize)
 	{
 		waitingToUpdateSize = resize;
@@ -94,6 +101,11 @@ public abstract class Entity
 	public void toBeDeleted(boolean delete)
 	{
 		waitingToBeDeleted = delete;
+	}
+	
+	public boolean ignoreSize()
+	{
+		return ignoreSize();
 	}
 	
 	public Body getBody()

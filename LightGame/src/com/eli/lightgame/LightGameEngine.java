@@ -44,6 +44,7 @@ public class LightGameEngine
 	private boolean usingOnScreenControls = true;
 	
 	//Game Stuff
+	LevelStateManager levelState;
 	Level level;
 	Patterns pattern = new Patterns();
 	BulletHandler bulletHandler;
@@ -60,26 +61,6 @@ public class LightGameEngine
 		preferences = pref;
 		
 		initialize(presentation, "data/levels/presentation.json");
-		
-		//The ground. remove this later
-		/*BodyDef groundBodyDef = new BodyDef();
-		groundBodyDef.position.set(0,3);
-		
-		Body groundBody = world.createBody(groundBodyDef);
-		
-		PolygonShape groundBox = new PolygonShape();
-		groundBox.setAsBox(camera.viewportWidth * 2, 3.0f);
-		//groundBody.createFixture(groundBox, 0.0f);
-		FixtureDef groundFixture = new FixtureDef();
-		groundFixture.shape = groundBox;
-		groundFixture.filter.categoryBits = LightGameEngine.CATEGORY_ENVIRONMENT;
-		groundFixture.filter.maskBits = LightGameEngine.MASK_ENVIRONMENT;
-		groundBody.createFixture(groundFixture); */
-		
-		//System.out.println(jsonVal.get("Enemies").next().get("x").asString());
-		//System.out.println(jsonVal.get("Enemies").next().get("x").asString());
-			
-        //rayHandler.setAmbientLight(0.2f, 0.1f, 0.5f, 0.3f);
 	}
 	
 	public void initialize(boolean presentation, String levelJsonPath)
@@ -104,8 +85,10 @@ public class LightGameEngine
 		bulletHandler = new BulletHandler(world, rayHandler);
 		entityHandler = new EntityHandler(world, rayHandler, bulletHandler, width, height);
 		
+		levelState = new LevelStateManager();
+		
 		//Create level object
-		level = new Level(entityHandler, world, width, height);
+		level = new Level(levelState, entityHandler, bulletHandler, world, width, height);
 		
 		if(!presentationMode)
 		{
