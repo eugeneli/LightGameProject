@@ -41,15 +41,14 @@ public class LightGameEngine
 	
 	//Touch stuff
 	private LightGameStage LGstage;
-	private boolean usingOnScreenControls = true;
 	
 	//Game Stuff
-	LevelStateManager levelState;
-	Level level;
-	Patterns pattern = new Patterns();
-	BulletHandler bulletHandler;
-	EntityHandler entityHandler;
-	Player player;
+	private LevelStateManager levelState;
+	private Level level;
+	private BulletHandler bulletHandler;
+	private EntityHandler entityHandler;
+	private Player player;
+	private int levelOverTimer = 200;
 		
 	public LightGameEngine(SpriteBatch sb, float w, float h, LGPreferences pref, boolean presentation)
 	{
@@ -70,7 +69,6 @@ public class LightGameEngine
 		//Create and position camera
 		camera = new OrthographicCamera(width, height);
 		camera.position.set(width*0.5f, height*0.5f, 0);
-		camera.zoom = 2.5f;
 		camera.update();
 		
 		//Create Box2D world
@@ -88,7 +86,8 @@ public class LightGameEngine
 		levelState = new LevelStateManager();
 		
 		//Create level object
-		level = new Level(levelState, entityHandler, bulletHandler, world, width, height);
+		level = new Level(levelState, entityHandler, bulletHandler, rayHandler, world, width, height);
+		
 		
 		if(!presentationMode)
 		{
@@ -96,8 +95,13 @@ public class LightGameEngine
 			player = level.getPlayer();
 			
 			//Create the stage for UI objects
-			LGstage = new LightGameStage("data/touchBackground.png", "data/touchKnob.png", camera, batch, entityHandler, preferences.useOnScreenControls());
+			LGstage = new LightGameStage(camera, batch, entityHandler);
 	        Gdx.input.setInputProcessor(LGstage.getStage());
+	        
+	        level.setZoomBounds(LGstage);
+	        
+	        //Show level title message 
+	        LGstage.displayTitle(level.getTitleMessage()[0], level.getTitleMessage()[1]);
 		}
 		else
 		{
@@ -110,7 +114,7 @@ public class LightGameEngine
 	
 	public void setOnScreenControls(boolean bool)
 	{
-		usingOnScreenControls = bool;
+	//	usingOnScreenControls = bool;
 	/*	
 		if(usingOnScreenControls)
 			Gdx.input.setInputProcessor(LGstage.getStage());
@@ -139,45 +143,54 @@ public class LightGameEngine
 		
 		if(!presentationMode)
 		{
-			if(usingOnScreenControls)
-				player.moveJoystick((float)Math.atan2(LGstage.getTouchpad().getKnobPercentY(),LGstage.getTouchpad().getKnobPercentX()));
+		//	if(usingOnScreenControls)
+			//	player.moveJoystick((float)Math.atan2(LGstage.getTouchpad().getKnobPercentY(),LGstage.getTouchpad().getKnobPercentX()));
 			
 			camera.position.set(player.getPosition().x, player.getPosition().y, 0);
+			
+			LGstage.act(Gdx.graphics.getDeltaTime());
 		}
+		
+		
 	}
 	
 	public void render()
 	{
-		update();
-		camera.update();
-		batch.setProjectionMatrix(camera.combined);
-		rayHandler.setCombinedMatrix(camera.combined);
-		
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
-		batch.begin();
-		
-		//draw level bg
-		level.draw(batch);
-
-		//draw entities
-		entityHandler.draw(batch);
-		
-		//draw bullets
-		bulletHandler.drawBullets(batch);
-		
-		batch.end();
-		
-		//Render box2D physics and lights
-		renderer.render(world,  camera.combined);
-		rayHandler.updateAndRender();
-		
-		//Draw the UI
-		if(!presentationMode && usingOnScreenControls)
+		if(levelOverTimer >= 0 || !level.isOver())
 		{
-			LGstage.getStage().act(Gdx.graphics.getDeltaTime());        
-			LGstage.getStage().draw();
+			update();
+			camera.update();
+			batch.setProjectionMatrix(camera.combined);
+			rayHandler.setCombinedMatrix(camera.combined);
+			
+			Gdx.gl.glClearColor(1, 1, 1, 1);
+			Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+			
+			batch.begin();
+			
+			//draw level bg
+			level.draw(batch);
+
+			//draw entities
+			entityHandler.draw(batch);
+			
+			//draw bullets
+			bulletHandler.drawBullets(batch);
+			
+			batch.end();
+			
+			//Render box2D physics and lights
+			renderer.render(world,  camera.combined);
+			rayHandler.updateAndRender();
+		}
+		
+		if(level.isOver())
+			levelOverTimer--;
+		
+		if(!presentationMode)
+		{
+			//Draw the UI
+			LGstage.draw();
 		}
 	}
 	

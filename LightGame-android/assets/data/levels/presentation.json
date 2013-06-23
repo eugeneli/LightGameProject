@@ -1,12 +1,25 @@
 {
     "LevelType": "NONE",
     "WorldShape": "RECTANGLE",
+    "Title": "",
+    "Mission": "",
     "Background": "data/levels/presentationbg.jpg",
+    "MinZoom": 8,
+    "MaxZoom": 8,
     "PlayerColor": "WHITE",
     "PlayerRadius": "5",
     "PlayerSpawn": [
         0,
         0
+        ],
+    "Ambience": [
+        0.2,
+        0.1,
+        0.5,
+        0.3
+        ],
+    "WinConditions": [
+        "None"
         ],
     "Enemies": {
         "RedGiant": {
@@ -14,7 +27,7 @@
             "Color": "RED",
             "x": "-150",
             "y": "36",
-            "Radius": 50
+            "Radius": 50,
         },
         "Drifter": {
             "EnemyType": "1",
@@ -23,6 +36,7 @@
             "y": "55",
             "Radius": 5,
             "Direction": 0.5,
+            "CritRadiusMult": 1.1,
             "Velocity": 80
         },
         "Drifter": {
@@ -32,6 +46,7 @@
             "y": "80",
             "Radius": 10,
             "Direction": 20,
+            "CritRadiusMult": 1.1,
             "Velocity": 100
         },
         "Drifter": {
@@ -41,6 +56,7 @@
             "y": "-50",
             "Radius": 10,
             "Direction": 3.0,
+            "CritRadiusMult": 1.1,
             "Velocity": 160
         },
         "Drifter": {
@@ -50,6 +66,7 @@
             "y": "-50",
             "Radius": 5,
             "Direction": 2.5,
+            "CritRadiusMult": 1.1,
             "Velocity": 85
         },
         "Drifter": {
@@ -59,6 +76,7 @@
             "y": "5",
             "Radius": 7,
             "Direction": -0.5,
+            "CritRadiusMult": 1.1,
             "Velocity": 40
         },
         "Drifter": {
@@ -68,6 +86,7 @@
             "y": "60",
             "Radius": 8,
             "Direction": -0.5,
+            "CritRadiusMult": 1.1,
             "Velocity": 70
         },
         "Drifter": {
@@ -77,6 +96,7 @@
             "y": "-100",
             "Radius": 20,
             "Direction": 0.75,
+            "CritRadiusMult": 1.1,
             "Velocity": 130
         },
         "Blinker": {
@@ -85,7 +105,8 @@
             "x": "180",
             "y": "100",
             "FlickerRate": 2,
-            "Radius": 20,
+            "CritRadiusMult": 1.1,
+            "Radius": 20
         },
     }
 }

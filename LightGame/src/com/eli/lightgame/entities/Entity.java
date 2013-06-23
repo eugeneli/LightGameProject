@@ -118,6 +118,11 @@ public abstract class Entity
 		return criticalRadius;
 	}
 	
+	public void setCritRadius(float rad)
+	{
+		criticalRadius = rad;
+	}
+	
 	public float getRadius()
 	{
 		return radius;

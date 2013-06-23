@@ -1,21 +1,18 @@
 package com.eli.lightgame.ui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
-import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+
 import com.eli.lightgame.EntityHandler;
-import com.eli.lightgame.entities.Player;
 
 public class LightGameStage
 {
@@ -23,78 +20,87 @@ public class LightGameStage
 	private SpriteBatch batch;
 	
 	private Stage stage;
-	private Touchpad touchpad;
-    private TouchpadStyle touchpadStyle;
-    private Skin touchpadSkin;
-    private Drawable touchBackground;
-    private Drawable touchKnob;
-    
-    private final Player player;
     private LGInput input;
-    private boolean usingOnScreenControls;
+    private Skin skin;
     
-    private ActorGestureListener zoom = new ActorGestureListener()
+    private Label titleText;
+	private Label missionText;
+	private Table table;
+    
+   /* private ActorGestureListener zoom = new ActorGestureListener()
     {
     	public void zoom(InputEvent event, float initialDistance, float distance)
     	{
     		float scalar = ((initialDistance-distance)/initialDistance)/2;
 
             camera.zoom += scalar;
-            if(camera.zoom <= 2.5f)
-                    camera.zoom = 2.5f;
-            if(camera.zoom >= 8.0f)
-                    camera.zoom = 8.0f;
+            if(camera.zoom <= minZoom)
+                    camera.zoom = minZoom;
+            if(camera.zoom >= maxZoom)
+                    camera.zoom = maxZoom;
             camera.update();
     	}
-    };
+    };*/
     
-    public LightGameStage(String touchpadBackground, String touchpadKnob, OrthographicCamera cam, SpriteBatch sb, EntityHandler eh, boolean onScreenControls)
+    public LightGameStage(OrthographicCamera cam, SpriteBatch sb, EntityHandler eh)
     {
     	camera = cam;
     	batch = sb;
-    	player = eh.getPlayer();
-    	usingOnScreenControls = onScreenControls;
+    	
+    	skin = new Skin(Gdx.files.internal("data/uiskin.json"));
     	
     	stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true, batch);
     	input = new LGInput(camera, stage, eh);
     	
-		//Create a touchpad skin    
-        touchpadSkin = new Skin();
-        //Set background image
-        touchpadSkin.add("touchBackground", new Texture(touchpadBackground));
-        //Set knob image
-        touchpadSkin.add("touchKnob", new Texture(touchpadKnob));
-        //Create TouchPad Style
-        touchpadStyle = new TouchpadStyle();
-        //Create Drawable's from TouchPad skin
-        touchBackground = touchpadSkin.getDrawable("touchBackground");
-        touchKnob = touchpadSkin.getDrawable("touchKnob");
-        //Apply the Drawables to the TouchPad Style
-        touchpadStyle.background = touchBackground;
-        touchpadStyle.knob = touchKnob;
-        //Create new TouchPad with the created style
-        touchpad = new Touchpad(10, touchpadStyle);
-        //setBounds(x,y,width,height)
-        touchpad.setBounds(15, 15, 200, 200);
-
-        if(usingOnScreenControls)
-        {
-        	//add TouchPad
-            stage.addActor(touchpad);
-            
-            //Button to shoot bullets
-            LGTriangleAttackButton triangleAttack = new LGTriangleAttackButton("data/buttonup.png", "data/buttondown.png", player);
-            triangleAttack.setBounds(stage.getWidth()-triangleAttack.width, 15, triangleAttack.width, triangleAttack.height);
-            stage.addActor(triangleAttack);
-            
-            //Add pinch to zoom listener
-            stage.addListener(zoom);
-        }
-        else
-        {
-        	stage.addListener(input);
-        	stage.addListener(input.getDragListener());
-        }
+    	stage.addListener(input);
+    	
+    	table = new Table(skin);
+ 	    table.setFillParent(true);
+        table.setPosition(0, (stage.getHeight()/2)*0.8f);
+    }
+    
+    public void displayTitle(String title, String mission)
+    {
+    	titleText = new Label(title, skin);
+    	missionText = new Label(mission, skin);
+    	
+    	table.add(titleText);
+    	table.row();
+    	table.add(missionText);
+    	table.row();
+    	
+    	//titleText.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1f), Actions.delay(2f), Actions.fadeOut(1f)));
+    	//missionText.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1f), Actions.delay(2f), Actions.fadeOut(1f)));
+    	
+    	//stage.addActor(titleText);
+    	//stage.addActor(missionText);
+    	
+    	table.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1f), Actions.delay(2f), Actions.fadeOut(1f)));
+    	stage.addActor(table);
+    	
+    /*	Sequence sequence = Sequence.$(
+                MoveTo.$(200, 200, 0.5f), //move actor to 200,200
+                RotateTo.$(90, 0.5f),     //rotate actor to 90°
+                FadeOut.$(0.5f),          //fade out actor (change alpha to 0)
+                Remove.$()                //remove actor from stage
+              );
+    	
+    	Actions.fadeIn(duration);
+    	
+    	FadeIn fadeInAction = FadeIn.$(2f);
+    	FadeOut fadeOutAction = FadeOut.$(2f);
+    	Delay delayAction = Delay.$(fadeOutAction, 5f);
+    	Sequence sAction = Sequence.$(fadeInAction, delayAction);*/
+    }
+    
+    public void act(float delta)
+    {
+    	stage.act(Gdx.graphics.getDeltaTime());
+    }
+    
+    public void draw()
+    {	
+    	stage.draw();
     }
     
     public Stage getStage()
@@ -102,8 +108,9 @@ public class LightGameStage
     	return stage;
     }
     
-    public Touchpad getTouchpad()
+    public void setZoomBounds(float min, float max)
     {
-    	return touchpad;
+    	input.setZoomBounds(min, max);
+    	camera.zoom = max;
     }
 }

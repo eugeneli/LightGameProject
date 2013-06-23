@@ -1,12 +1,26 @@
 {
     "LevelType": "GET_BIG",
     "WorldShape": "RECTANGLE",
+    "Title": "It Begins",
+    "Mission": "Collect all the light",
     "Background": "data/levels/level1/bg.jpg",
+    "MinZoom": 4.5,
+    "MaxZoom": 6.7,
     "PlayerColor": "WHITE",
-    "PlayerRadius": "5",
+    "PlayerRadius": "8",
+    "PlayerCritRadiusMult": "5",
     "PlayerSpawn": [
-        0,
-        0
+        -100,
+        -100
+        ],
+    "Ambience": [
+        0.5,
+        0.5,
+        1.0,
+        0.1
+        ],
+    "WinConditions": [
+        "OnlyEntityLeft"
         ],
     "Enemies": {
         "Bullet": {
@@ -21,33 +35,73 @@
         },
         "Bullet": {
             "EnemyType": "3",
-            "Color": "BLUE",
+            "Color": "WHITE",
             "x": "-15",
             "y": "80",
-            "Radius": 10,
-            "FlickerRate": 1,
+            "Radius": 20,
+            "FlickerRate": 0.8,
             "Direction": 20,
             "Velocity": 50
         },
         "Bullet": {
             "EnemyType": "3",
-            "Color": "ORANGE",
+            "Color": "WHITE",
             "x": "100",
             "y": "-50",
-            "Radius": 10,
-            "FlickerRate": 2,
+            "Radius": 15,
+            "FlickerRate": 1.2,
             "Direction": 2.5,
             "Velocity": 120
         },
         "Bullet": {
             "EnemyType": "3",
-            "Color": "GREEN",
+            "Color": "WHITE",
             "x": "-30",
             "y": "5",
-            "Radius": 10,
+            "Radius": 21,
             "FlickerRate": 0.5,
             "Direction": -0.5,
             "Velocity": 230
+        },
+        "Bullet": {
+            "EnemyType": "3",
+            "Color": "WHITE",
+            "x": "30",
+            "y": "-5",
+            "Radius": 23,
+            "FlickerRate": 1.8,
+            "Direction": 5.2,
+            "Velocity": 100
+        },
+        "Bullet": {
+            "EnemyType": "3",
+            "Color": "WHITE",
+            "x": "21",
+            "y": "-100",
+            "Radius": 14,
+            "FlickerRate": 2.2,
+            "Direction": 7.1,
+            "Velocity": 66
+        },
+        "Bullet": {
+            "EnemyType": "3",
+            "Color": "WHITE",
+            "x": "33",
+            "y": "-33",
+            "Radius": 10,
+            "FlickerRate": 1.2,
+            "Direction": -2.5,
+            "Velocity": 180
+        },
+        "Bullet": {
+            "EnemyType": "3",
+            "Color": "WHITE",
+            "x": "-30",
+            "y": "-55",
+            "Radius": 10,
+            "FlickerRate": 0.7,
+            "Direction": -0.5,
+            "Velocity": 210
         },
     }
 }

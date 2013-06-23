@@ -5,8 +5,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -19,23 +21,27 @@ import com.eli.lightgame.ui.LGMenuHandler.Menu;
 
 public class LGMainMenu extends LGMenu
 {
-	private Sprite logo;
+	private Texture logo;
 	private Table table;
-	private SpriteBatch batch;
 	
-	public LGMainMenu(LightGameEngine eng, SpriteBatch sb)
+	public LGMainMenu(LightGameEngine eng, SpriteBatch batch)
 	{
 		super(eng);
-		batch = sb;
-		stage = new Stage();
+		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true, batch);
 		table = new Table();
 		
-		logo = new Sprite(new Texture(Gdx.files.internal("data/logo.png")));
-		//logo.scale(-0.5f);
+		logo = new Texture(Gdx.files.internal("data/logo.png"));
+		TextureRegion region = new TextureRegion(logo, 0, 0, 480, 154);
+		
+		Image logoActor = new Image(region);
+		//actor.setPosition(stage.getWidth()-1.32f*logo.getWidth(), stage.getHeight()-2.3f*logo.getHeight());
 		
 	    table = new Table(new Skin(Gdx.files.internal("data/uiskin.json")));
 	    table.setFillParent(true);
-        table.setPosition(240, -50);
+        table.setPosition(247, 40);
+        
+        table.add(logoActor);
+        table.row();
         
         BitmapFont fontType = new BitmapFont(Gdx.files.internal("data/default.fnt"), false);
 //      fontType.scale(1.5f);
@@ -70,13 +76,4 @@ public class LGMainMenu extends LGMenu
        
         stage.addActor(table);
 	}
-	
-	public void render()
-	{
-		super.render();
-		batch.begin();
-		logo.draw(batch);
-		batch.end();
-	}
-
 }

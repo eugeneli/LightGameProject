@@ -133,8 +133,6 @@ public class Bullet extends Entity
 		}
 		else if(currentCoreLightDistance >= radius*50) //5 * 10 because /10 shooter radius and /5 shooter radius
 		{
-			System.out.println("radius: "+radius);
-			System.out.println(currentCoreLightDistance);
 			dimCoreLight = true;
 		}
 		

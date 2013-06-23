@@ -1,12 +1,13 @@
 package com.eli.lightgame;
 
+import box2dLight.RayHandler;
+
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -16,8 +17,9 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.eli.lightgame.EntityHandler.EntityType;
 import com.eli.lightgame.entities.Blinker;
 import com.eli.lightgame.entities.Bullet;
-import com.eli.lightgame.entities.Entity;
 import com.eli.lightgame.entities.Player;
+import com.eli.lightgame.ui.LightGameStage;
+import com.eli.lightgame.winconditions.OnlyEntityLeft;
 
 public class Level
 {
@@ -26,21 +28,29 @@ public class Level
 	private World world;
 	private float width;
 	private float height;
+	private boolean isPresentation = false;
+	
+	private float minZoom;
+	private float maxZoom;
 	
 	private LevelStateManager levelState;
 	private EntityHandler entityHandler;
 	private BulletHandler bulletHandler;
+	private RayHandler rayHandler;
 	
-	public Level(LevelStateManager levstate, EntityHandler eh, BulletHandler bh, World theWorld, float w, float h)
+	private String[] titleMessage = new String[2];
+	
+	public Level(LevelStateManager levstate, EntityHandler eh, BulletHandler bh, RayHandler rh, World theWorld, float w, float h)
 	{
 		entityHandler = eh;
 		bulletHandler = bh;
+		rayHandler = rh;
 		world = theWorld;
 		width = w;
 		height = h;
 		levelState = levstate;
 	}
-	
+
 	public void loadLevel(FileHandle levelJson)
 	{
 		Json json = new Json();
@@ -58,11 +68,29 @@ public class Level
 		{
 			Color PlayerColor = convertStringToColor(jsonVal.get("PlayerColor").asString());
 			float playerRadius = jsonVal.get("PlayerRadius").asFloat();
+			float playerCritMult = jsonVal.getFloat("PlayerCritRadiusMult");
 			float playerSpawnX = jsonVal.get("PlayerSpawn").getFloat(0);
 			float playerSpawnY = jsonVal.get("PlayerSpawn").getFloat(1);
-			entityHandler.createEntity(EntityType.PLAYER, PlayerColor, playerRadius, playerSpawnX, playerSpawnY, 0f, 0f); //create player
+			entityHandler.createEntity(EntityType.PLAYER, PlayerColor, playerRadius, playerCritMult, playerSpawnX, playerSpawnY, 0f, 0f); //create player
 		}
+		else
+			isPresentation = true;
 		
+		//Store level's title message
+		titleMessage[0] = jsonVal.getString("Title");
+		titleMessage[1] = jsonVal.getString("Mission");
+		
+		//Set world ambience
+		float ambienceR = jsonVal.get("Ambience").getFloat(0);
+		float ambienceG = jsonVal.get("Ambience").getFloat(1);
+		float ambienceB = jsonVal.get("Ambience").getFloat(2);
+		float ambienceA = jsonVal.get("Ambience").getFloat(3);
+		
+		rayHandler.setAmbientLight(ambienceR, ambienceG, ambienceB, ambienceA);
+		
+		//Set zoom bounds
+		minZoom = jsonVal.getFloat("minZoom");
+		maxZoom = jsonVal.getFloat("maxZoom");
 		
 		for(int i = 0; i < jsonVal.get("Enemies").size; i++)
 		{
@@ -76,17 +104,18 @@ public class Level
 					float rgSpawnX = enemy.getFloat("x");
 					float rgSpawnY = enemy.getFloat("y");
 					
-					entityHandler.createEntity(EntityType.RED_GIANT, rgColor, rgRadius, rgSpawnX, rgSpawnY, 0f, 0f); //create a red giant
+					entityHandler.createEntity(EntityType.RED_GIANT, rgColor, rgRadius, 1.3f, rgSpawnX, rgSpawnY, 0f, 0f); //create a red giant
 					break;
 				case 1: //Case 1: Drifter
 					Color dColor = convertStringToColor(enemy.getString("Color"));
 					float dRadius = enemy.getFloat("Radius");
+					float dCritMult = enemy.getFloat("CritRadiusMult");
 					float dSpawnX = enemy.getFloat("x");
 					float dSpawnY = enemy.getFloat("y");
 					float dFacingDirec = enemy.getFloat("Direction");
 					float dVelocity = enemy.getFloat("Velocity");
 					
-					entityHandler.createEntity(EntityType.DRIFTER, dColor, dRadius, dSpawnX, dSpawnY, dFacingDirec, dVelocity); //create a drifter
+					entityHandler.createEntity(EntityType.DRIFTER, dColor, dRadius, dCritMult, dSpawnX, dSpawnY, dFacingDirec, dVelocity); //create a drifter
 					break;
 				case 2: //Case 2: Blinker
 					Color bColor = convertStringToColor(enemy.getString("Color"));
@@ -95,7 +124,7 @@ public class Level
 					float bSpawnY = enemy.getFloat("y");
 					float bFlickerRate = enemy.getFloat("FlickerRate");
 					
-					Blinker bl = (Blinker) entityHandler.createEntity(EntityType.BLINKER, bColor, bRadius, bSpawnX, bSpawnY,  0f, 0f); //create a drifter
+					Blinker bl = (Blinker) entityHandler.createEntity(EntityType.BLINKER, bColor, bRadius, 1.1f, bSpawnX, bSpawnY,  0f, 0f); //create a drifter
 					bl.setFlickerRate(bFlickerRate);
 					break;
 				case 3: //Case 3: Bullet-like entities that don't die over time
@@ -113,6 +142,10 @@ public class Level
 					break;
 			}
 		}
+		
+		//Set win conditions
+		for(int i = 0; i < jsonVal.get("WinConditions").size; i++)
+			addWinCondition(jsonVal.get("WinConditions").get(i).asString());
 	}
 	
 	public Player getPlayer()
@@ -120,9 +153,19 @@ public class Level
 		return entityHandler.getPlayer();
 	}
 	
+	public String[] getTitleMessage()
+	{
+		return titleMessage;
+	}
+	
 	public void draw(SpriteBatch batch)
 	{
 		batch.draw(background,-background.getWidth()/2,-background.getHeight()/2);
+	}
+	
+	public void setZoomBounds(LightGameStage stage)
+	{
+		stage.setZoomBounds(minZoom, maxZoom);
 	}
 	
 	private void createWorldBoundary(int worldType)
@@ -160,6 +203,13 @@ public class Level
 		}
 	}
 	
+	public boolean isOver()
+	{
+		if(!isPresentation)
+			return levelState.allConditionsSatisfied();
+		else return false;
+	}
+	
 	private Color convertStringToColor(String colorString)
 	{
 		if(colorString.equals("WHITE"))
@@ -176,5 +226,11 @@ public class Level
 			return Color.GREEN;
 		
 		return Color.WHITE;
+	}
+	
+	private void addWinCondition(String condition)
+	{
+		if(condition.equals("OnlyEntityLeft"))
+			levelState.addWinCondition(new OnlyEntityLeft(entityHandler, bulletHandler));	
 	}
 }

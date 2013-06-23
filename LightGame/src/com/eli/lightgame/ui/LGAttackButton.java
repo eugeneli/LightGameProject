@@ -5,9 +5,9 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.eli.lightgame.Patterns;
 import com.eli.lightgame.entities.Player;
 
-public class LGTriangleAttackButton extends LGButton
+public class LGAttackButton extends LGButton
 {
-	public LGTriangleAttackButton(String upSpritePath, String downSpritePath, final Player player)
+	public LGAttackButton(String upSpritePath, String downSpritePath, final Player player)
 	{
 		super(upSpritePath, downSpritePath);
 		

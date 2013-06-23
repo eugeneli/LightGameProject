@@ -58,30 +58,30 @@ public class EntityHandler
 		bulletHandler = bh;
 	}
 	
-	public Entity createEntity(EntityType type, Color aColor, float radius, float xPos, float yPos, float facingDirection, float velocity)
+	public Entity createEntity(EntityType type, Color aColor, float radius, float critRadiusMult, float xPos, float yPos, float facingDirection, float velocity)
 	{
 		switch(type)
 		{
 			case PLAYER:
-				player = new Player(world, rayHandler, bulletHandler, aColor, radius, 1.5f*radius, xPos, yPos);
+				player = new Player(world, rayHandler, bulletHandler, aColor, radius, critRadiusMult*radius, xPos, yPos);
 				player.setID(currentEntityID);
 				entities.put(currentEntityID, player); //Player always has ID of 0
 				currentEntityID++;
 				return player;
 			case RED_GIANT:
-				RedGiant rg = new RedGiant(world, rayHandler, bulletHandler, aColor, radius, 1.3f*radius, xPos, yPos);
+				RedGiant rg = new RedGiant(world, rayHandler, bulletHandler, aColor, radius, critRadiusMult*radius, xPos, yPos);
 				rg.setID(currentEntityID);
 				entities.put(currentEntityID, rg);
 				currentEntityID++;
 				return rg;
 			case DRIFTER:
-				Drifter dr = new Drifter(world, rayHandler, bulletHandler, aColor, radius, 1.1f*radius, xPos, yPos, facingDirection, velocity);
+				Drifter dr = new Drifter(world, rayHandler, bulletHandler, aColor, radius, critRadiusMult*radius, xPos, yPos, facingDirection, velocity);
 				dr.setID(currentEntityID);
 				entities.put(currentEntityID, dr);
 				currentEntityID++;
 				return dr;
 			case CORE:
-				LightCore core = new LightCore(world, rayHandler, bulletHandler, aColor, radius, 10f*radius, xPos, yPos, facingDirection, velocity);
+				LightCore core = new LightCore(world, rayHandler, bulletHandler, aColor, radius, critRadiusMult*radius, xPos, yPos, facingDirection, velocity);
 				core.setID(currentEntityID);
 				entities.put(currentEntityID, core);
 				currentEntityID++;
@@ -312,7 +312,7 @@ public class EntityHandler
 		if(queuedEntities.size() > 0)
     	{
     		EntityDefinition ed = queuedEntities.remove();
-    		createEntity(EntityType.CORE, ed.color, ed.radius, ed.position.x, ed.position.y, 0f, 0f);
+    		createEntity(EntityType.CORE, ed.color, ed.radius, 10, ed.position.x, ed.position.y, 0f, 0f);
     	}
 		
 		Iterator<Integer> it = entities.keySet().iterator();
