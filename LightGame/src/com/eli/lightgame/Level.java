@@ -24,6 +24,7 @@ import com.eli.lightgame.winconditions.OnlyEntityLeft;
 public class Level
 {
 	private Texture background;
+	private Texture outerBackground;
 	
 	private World world;
 	private float width;
@@ -59,6 +60,7 @@ public class Level
 		String levelType = jsonVal.getString("LevelType");
 		
 		background = new Texture(jsonVal.getString("Background"));
+		outerBackground = new Texture("data/levels/outerspace.gif");
 		
 		if(jsonVal.getString("WorldShape").equals("RECTANGLE"))
 			createWorldBoundary(0);
@@ -140,6 +142,16 @@ public class Level
 					b.setFlickerRate(bulFlickerRate);
 					b.setImmortal(true);
 					break;
+				case 4: //Case 4: Chasers. They chase bullets to get big.
+					Color cColor = convertStringToColor(enemy.getString("Color"));
+					float cRadius = enemy.getFloat("Radius");
+					float cCritMult = enemy.getFloat("CritRadiusMult");
+					float cSpawnX = enemy.getFloat("x");
+					float cSpawnY = enemy.getFloat("y");
+					float cFacingDirec = enemy.getFloat("Direction");
+					
+					entityHandler.createEntity(EntityType.CHASER, cColor, cRadius, cCritMult, cSpawnX, cSpawnY, cFacingDirec, 0f); //create a drifter
+					break;
 			}
 		}
 		
@@ -160,6 +172,7 @@ public class Level
 	
 	public void draw(SpriteBatch batch)
 	{
+		batch.draw(outerBackground, -outerBackground.getWidth()/2, -outerBackground.getHeight()/2);
 		batch.draw(background,-background.getWidth()/2,-background.getHeight()/2);
 	}
 	

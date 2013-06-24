@@ -1,6 +1,7 @@
 package com.eli.lightgame;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -11,18 +12,20 @@ import box2dLight.RayHandler;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.eli.lightgame.entities.Blinker;
 import com.eli.lightgame.entities.Bullet;
+import com.eli.lightgame.entities.Chaser;
 import com.eli.lightgame.entities.Drifter;
 import com.eli.lightgame.entities.Entity;
 import com.eli.lightgame.entities.LightCore;
 import com.eli.lightgame.entities.Player;
 import com.eli.lightgame.entities.RedGiant;
-import com.sun.jmx.remote.internal.ArrayQueue;
+import com.eli.lightgame.util.LGMath;
 
 public class EntityHandler
 {
@@ -40,6 +43,7 @@ public class EntityHandler
 	
 	private Player player;
 	private HashMap<Integer, Entity> entities = new HashMap<Integer, Entity>();
+	private ArrayList<Entity> gravityEntities = new ArrayList<Entity>(); //Entities that give off gravity. Remove from here also if removing from entities.
 	
 	private final float COLOR_CHANGE_RATE = 0.1f;
 	private final float SIZE_CHANGE_RATE = 0.5f;
@@ -48,7 +52,7 @@ public class EntityHandler
 	private Queue<EntityDefinition> queuedEntities = new LinkedList<EntityDefinition>();
 	
 	public static enum EntityType{
-		PLAYER, RED_GIANT, DRIFTER, CORE, BLINKER
+		PLAYER, RED_GIANT, DRIFTER, CORE, BLINKER, CHASER
 	}
 	
 	public EntityHandler(World w, RayHandler rh, BulletHandler bh, float theWidth, float theHeight)
@@ -72,6 +76,7 @@ public class EntityHandler
 				RedGiant rg = new RedGiant(world, rayHandler, bulletHandler, aColor, radius, critRadiusMult*radius, xPos, yPos);
 				rg.setID(currentEntityID);
 				entities.put(currentEntityID, rg);
+				gravityEntities.add(rg);
 				currentEntityID++;
 				return rg;
 			case DRIFTER:
@@ -92,6 +97,12 @@ public class EntityHandler
 				entities.put(currentEntityID, blinker);
 				currentEntityID++;
 				return blinker;
+			case CHASER:
+				Chaser chaser = new Chaser(world, rayHandler, bulletHandler, aColor, radius, critRadiusMult*radius, xPos, yPos, facingDirection, velocity);
+				chaser.setID(currentEntityID);
+				entities.put(currentEntityID, chaser);
+				currentEntityID++;
+				return chaser;
 			default:
 				return null;
 		}
@@ -302,6 +313,26 @@ public class EntityHandler
 	    return largestEntity instanceof Player;
 	}
 	
+	public void doGravity(Entity entity)
+	{
+		for(Entity gravEntity : gravityEntities)
+		{
+			if(entity != gravEntity)
+			{
+				//Gravity field is 6 times the radius of the body
+				float distance = LGMath.distanceBetween(entity.getPosition(),gravEntity.getPosition());
+				if(distance <= 6*gravEntity.getRadius())
+				{
+					Body entityBody = entity.getBody();
+					
+					float forceMultiplier = (float)(1500*entity.getRadius()*gravEntity.getRadius() * 1/distance);
+					if(forceMultiplier != (Float.POSITIVE_INFINITY))
+						entityBody.applyForceToCenter(new Vector2((float)(Math.cos(entityBody.getAngle()) * forceMultiplier),(float)(Math.sin(entityBody.getAngle()) * forceMultiplier)), true);
+				}
+			}
+		}
+	}
+	
 	public int getEntityNumber()
 	{
 		return entities.size();
@@ -322,6 +353,8 @@ public class EntityHandler
 	    	Entity entity = entities.get(entityID);
 	    	
 	    	entity.update();
+	    	
+	    	doGravity(entity);
 	    	
 	    	if(entity.getRadius() >= entity.getCritRadius())
 	    	{
@@ -358,6 +391,9 @@ public class EntityHandler
 	    		world.destroyBody(entity.getBody());
 	    		
 	    		it.remove();
+	    		
+	    		if(gravityEntities.contains(entity))
+	    			gravityEntities.remove(entity);
 	    	}
 	    } 
 	}

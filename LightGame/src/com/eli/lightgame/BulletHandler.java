@@ -109,6 +109,16 @@ public class BulletHandler
 		bullets.remove(b);
 	}
 	
+	public Bullet getSomeBullet()
+	{
+		for(int i = 0; i < bullets.size(); i++)
+		{
+			if(bullets.get(i) != null)
+				return bullets.get(i);
+		}
+		return null;
+	}
+	
 	public int getBulletNumber()
 	{
 		return bullets.size();

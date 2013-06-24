@@ -25,7 +25,7 @@ public class Blinker extends NPC
 		criticalRadius = 10*radius;
 		
 		BodyDef circleDef = new BodyDef();
-		circleDef.type = BodyType.DynamicBody;
+		circleDef.type = BodyType.StaticBody;
 		circleDef.position.set(xPos, yPos);
 		
 		Body circleBody = world.createBody(circleDef);

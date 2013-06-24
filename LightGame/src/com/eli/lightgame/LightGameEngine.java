@@ -48,7 +48,7 @@ public class LightGameEngine
 	private BulletHandler bulletHandler;
 	private EntityHandler entityHandler;
 	private Player player;
-	private int levelOverTimer = 200;
+	private int levelOverTimer = 100;
 		
 	public LightGameEngine(SpriteBatch sb, float w, float h, LGPreferences pref, boolean presentation)
 	{
@@ -148,7 +148,7 @@ public class LightGameEngine
 			
 			camera.position.set(player.getPosition().x, player.getPosition().y, 0);
 			
-			LGstage.act(Gdx.graphics.getDeltaTime());
+			
 		}
 		
 		
@@ -159,30 +159,31 @@ public class LightGameEngine
 		if(levelOverTimer >= 0 || !level.isOver())
 		{
 			update();
-			camera.update();
-			batch.setProjectionMatrix(camera.combined);
-			rayHandler.setCombinedMatrix(camera.combined);
-			
-			Gdx.gl.glClearColor(1, 1, 1, 1);
-			Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-			
-			batch.begin();
-			
-			//draw level bg
-			level.draw(batch);
-
-			//draw entities
-			entityHandler.draw(batch);
-			
-			//draw bullets
-			bulletHandler.drawBullets(batch);
-			
-			batch.end();
-			
-			//Render box2D physics and lights
-			renderer.render(world,  camera.combined);
-			rayHandler.updateAndRender();
 		}
+		
+		camera.update();
+		batch.setProjectionMatrix(camera.combined);
+		rayHandler.setCombinedMatrix(camera.combined);
+		
+		Gdx.gl.glClearColor(1, 1, 1, 1);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		
+		batch.begin();
+		
+		//draw level bg
+		level.draw(batch);
+
+		//draw entities
+		entityHandler.draw(batch);
+		
+		//draw bullets
+		bulletHandler.drawBullets(batch);
+		
+		batch.end();
+		
+		//Render box2D physics and lights
+		renderer.render(world,  camera.combined);
+		rayHandler.updateAndRender();
 		
 		if(level.isOver())
 			levelOverTimer--;
@@ -190,6 +191,7 @@ public class LightGameEngine
 		if(!presentationMode)
 		{
 			//Draw the UI
+			LGstage.act(Gdx.graphics.getDeltaTime());
 			LGstage.draw();
 		}
 	}
