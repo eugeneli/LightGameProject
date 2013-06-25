@@ -11,8 +11,7 @@ public abstract class NPC extends Entity
 
 	@Override
 	public void updateSizes() {
-		// TODO Auto-generated method stub
-		
+		//implemented in child classes
 	}
 	
 	public void update()

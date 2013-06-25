@@ -8,8 +8,10 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
@@ -45,6 +47,8 @@ public class LightGameEngine
 	//Game Stuff
 	private LevelStateManager levelState;
 	private Level level;
+	private BoundingBox[] levelBounds= new BoundingBox[4]; //4 boxes to determine how far camera is allowed to see. Clockwise starting from left
+	private Vector2 prevPlayerPos = null;
 	private BulletHandler bulletHandler;
 	private EntityHandler entityHandler;
 	private Player player;
@@ -93,6 +97,7 @@ public class LightGameEngine
 		{
 			level.loadLevel(Gdx.files.internal(levelJsonPath));
 			player = level.getPlayer();
+			levelBounds = level.getLevelBoundingBox();
 			
 			//Create the stage for UI objects
 			LGstage = new LightGameStage(camera, batch, entityHandler);
@@ -102,6 +107,9 @@ public class LightGameEngine
 	        
 	        //Show level title message 
 	        LGstage.displayTitle(level.getTitleMessage()[0], level.getTitleMessage()[1]);
+	        
+	        //Show tip if any
+	        LGstage.displayTip(level.getTip());
 		}
 		else
 		{
@@ -146,8 +154,36 @@ public class LightGameEngine
 		//	if(usingOnScreenControls)
 			//	player.moveJoystick((float)Math.atan2(LGstage.getTouchpad().getKnobPercentY(),LGstage.getTouchpad().getKnobPercentX()));
 			
-			camera.position.set(player.getPosition().x, player.getPosition().y, 0);
+			if(camera.frustum.boundsInFrustum(levelBounds[0]))
+			{
+				if(prevPlayerPos == null)
+				{
+					System.out.println("asdasdasdas :" );
+					prevPlayerPos = new Vector2();
+					prevPlayerPos.x = player.getPosition().x;
+					prevPlayerPos.y = player.getPosition().y;
+				}
+				
+				camera.position.set(camera.position.x, player.getPosition().y, 0);
+				
+				System.out.println("player :" +player.getPosition().x);
+				System.out.println("prev: " +prevPlayerPos.x);
+				
+				if(prevPlayerPos != null && player.getPosition().x > prevPlayerPos.x)
+				{
+					System.out.println("asd");
+					prevPlayerPos = null;
+					camera.position.set(player.getPosition().x, player.getPosition().y, 0);
+				}
+			}
+			else
+				camera.position.set(player.getPosition().x, player.getPosition().y, 0);
 			
+	//	System.out.println(player.getPosition());
+	/*	System.out.println(levelBounds[0].getCorners()[0]);
+		System.out.println(levelBounds[0].getCorners()[2]);
+		System.out.println(levelBounds[0].getCorners()[2]);
+		System.out.println(levelBounds[0].getCorners()[3]);*/
 			
 		}
 		

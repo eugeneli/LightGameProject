@@ -6,6 +6,9 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
@@ -40,6 +43,7 @@ public class Level
 	private RayHandler rayHandler;
 	
 	private String[] titleMessage = new String[2];
+	private String tip;
 	
 	public Level(LevelStateManager levstate, EntityHandler eh, BulletHandler bh, RayHandler rh, World theWorld, float w, float h)
 	{
@@ -81,6 +85,9 @@ public class Level
 		//Store level's title message
 		titleMessage[0] = jsonVal.getString("Title");
 		titleMessage[1] = jsonVal.getString("Mission");
+		
+		//Store level's tip, if any
+		tip = jsonVal.getString("Tip");
 		
 		//Set world ambience
 		float ambienceR = jsonVal.get("Ambience").getFloat(0);
@@ -170,6 +177,11 @@ public class Level
 		return titleMessage;
 	}
 	
+	public String getTip()
+	{
+		return tip;
+	}
+	
 	public void draw(SpriteBatch batch)
 	{
 		batch.draw(outerBackground, -outerBackground.getWidth()/2, -outerBackground.getHeight()/2);
@@ -214,6 +226,25 @@ public class Level
 				worldEdgeBody.createFixture(worldEdgeFixture);
 				break;
 		}
+	}
+	
+	public BoundingBox[] getLevelBoundingBox()
+	{
+		BoundingBox[] boxes = new BoundingBox[4];
+		
+		//Left bound
+		boxes[0] = new BoundingBox(new Vector3(-background.getWidth()/2 - 10, -background.getHeight()/2,0), new Vector3(-background.getWidth()/2 - 1, background.getHeight()/2, 0));
+		
+		//Top bound
+		boxes[1] = new BoundingBox(new Vector3(-background.getWidth()/2, background.getHeight()/2 + 10, 0), new Vector3(background.getWidth()/2, background.getHeight()/2 + 9,0));
+		
+		//Right bound
+		boxes[2] = new BoundingBox(new Vector3(background.getWidth()/2 + 1, background.getHeight()/2, 0), new Vector3(background.getWidth()/2 + 10, -background.getHeight()/2,0));
+		
+		//Bottom bound
+		boxes[3] = new BoundingBox(new Vector3(-background.getWidth()/2, -background.getHeight()/2 - 1, 0), new Vector3(background.getWidth()/2, -background.getHeight()/2 - 10,0));
+		
+		return boxes;
 	}
 	
 	public boolean isOver()

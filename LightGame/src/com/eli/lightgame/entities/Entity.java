@@ -186,6 +186,11 @@ public abstract class Entity
 		return entityBody.getPosition();
 	}
 	
+	public float getMass()
+	{
+		return entityBody.getMass();
+	}
+	
 	public void setID(int setID)
 	{
 		entityBody.setUserData(setID);

@@ -1,6 +1,5 @@
 package com.eli.lightgame;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,6 +22,7 @@ import com.eli.lightgame.entities.Chaser;
 import com.eli.lightgame.entities.Drifter;
 import com.eli.lightgame.entities.Entity;
 import com.eli.lightgame.entities.LightCore;
+import com.eli.lightgame.entities.MassiveEntity;
 import com.eli.lightgame.entities.Player;
 import com.eli.lightgame.entities.RedGiant;
 import com.eli.lightgame.util.LGMath;
@@ -43,7 +43,7 @@ public class EntityHandler
 	
 	private Player player;
 	private HashMap<Integer, Entity> entities = new HashMap<Integer, Entity>();
-	private ArrayList<Entity> gravityEntities = new ArrayList<Entity>(); //Entities that give off gravity. Remove from here also if removing from entities.
+	private ArrayList<MassiveEntity> gravityEntities = new ArrayList<MassiveEntity>(); //Entities that give off gravity. Remove from here also if removing from entities.
 	
 	private final float COLOR_CHANGE_RATE = 0.1f;
 	private final float SIZE_CHANGE_RATE = 0.5f;
@@ -75,6 +75,7 @@ public class EntityHandler
 			case RED_GIANT:
 				RedGiant rg = new RedGiant(world, rayHandler, bulletHandler, aColor, radius, critRadiusMult*radius, xPos, yPos);
 				rg.setID(currentEntityID);
+				rg.setGravityMagnitude(5000); //100000 is kinda high
 				entities.put(currentEntityID, rg);
 				gravityEntities.add(rg);
 				currentEntityID++;
@@ -315,19 +316,21 @@ public class EntityHandler
 	
 	public void doGravity(Entity entity)
 	{
-		for(Entity gravEntity : gravityEntities)
+		for(MassiveEntity gravEntity : gravityEntities)
 		{
 			if(entity != gravEntity)
 			{
 				//Gravity field is 6 times the radius of the body
 				float distance = LGMath.distanceBetween(entity.getPosition(),gravEntity.getPosition());
-				if(distance <= 6*gravEntity.getRadius())
+				if(distance <= 20*gravEntity.getRadius())
 				{
 					Body entityBody = entity.getBody();
 					
-					float forceMultiplier = (float)(1500*entity.getRadius()*gravEntity.getRadius() * 1/distance);
+					float rotAngle = LGMath.getRotationTo(entity.getPosition(), gravEntity.getPosition());
+					float forceMultiplier = (float)(gravEntity.getGravityMagnitude()*entity.getMass()*gravEntity.getRadius() * 1/Math.pow(distance,2));
+
 					if(forceMultiplier != (Float.POSITIVE_INFINITY))
-						entityBody.applyForceToCenter(new Vector2((float)(Math.cos(entityBody.getAngle()) * forceMultiplier),(float)(Math.sin(entityBody.getAngle()) * forceMultiplier)), true);
+						entityBody.applyForceToCenter(new Vector2((float)(Math.cos(rotAngle) * forceMultiplier),(float)(Math.sin(rotAngle) * forceMultiplier)), true);
 				}
 			}
 		}

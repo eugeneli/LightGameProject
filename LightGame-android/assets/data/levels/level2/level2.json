@@ -3,6 +3,7 @@
     "WorldShape": "RECTANGLE",
     "Title": "Rivalry",
     "Mission": "Get bigger faster",
+    "Tip": "",
     "Background": "data/levels/level2/bg.jpg",
     "MinZoom": 3,
     "MaxZoom": 7.3,

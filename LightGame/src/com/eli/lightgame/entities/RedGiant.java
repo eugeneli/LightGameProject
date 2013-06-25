@@ -19,7 +19,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.eli.lightgame.BulletHandler;
 import com.eli.lightgame.LightGameFilters;
 
-public class RedGiant extends NPC
+public class RedGiant extends MassiveEntity
 {
 	private ParticleEffect redGiantEffect;
 
@@ -115,11 +115,4 @@ public class RedGiant extends NPC
 		
 		redGiantEffect.draw(batch, Gdx.graphics.getDeltaTime());
 	}
-
-	@Override
-	public void doAI() {
-		// TODO Auto-generated method stub
-		
-	}
-	
 }

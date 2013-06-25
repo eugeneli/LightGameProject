@@ -3,6 +3,7 @@
     "WorldShape": "RECTANGLE",
     "Title": "",
     "Mission": "",
+    "Tip": "",
     "Background": "data/levels/presentationbg.jpg",
     "MinZoom": 8,
     "MaxZoom": 8,
@@ -32,52 +33,52 @@
         "Drifter": {
             "EnemyType": "1",
             "Color": "BLUE",
-            "x": -15,
-            "y": 100,
+            "x": 210,
+            "y": 73,
             "Radius": 5,
-            "Direction": 3.0,
+            "Direction": 2.2,
             "CritRadiusMult": 1.1,
-            "Velocity": 80
+            "Velocity": 120
         },
         "Drifter": {
             "EnemyType": "1",
             "Color": "BLUE",
-            "x": -175,
+            "x": 200,
             "y": -105,
             "Radius": 10,
-            "Direction": 5,
+            "Direction": 3.0,
             "CritRadiusMult": 1.1,
             "Velocity": 100
         },
         "Drifter": {
             "EnemyType": "1",
             "Color": "RED",
-            "x": -100,
+            "x": -2000,
             "y": -50,
             "Radius": 10,
-            "Direction": 1,
+            "Direction": 21,
             "CritRadiusMult": 1.1,
-            "Velocity": 160
+            "Velocity": 75
+        },
+        "Drifter": {
+            "EnemyType": "1",
+            "Color": "ORANGE",
+            "x": 200,
+            "y": -200,
+            "Radius": 5,
+            "Direction": 4.5,
+            "CritRadiusMult": 1.1,
+            "Velocity": 100
         },
         "Drifter": {
             "EnemyType": "1",
             "Color": "ORANGE",
             "x": -200,
-            "y": -50,
-            "Radius": 5,
-            "Direction": 1.5,
-            "CritRadiusMult": 1.1,
-            "Velocity": 85
-        },
-        "Drifter": {
-            "EnemyType": "1",
-            "Color": "ORANGE",
-            "x": 60,
-            "y": 5,
+            "y": -100,
             "Radius": 7,
             "Direction": 3.94,
             "CritRadiusMult": 1.1,
-            "Velocity": 70
+            "Velocity": 85
         },
         "Drifter": {
             "EnemyType": "1",
@@ -87,17 +88,17 @@
             "Radius": 8,
             "Direction": -3.94,
             "CritRadiusMult": 1.1,
-            "Velocity": 70
+            "Velocity": 115
         },
         "Drifter": {
             "EnemyType": "1",
             "Color": "GREEN",
-            "x": -100,
-            "y": -100,
+            "x": -195,
+            "y": -150,
             "Radius": 12,
-            "Direction": 2.5,
+            "Direction": -4,
             "CritRadiusMult": 1.1,
-            "Velocity": 130
+            "Velocity": 82
         },
         "Blinker": {
             "EnemyType": "2",
