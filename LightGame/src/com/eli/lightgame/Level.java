@@ -228,21 +228,29 @@ public class Level
 		}
 	}
 	
+	public float[] getZoomLevels()
+	{
+		float[] zooms = new float[2];
+		zooms[0] = minZoom;
+		zooms[1] = maxZoom;
+		return zooms;
+	}
+	
 	public BoundingBox[] getLevelBoundingBox()
 	{
 		BoundingBox[] boxes = new BoundingBox[4];
 		
 		//Left bound
-		boxes[0] = new BoundingBox(new Vector3(-background.getWidth()/2 - 10, -background.getHeight()/2,0), new Vector3(-background.getWidth()/2 - 1, background.getHeight()/2, 0));
+		boxes[0] = new BoundingBox(new Vector3(-background.getWidth()/2 - 10, -background.getHeight()/2,0), new Vector3(-background.getWidth()/2 - 9, background.getHeight()/2, 0));
 		
 		//Top bound
-		boxes[1] = new BoundingBox(new Vector3(-background.getWidth()/2, background.getHeight()/2 + 10, 0), new Vector3(background.getWidth()/2, background.getHeight()/2 + 9,0));
+		boxes[1] = new BoundingBox(new Vector3(-background.getWidth()/2, background.getHeight()/2 + 9, 0), new Vector3(background.getWidth()/2, background.getHeight()/2 + 10,0));
 		
 		//Right bound
-		boxes[2] = new BoundingBox(new Vector3(background.getWidth()/2 + 1, background.getHeight()/2, 0), new Vector3(background.getWidth()/2 + 10, -background.getHeight()/2,0));
+		boxes[2] = new BoundingBox(new Vector3(background.getWidth()/2 + 9, -background.getHeight()/2, 0), new Vector3(background.getWidth()/2 + 10, background.getHeight()/2,0));
 		
 		//Bottom bound
-		boxes[3] = new BoundingBox(new Vector3(-background.getWidth()/2, -background.getHeight()/2 - 1, 0), new Vector3(background.getWidth()/2, -background.getHeight()/2 - 10,0));
+		boxes[3] = new BoundingBox(new Vector3(-background.getWidth()/2, -background.getHeight()/2 - 10, 0), new Vector3(background.getWidth()/2, -background.getHeight()/2 - 9,0));
 		
 		return boxes;
 	}

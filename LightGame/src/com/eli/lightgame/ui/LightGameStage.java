@@ -15,11 +15,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.eli.lightgame.EntityHandler;
+import com.eli.lightgame.LightGameEngine;
 
 public class LightGameStage
 {
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
+	private LightGameEngine engine;
 	
 	private Stage stage;
     private LGInput input;
@@ -30,10 +32,11 @@ public class LightGameStage
 	private Label tipText;
 	private Table table;
     
-    public LightGameStage(OrthographicCamera cam, SpriteBatch sb, EntityHandler eh)
+    public LightGameStage(LightGameEngine eng, OrthographicCamera cam, SpriteBatch sb, EntityHandler eh)
     {
     	camera = cam;
     	batch = sb;
+    	engine = eng;
     	
     	skin = new Skin(Gdx.files.internal("data/uiskin.json"));
     	
@@ -81,9 +84,26 @@ public class LightGameStage
     	stage.addListener(dissmissTip);
     }
     
-    public void displayEndMenu(int currentLevel)
+    public void displayEndMenu()
     {
-    	//do this
+    	if(engine.hasNextLevel())
+    	{
+    		BitmapFont fontType = new BitmapFont(Gdx.files.internal("data/corbelsmall.fnt"), false);
+        	LabelStyle style = new LabelStyle();
+            style.font = fontType;
+          
+            tipText = new Label("u did it\n\nTap to continue", style);
+            tipText.setPosition(stage.getWidth()/2 - tipText.getWidth()/2, stage.getHeight()/2-50);
+        	tipText.addAction(Actions.fadeIn(0.3f));
+        	
+        	stage.addActor(tipText);
+        	
+        	stage.addListener(levelEndListener);
+    	}
+    	else
+    	{
+    		
+    	}
     }
     
     public void act(float delta)
@@ -112,6 +132,16 @@ public class LightGameStage
     	{
     		tipText.addAction(Actions.fadeOut(0.5f));
     		stage.removeListener(this);
+    		return false;
+    	}
+    };
+    
+    InputListener levelEndListener = new InputListener(){
+    	public boolean touchDown(InputEvent event, float x, float y, int pointer, int button)
+    	{
+    		tipText.addAction(Actions.fadeOut(0.5f));
+    		stage.removeListener(this);
+    		engine.loadNextLevel();
     		return false;
     	}
     };

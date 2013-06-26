@@ -11,8 +11,8 @@
     "PlayerRadius": "8",
     "PlayerCritRadiusMult": "5",
     "PlayerSpawn": [
-        -100,
-        -100
+        0,
+        0
         ],
     "Ambience": [
         0.88,

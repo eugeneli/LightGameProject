@@ -1,22 +1,27 @@
 {
     "Levels": {
         "1": {
+            "id": 0,
             "Title": "(1) - It Begins",
             "Path": "data/levels/level1/level1.json"
         },
         "1": {
+            "id": 1,
             "Title": "(2) - Go Towards The Light",
             "Path": "data/levels/level2/level2.json"
         },
         "1": {
+            "id": 2,
             "Title": "(1) - It Begins",
             "Path": "data/levels/level1/level1.json"
         },
         "1": {
+            "id": 3,
             "Title": "(1) - It Begins",
             "Path": "data/levels/level1/level1.json"
         },
         "1": {
+            "id": 4,
             "Title": "(68.99) - lelelelelelelele",
             "Path": "data/levels/level1/level1.json"
         }

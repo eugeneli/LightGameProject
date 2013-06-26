@@ -35,7 +35,7 @@ public class LGLevelSelect extends LGMenu
         TextButtonStyle style = new TextButtonStyle();
         style.font = fontType;
         
-        //Read level index
+        //Read level index and pass id to engine
         Json json = new Json();
 		JsonValue levelIndex = json.fromJson(null, Gdx.files.internal("data/levels/levelindex.json"));
 		
@@ -46,7 +46,7 @@ public class LGLevelSelect extends LGMenu
 			
 			TextButton text = new TextButton(levelData.getString("Title"), style);
 			text.align(Align.center);
-	        text.setName(levelData.getString("Path"));
+	        text.setName(levelData.getString("id"));
 	        text.addListener(levelClickListener);
 
 	        scrollTable.add(text);
@@ -68,8 +68,8 @@ public class LGLevelSelect extends LGMenu
 		public void clicked (InputEvent event, float x, float y)
 		{
 			Engine.dispose();
-			Engine.initialize(false, event.getListenerActor().getName());
-			Engine.setOnScreenControls(preferences.useOnScreenControls());
+			Engine.initialize(false, Integer.parseInt(event.getListenerActor().getName()));
+			//Engine.setOnScreenControls(preferences.useOnScreenControls());
 			LightGame.CURRENT_GAMESTATE = GAMESTATE.INGAME;
 		}
 	};

@@ -31,6 +31,11 @@ public class LGInput extends ActorGestureListener
 	
 	public void touchDown(InputEvent event, float x, float y, int pointer, int button) 
 	{
+		
+	}
+	
+	public void touchUp(InputEvent event, float x, float y, int pointer, int button)
+	{
 		Vector2 stageToScreenCoords = stage.stageToScreenCoordinates(new Vector2(x,y));
 		Vector3 worldCoordinates = new Vector3(stageToScreenCoords.x, stageToScreenCoords.y, 0);
 		camera.unproject(worldCoordinates);

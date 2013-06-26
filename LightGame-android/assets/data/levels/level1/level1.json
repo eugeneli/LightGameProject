@@ -24,14 +24,6 @@
         "OnlyEntityLeft"
         ],
     "Enemies": {
-        "RedGiant": {
-            "EnemyType": "0",
-            "Color": "RED",
-            "x": "164",
-            "y": "36",
-            "Radius": 50,
-            "CritRadiusMult": 5,
-        },
         "Bullet": {
             "EnemyType": "3",
             "Color": "WHITE",

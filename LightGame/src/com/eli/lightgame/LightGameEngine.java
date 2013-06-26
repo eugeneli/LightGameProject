@@ -1,5 +1,7 @@
 package com.eli.lightgame;
 
+import java.util.ArrayList;
+
 import box2dLight.RayHandler;
 
 import com.badlogic.gdx.Application;
@@ -18,6 +20,11 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
+import com.eli.lightgame.LightGame.GAMESTATE;
 import com.eli.lightgame.entities.Bullet;
 import com.eli.lightgame.entities.NPC;
 import com.eli.lightgame.entities.Player;
@@ -29,6 +36,7 @@ public class LightGameEngine
 {
 	private SpriteBatch batch;
 	private OrthographicCamera camera;
+	private OrthographicCamera playerCamera; //Always follows player. Used to keep original camera within bounds
 	
 	private float width;
 	private float height;
@@ -47,13 +55,14 @@ public class LightGameEngine
 	//Game Stuff
 	private LevelStateManager levelState;
 	private Level level;
+	private ArrayList<String> levelPaths = new ArrayList<String>();
+	private int currentLevel;
 	private BoundingBox[] levelBounds= new BoundingBox[4]; //4 boxes to determine how far camera is allowed to see. Clockwise starting from left
-	private Vector2 prevPlayerPos = null;
 	private BulletHandler bulletHandler;
 	private EntityHandler entityHandler;
 	private Player player;
 	private int levelOverTimer = 100;
-		
+	
 	public LightGameEngine(SpriteBatch sb, float w, float h, LGPreferences pref, boolean presentation)
 	{
 		presentationMode = presentation;
@@ -63,10 +72,18 @@ public class LightGameEngine
 		batch = sb;
 		preferences = pref;
 		
-		initialize(presentation, "data/levels/presentation.json");
+		//Read level index and store in array
+        Json json = new Json();
+		JsonValue levelIndex = json.fromJson(null, Gdx.files.internal("data/levels/levelindex.json"));
+		
+		JsonValue levels = levelIndex.get("Levels");
+		for(int i = 0; i < levels.size; i++)
+			levelPaths.add(levels.get(i).getString("Path"));
+		
+		initialize(presentation, -1);
 	}
 	
-	public void initialize(boolean presentation, String levelJsonPath)
+	public void initialize(boolean presentation, int levelIndex)
 	{
 		presentationMode = presentation;
 		
@@ -74,6 +91,10 @@ public class LightGameEngine
 		camera = new OrthographicCamera(width, height);
 		camera.position.set(width*0.5f, height*0.5f, 0);
 		camera.update();
+		
+		playerCamera = new OrthographicCamera(width, height);
+		playerCamera.position.set(width*0.5f, height*0.5f, 0);
+		playerCamera.update();
 		
 		//Create Box2D world
 		world = new World(new Vector2(0,0), false);
@@ -92,15 +113,16 @@ public class LightGameEngine
 		//Create level object
 		level = new Level(levelState, entityHandler, bulletHandler, rayHandler, world, width, height);
 		
-		
 		if(!presentationMode)
 		{
-			level.loadLevel(Gdx.files.internal(levelJsonPath));
+			level.loadLevel(Gdx.files.internal(levelPaths.get(levelIndex)));
+			currentLevel = levelIndex;
+			
 			player = level.getPlayer();
 			levelBounds = level.getLevelBoundingBox();
 			
 			//Create the stage for UI objects
-			LGstage = new LightGameStage(camera, batch, entityHandler);
+			LGstage = new LightGameStage(this, camera, batch, entityHandler);
 	        Gdx.input.setInputProcessor(LGstage.getStage());
 	        
 	        level.setZoomBounds(LGstage);
@@ -130,6 +152,19 @@ public class LightGameEngine
 			Gdx.input.setInputProcessor(new GestureDetector(input));*/
 	}
 	
+	public boolean hasNextLevel()
+	{
+		return currentLevel < levelPaths.size();
+	}
+	
+	public void loadNextLevel()
+	{
+		dispose();
+		initialize(false, ++currentLevel);
+		//Engine.setOnScreenControls(preferences.useOnScreenControls());
+		LightGame.CURRENT_GAMESTATE = GAMESTATE.INGAME;
+	}
+	
 	public void dispose()
 	{
 		renderer.dispose();
@@ -154,37 +189,53 @@ public class LightGameEngine
 		//	if(usingOnScreenControls)
 			//	player.moveJoystick((float)Math.atan2(LGstage.getTouchpad().getKnobPercentY(),LGstage.getTouchpad().getKnobPercentX()));
 			
-			if(camera.frustum.boundsInFrustum(levelBounds[0]))
+			playerCamera.zoom = camera.zoom;
+			playerCamera.position.set(player.getPosition().x, player.getPosition().y, 0);
+			
+			if(playerCamera.frustum.boundsInFrustum(levelBounds[0]))
 			{
-				if(prevPlayerPos == null)
+				if(playerCamera.frustum.boundsInFrustum(levelBounds[1]))
 				{
-					System.out.println("asdasdasdas :" );
-					prevPlayerPos = new Vector2();
-					prevPlayerPos.x = player.getPosition().x;
-					prevPlayerPos.y = player.getPosition().y;
+					camera.position.set(camera.position.x, camera.position.y, 0);
 				}
-				
-				camera.position.set(camera.position.x, player.getPosition().y, 0);
-				
-				System.out.println("player :" +player.getPosition().x);
-				System.out.println("prev: " +prevPlayerPos.x);
-				
-				if(prevPlayerPos != null && player.getPosition().x > prevPlayerPos.x)
+				else if(playerCamera.frustum.boundsInFrustum(levelBounds[3]))
 				{
-					System.out.println("asd");
-					prevPlayerPos = null;
-					camera.position.set(player.getPosition().x, player.getPosition().y, 0);
+					camera.position.set(camera.position.x, camera.position.y, 0);
 				}
+				else
+					camera.position.set(camera.position.x, player.getPosition().y, 0);
 			}
-			else
-				camera.position.set(player.getPosition().x, player.getPosition().y, 0);
+			else if(playerCamera.frustum.boundsInFrustum(levelBounds[1]))
+			{
+				if(playerCamera.frustum.boundsInFrustum(levelBounds[2]))
+				{
+					camera.position.set(camera.position.x, camera.position.y, 0);
+				}
+				else
+					camera.position.set(player.getPosition().x, camera.position.y, 0);
+			}
+			else if(playerCamera.frustum.boundsInFrustum(levelBounds[2]))
+			{
+				if(playerCamera.frustum.boundsInFrustum(levelBounds[3]))
+				{
+					camera.position.set(camera.position.x, camera.position.y, 0);
+				}
+				else
+					camera.position.set(camera.position.x, player.getPosition().y, 0);
+			}
+			else if(playerCamera.frustum.boundsInFrustum(levelBounds[3]))
+			{
+				if(playerCamera.frustum.boundsInFrustum(levelBounds[1]))
+				{
+					camera.position.set(camera.position.x, camera.position.y, 0);
+				}
+				else
+					camera.position.set(player.getPosition().x, camera.position.y, 0);
+			}
 			
-	//	System.out.println(player.getPosition());
-	/*	System.out.println(levelBounds[0].getCorners()[0]);
-		System.out.println(levelBounds[0].getCorners()[2]);
-		System.out.println(levelBounds[0].getCorners()[2]);
-		System.out.println(levelBounds[0].getCorners()[3]);*/
-			
+			if(!playerCamera.frustum.boundsInFrustum(levelBounds[0]) && !playerCamera.frustum.boundsInFrustum(levelBounds[1]) 
+				&& !playerCamera.frustum.boundsInFrustum(levelBounds[2]) && !playerCamera.frustum.boundsInFrustum(levelBounds[3]))
+				camera.position.set(playerCamera.position);
 		}
 		
 		
@@ -196,8 +247,13 @@ public class LightGameEngine
 		{
 			update();
 		}
+		else
+		{
+			LGstage.displayEndMenu();
+		}
 		
 		camera.update();
+		playerCamera.update();
 		batch.setProjectionMatrix(camera.combined);
 		rayHandler.setCombinedMatrix(camera.combined);
 		
