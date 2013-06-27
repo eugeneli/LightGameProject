@@ -75,7 +75,7 @@ public class EntityHandler
 			case RED_GIANT:
 				RedGiant rg = new RedGiant(world, rayHandler, bulletHandler, aColor, radius, critRadiusMult*radius, xPos, yPos);
 				rg.setID(currentEntityID);
-				rg.setGravityMagnitude(5000); //100000 is kinda high
+				rg.setGravityMagnitude(2500); //100000 is kinda high. So is 5000
 				entities.put(currentEntityID, rg);
 				gravityEntities.add(rg);
 				currentEntityID++;
@@ -291,29 +291,7 @@ public class EntityHandler
 		
 		entity.explode();
 	}
-	
-	public boolean playerIsLargest()
-	{
-		float largestRadius = 0;
-		Entity largestEntity = null;
-		Iterator<Integer> it = entities.keySet().iterator();
-	    while (it.hasNext())
-	    {
-	    	Integer entityID = (Integer)it.next();
-	    	
-	    	if(!entities.get(entityID).ignoreSize())
-	    	{
-	    		float currentRadius = entities.get(entityID).getRadius();
-		    	if(currentRadius > largestRadius)
-		    	{
-		    		largestEntity = entities.get(entityID);
-		    		largestRadius = currentRadius;
-		    	}
-	    	}
-	    }
-	    return largestEntity instanceof Player;
-	}
-	
+
 	public void doGravity(Entity entity)
 	{
 		for(MassiveEntity gravEntity : gravityEntities)

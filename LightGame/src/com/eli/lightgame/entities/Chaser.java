@@ -49,14 +49,14 @@ public class Chaser extends NPC
 		circleFixture.filter.maskBits = LightGameFilters.MASK_ENTITY;
 		
 		circleBody.createFixture(circleFixture);
-		
+	
 		//Lights
 		ConeLight cl = new ConeLight(rayHandler, 50, color, lightSize, 0, 0, 0, 30);
 		cl.attachToBody(circleBody, 2, 0);
 		lights.add(cl);
 		
-		PointLight pl = new PointLight(rayHandler, 1000, color, lightSize, 0, 0);
-		PointLight pl2 = new PointLight(rayHandler, 1000, Color.CYAN, radius, 0, 0);
+		PointLight pl = new PointLight(rayHandler, 50, color, lightSize, 0, 0);
+		PointLight pl2 = new PointLight(rayHandler, 50, Color.CYAN, radius, 0, 0);
 		pl.attachToBody(circleBody, 0,  0);
 		pl2.attachToBody(circleBody, 0, 0);
 		lights.add(pl);

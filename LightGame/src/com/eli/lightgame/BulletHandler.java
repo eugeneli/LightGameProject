@@ -24,6 +24,7 @@ public class BulletHandler
 	
 	private World world;
 	private RayHandler rayHandler;
+	private Bullet recentlyReturnedBullet;
 	
 	public BulletHandler(World w, RayHandler rh)
 	{
@@ -61,7 +62,7 @@ public class BulletHandler
 		
 		//Lighting stuff
 		ArrayList<Light> bulletLights = new ArrayList<Light>();
-		PointLight bl = new PointLight(rayHandler, 5, aColor, shooterRadius*5f, 0, 0);
+		PointLight bl = new PointLight(rayHandler, 6, aColor, shooterRadius*5f, 0, 0);
 		bl.attachToBody(bulletBody, 0,  0);
 		bulletLights.add(bl);
 		
@@ -111,10 +112,17 @@ public class BulletHandler
 	
 	public Bullet getSomeBullet()
 	{
+		if(bullets.size() == 1)
+			return bullets.get(0);
+		
 		for(int i = 0; i < bullets.size(); i++)
 		{
-			if(bullets.get(i) != null)
+			Bullet b = bullets.get(i);
+			if(b != null && b != recentlyReturnedBullet)
+			{
+				recentlyReturnedBullet = b;
 				return bullets.get(i);
+			}
 		}
 		return null;
 	}

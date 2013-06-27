@@ -37,6 +37,7 @@ public abstract class Entity
 	protected boolean waitingToBeDeleted = false;
 	
 	protected boolean ignoreSize = false;
+	protected boolean ignoreExistence = false; //Used for win conditions
 	
 	//Array to hold the lights
 	protected ArrayList<Light> lights = new ArrayList<Light>();
@@ -105,7 +106,12 @@ public abstract class Entity
 	
 	public boolean ignoreSize()
 	{
-		return ignoreSize();
+		return ignoreSize;
+	}
+	
+	public boolean ignoreExistence()
+	{
+		return ignoreExistence;
 	}
 	
 	public Body getBody()

@@ -41,6 +41,7 @@ public class Player extends Entity
 		canChangeColor = true;
 		canChangeSize = true;
 		lightSize = 4.5f * radius;
+		flickerRate = 0.5f;
 		
 		//Create player
 		BodyDef circleDef = new BodyDef();
@@ -68,8 +69,8 @@ public class Player extends Entity
 		cl.attachToBody(circleBody, 2, 0);
 		playerLights.add(cl);
 		
-		PointLight pl = new PointLight(rayHandler, 1000, color, lightSize, 0, 0);
-		PointLight pl2 = new PointLight(rayHandler, 1000, Color.CYAN, radius, 0, 0);
+		PointLight pl = new PointLight(rayHandler, 100, color, lightSize, 0, 0);
+		PointLight pl2 = new PointLight(rayHandler, 50, Color.GRAY, radius, 0, 0);
 		pl.attachToBody(circleBody, 0,  0);
 		pl2.attachToBody(circleBody, 0, 0);
 		playerLights.add(pl);
@@ -139,6 +140,10 @@ public class Player extends Entity
 		{
 			entityBody.setAngularVelocity(0);
 			entityBody.setTransform(entityBody.getPosition(), rotAngle);
+			
+		//	if(entityBody.getLinearVelocity().x/Math.cos(entityBody.getAngle()) < 500 && entityBody.getLinearVelocity().y/Math.sin(entityBody.getAngle()) < 500)
+			//	entityBody.applyForceToCenter(new Vector2((float)(Math.cos(entityBody.getAngle()) * (1000*radius)),(float)(Math.sin(entityBody.getAngle()) * (1000*radius))), true);
+			
 			entityBody.applyForceToCenter(new Vector2((float)(Math.cos(entityBody.getAngle()) * (10*radius)),(float)(Math.sin(entityBody.getAngle()) * (10*radius))), true);
 			entityBody.setLinearVelocity(new Vector2((float)(Math.cos(entityBody.getAngle()) * (30 + 1 * radius)),(float)(Math.sin(entityBody.getAngle()) * (30 + 1 * radius))));
 		}

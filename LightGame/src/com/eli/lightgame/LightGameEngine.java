@@ -122,16 +122,10 @@ public class LightGameEngine
 			levelBounds = level.getLevelBoundingBox();
 			
 			//Create the stage for UI objects
-			LGstage = new LightGameStage(this, camera, batch, entityHandler);
+			LGstage = new LightGameStage(this, level, camera, batch, entityHandler);
 	        Gdx.input.setInputProcessor(LGstage.getStage());
 	        
 	        level.setZoomBounds(LGstage);
-	        
-	        //Show level title message 
-	        LGstage.displayTitle(level.getTitleMessage()[0], level.getTitleMessage()[1]);
-	        
-	        //Show tip if any
-	        LGstage.displayTip(level.getTip());
 		}
 		else
 		{
@@ -183,6 +177,8 @@ public class LightGameEngine
 		
 		//Update Entities
 		entityHandler.update();
+		
+		rayHandler.update();
 		
 		if(!presentationMode)
 		{
@@ -275,7 +271,7 @@ public class LightGameEngine
 		
 		//Render box2D physics and lights
 		renderer.render(world,  camera.combined);
-		rayHandler.updateAndRender();
+		rayHandler.render();
 		
 		if(level.isOver())
 			levelOverTimer--;

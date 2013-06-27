@@ -99,9 +99,15 @@ public class LGInput extends ActorGestureListener
 
         camera.zoom += scalar;
         if(camera.zoom <= minZoom)
-                camera.zoom = minZoom;
+        {
+        	camera.position.set(player.getPosition().x,player.getPosition().y,0);
+        	camera.zoom = minZoom;
+        }
         if(camera.zoom >= maxZoom)
-                camera.zoom = maxZoom;
+        {
+        	camera.position.set(0,0,0);
+        	camera.zoom = maxZoom;
+        }
         camera.update();
 	}
 

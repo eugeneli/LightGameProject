@@ -3,10 +3,10 @@ package com.eli.lightgame.winconditions;
 import com.eli.lightgame.BulletHandler;
 import com.eli.lightgame.EntityHandler;
 
-public class OnlyPlayerLeft extends WinCondition
+public class NoMoreBullets extends WinCondition
 {
 
-	public OnlyPlayerLeft(EntityHandler eh, BulletHandler bh) {
+	public NoMoreBullets(EntityHandler eh, BulletHandler bh) {
 		super(eh, bh);
 		// TODO Auto-generated constructor stub
 	}

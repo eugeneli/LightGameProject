@@ -23,6 +23,8 @@ public class Blinker extends NPC
 		super("data/blankbullet.png", aColor, rad);
 		lightSize = 5f * radius;
 		criticalRadius = 10*radius;
+		ignoreSize = true;
+		ignoreExistence = true;
 		
 		BodyDef circleDef = new BodyDef();
 		circleDef.type = BodyType.StaticBody;

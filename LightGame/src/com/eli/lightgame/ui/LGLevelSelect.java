@@ -16,6 +16,7 @@ import com.eli.lightgame.LightGame;
 import com.eli.lightgame.LightGame.GAMESTATE;
 import com.eli.lightgame.LightGameEngine;
 import com.eli.lightgame.util.LGPreferences;
+import com.esotericsoftware.tablelayout.Cell;
 
 public class LGLevelSelect extends LGMenu
 {
@@ -30,7 +31,7 @@ public class LGLevelSelect extends LGMenu
 		stage = new Stage();
         scrollTable = new Table();
         
-        BitmapFont fontType = new BitmapFont(Gdx.files.internal("data/default.fnt"), false);
+        BitmapFont fontType = new BitmapFont(Gdx.files.internal("data/fonts/corbelsmall.fnt"), false);
 //        /fontType.scale(1.5f);
         TextButtonStyle style = new TextButtonStyle();
         style.font = fontType;
@@ -45,15 +46,18 @@ public class LGLevelSelect extends LGMenu
 			JsonValue levelData = levels.get(i);
 			
 			TextButton text = new TextButton(levelData.getString("Title"), style);
-			text.align(Align.center);
 	        text.setName(levelData.getString("id"));
 	        text.addListener(levelClickListener);
 
-	        scrollTable.add(text);
+	        Cell cell = scrollTable.add(text);
+	        cell.align(Align.left);
+	        
 	        scrollTable.row();
 		}
+		
+        ScrollPane scroller = new ScrollPane(scrollTable);
 
-        final ScrollPane scroller = new ScrollPane(scrollTable);
+        //scroller.setPosition(10, 10);
         scroller.setFillParent(true);
 
 /*        final Table table = new Table();

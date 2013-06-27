@@ -43,7 +43,7 @@ public class LGMainMenu extends LGMenu
         table.add(logoActor);
         table.row();
         
-        BitmapFont fontType = new BitmapFont(Gdx.files.internal("data/default.fnt"), false);
+        BitmapFont fontType = new BitmapFont(Gdx.files.internal("data/fonts/corbel.fnt"), false);
 //      fontType.scale(1.5f);
         TextButtonStyle style = new TextButtonStyle();
         style.font = fontType;

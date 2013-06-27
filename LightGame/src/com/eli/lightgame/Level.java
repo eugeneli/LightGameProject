@@ -1,12 +1,16 @@
 package com.eli.lightgame;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import box2dLight.RayHandler;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -22,12 +26,16 @@ import com.eli.lightgame.entities.Blinker;
 import com.eli.lightgame.entities.Bullet;
 import com.eli.lightgame.entities.Player;
 import com.eli.lightgame.ui.LightGameStage;
+import com.eli.lightgame.winconditions.NoOtherLumis;
 import com.eli.lightgame.winconditions.OnlyEntityLeft;
+import com.eli.lightgame.winconditions.NoMoreBullets;
+import com.eli.lightgame.winconditions.PlayerIsLargest;
 
 public class Level
 {
 	private Texture background;
 	private Texture outerBackground;
+	private ParticleEffect particles;
 	
 	private World world;
 	private float width;
@@ -36,6 +44,7 @@ public class Level
 	
 	private float minZoom;
 	private float maxZoom;
+	private float defZoom;
 	
 	private LevelStateManager levelState;
 	private EntityHandler entityHandler;
@@ -43,7 +52,7 @@ public class Level
 	private RayHandler rayHandler;
 	
 	private String[] titleMessage = new String[2];
-	private String tip;
+	private Queue<String> tips = new LinkedList<String>();
 	
 	public Level(LevelStateManager levstate, EntityHandler eh, BulletHandler bh, RayHandler rh, World theWorld, float w, float h)
 	{
@@ -86,8 +95,23 @@ public class Level
 		titleMessage[0] = jsonVal.getString("Title");
 		titleMessage[1] = jsonVal.getString("Mission");
 		
-		//Store level's tip, if any
-		tip = jsonVal.getString("Tip");
+		//Store level's tips, if any
+		for(int i = 0; i < jsonVal.get("Tips").size; i++)
+		{
+			tips.add(jsonVal.get("Tips").getString(i));
+		}
+		
+		//Load particle effect if needed
+		String particlePath = jsonVal.get("ParticleEffect").getString("Path");
+		if(!particlePath.equals(""))
+		{
+			particles = new ParticleEffect();
+			particles.load(Gdx.files.internal(particlePath), Gdx.files.internal("data"));
+			particles.setPosition(0, 0);
+			particles.start();
+		}
+		else
+			particles = null;
 		
 		//Set world ambience
 		float ambienceR = jsonVal.get("Ambience").getFloat(0);
@@ -100,6 +124,7 @@ public class Level
 		//Set zoom bounds
 		minZoom = jsonVal.getFloat("minZoom");
 		maxZoom = jsonVal.getFloat("maxZoom");
+		defZoom = jsonVal.getFloat("defZoom");
 		
 		for(int i = 0; i < jsonVal.get("Enemies").size; i++)
 		{
@@ -177,20 +202,23 @@ public class Level
 		return titleMessage;
 	}
 	
-	public String getTip()
+	public Queue<String> getTips()
 	{
-		return tip;
+		return tips;
 	}
 	
 	public void draw(SpriteBatch batch)
 	{
 		batch.draw(outerBackground, -outerBackground.getWidth()/2, -outerBackground.getHeight()/2);
 		batch.draw(background,-background.getWidth()/2,-background.getHeight()/2);
+		
+		if(particles != null)
+			particles.draw(batch, Gdx.graphics.getDeltaTime());
 	}
 	
 	public void setZoomBounds(LightGameStage stage)
 	{
-		stage.setZoomBounds(minZoom, maxZoom);
+		stage.setZoomBounds(minZoom, maxZoom, defZoom);
 	}
 	
 	private void createWorldBoundary(int worldType)
@@ -284,5 +312,11 @@ public class Level
 	{
 		if(condition.equals("OnlyEntityLeft"))
 			levelState.addWinCondition(new OnlyEntityLeft(entityHandler, bulletHandler));	
+		else if(condition.equals("NoMoreBullets"))
+			levelState.addWinCondition(new NoMoreBullets(entityHandler, bulletHandler));
+		else if(condition.equals("PlayerIsLargest"))
+			levelState.addWinCondition(new PlayerIsLargest(entityHandler, bulletHandler));
+		else if(condition.equals("NoOtherLumis"))
+			levelState.addWinCondition(new NoOtherLumis(entityHandler, bulletHandler));
 	}
 }

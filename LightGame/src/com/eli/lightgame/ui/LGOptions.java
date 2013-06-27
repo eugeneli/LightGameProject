@@ -67,7 +67,7 @@ public class LGOptions extends LGMenu
         table.add(musicCheckbox);
         table.row();
         
-        final CheckBox oscCheckbox = new CheckBox("        Onscreen controls", skin);
+    /*    final CheckBox oscCheckbox = new CheckBox("        Onscreen controls", skin);
         oscCheckbox.setChecked(preferences.useOnScreenControls());
         oscCheckbox.addListener( new ClickListener() {
             @Override
@@ -78,9 +78,9 @@ public class LGOptions extends LGMenu
         } );
 
         table.add(oscCheckbox);
-        table.row();
+        table.row();*/
         
-        BitmapFont fontType = new BitmapFont(Gdx.files.internal("data/default.fnt"), false);
+        BitmapFont fontType = new BitmapFont(Gdx.files.internal("data/fonts/corbelsmall.fnt"), false);
 
         TextButtonStyle style = new TextButtonStyle();
         style.font = fontType;

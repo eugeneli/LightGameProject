@@ -3,85 +3,102 @@
     "WorldShape": "RECTANGLE",
     "Title": "It Begins",
     "Mission": "Collect all the light",
-    "Tip": "Touch the screen to move",
+    "Tips":[
+        "Touch the screen to move",
+        ],
     "Background": "data/levels/level1/bg.jpg",
-    "MinZoom": 3,
-    "MaxZoom": 4.5,
+    "MinZoom": 2,
+    "MaxZoom": 3,
+    "DefZoom": 3,
     "PlayerColor": "WHITE",
-    "PlayerRadius": "8",
+    "PlayerRadius": 3.5,
     "PlayerCritRadiusMult": "5",
     "PlayerSpawn": [
-        -100,
-        -100
+        -50,
+        -50
         ],
     "Ambience": [
         1.0,
         1.0,
         1.0,
-        0.08
+        0.09
         ],
+    "ParticleEffect": {
+            "Path": "data/particleeffects/particleexplosion.p",
+            "x": 0,
+            "y": 0,
+        },
     "WinConditions": [
         "OnlyEntityLeft"
         ],
     "Enemies": {
+        "Blinker": {
+            "EnemyType": "2",
+            "Color": "WHITE",
+            "x": 0,
+            "y": 0,
+            "FlickerRate": 0.1,
+            "CritRadiusMult": 1.1,
+            "Radius": 25
+        },
         "Bullet": {
             "EnemyType": "3",
             "Color": "WHITE",
             "x": "-15",
             "y": "55",
-            "Radius": 10,
+            "Radius": 9,
             "FlickerRate": 1.5,
             "Direction": 0.5,
-            "Velocity": 80
+            "Velocity": 20
         },
         "Bullet": {
             "EnemyType": "3",
             "Color": "WHITE",
             "x": "-15",
             "y": "80",
-            "Radius": 20,
+            "Radius": 5,
             "FlickerRate": 0.8,
             "Direction": 20,
-            "Velocity": 50
+            "Velocity": 30
         },
         "Bullet": {
             "EnemyType": "3",
             "Color": "WHITE",
             "x": "100",
             "y": "-50",
-            "Radius": 15,
+            "Radius": 5,
             "FlickerRate": 1.2,
             "Direction": 2.5,
-            "Velocity": 120
+            "Velocity": 60
         },
         "Bullet": {
             "EnemyType": "3",
             "Color": "WHITE",
             "x": "-30",
             "y": "5",
-            "Radius": 21,
+            "Radius": 6,
             "FlickerRate": 0.5,
             "Direction": -0.5,
-            "Velocity": 230
+            "Velocity": 70
         },
         "Bullet": {
             "EnemyType": "3",
             "Color": "WHITE",
             "x": "30",
             "y": "-5",
-            "Radius": 23,
+            "Radius": 10,
             "FlickerRate": 1.8,
             "Direction": 5.2,
-            "Velocity": 100
+            "Velocity": 55
         },
         "Bullet": {
             "EnemyType": "3",
             "Color": "WHITE",
             "x": "21",
             "y": "-100",
-            "Radius": 14,
-            "FlickerRate": 2.2,
-            "Direction": 7.1,
+            "Radius": 5,
+            "FlickerRate": 1.1,
+            "Direction": -5.1,
             "Velocity": 66
         },
         "Bullet": {
@@ -92,17 +109,27 @@
             "Radius": 10,
             "FlickerRate": 1.2,
             "Direction": -2.5,
-            "Velocity": 180
+            "Velocity": 45
         },
         "Bullet": {
             "EnemyType": "3",
             "Color": "WHITE",
             "x": "-30",
             "y": "-55",
-            "Radius": 10,
+            "Radius": 7,
             "FlickerRate": 0.7,
             "Direction": -0.5,
-            "Velocity": 210
+            "Velocity": 64
+        },
+        "Bullet": {
+            "EnemyType": "3",
+            "Color": "WHITE",
+            "x": "-80",
+            "y": "-55",
+            "Radius": 9,
+            "FlickerRate": 1,
+            "Direction": -3.94,
+            "Velocity": 32
         },
     }
 }

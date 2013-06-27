@@ -56,11 +56,11 @@ public class Drifter extends NPC
 		//Lights
 		ArrayList<Light> drLights = new ArrayList<Light>();
 		PointLight pl = new PointLight(rayHandler, 50, color, rad*10, 0, 0);
-		PointLight pl2 = new PointLight(rayHandler, 10, Color.CYAN, rad, 0, 0);
+		//PointLight pl2 = new PointLight(rayHandler, 10, Color.CYAN, rad, 0, 0);
 		pl.attachToBody(circleBody, 0,  0);
-		pl2.attachToBody(circleBody, 0, 0);
+		//pl2.attachToBody(circleBody, 0, 0);
 		drLights.add(pl);
-		drLights.add(pl2);
+		//drLights.add(pl2);
 		
 		//Set the variables in Entity
 		entityBody = circleBody;
@@ -100,7 +100,7 @@ public class Drifter extends NPC
 	{
 		super.update();
 		
-		//flicker the core's light
+		/*//flicker the core's light
 		float currentCoreLightDistance = lights.get(1).getDistance();
 		
 		if(currentCoreLightDistance <= radius)
@@ -117,7 +117,7 @@ public class Drifter extends NPC
 			lights.get(1).setDistance(currentCoreLightDistance-flickerRate);
 		}
 		else
-			lights.get(1).setDistance(currentCoreLightDistance+flickerRate);
+			lights.get(1).setDistance(currentCoreLightDistance+flickerRate);*/
 	}
 
 	@Override

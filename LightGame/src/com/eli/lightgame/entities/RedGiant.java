@@ -32,6 +32,8 @@ public class RedGiant extends MassiveEntity
 		canChangeColor = false;
 		canChangeSize = true;
 		lightSize = 10 * radius;
+		ignoreSize = true;
+		ignoreExistence = true;
 		
 		BodyDef circleDef = new BodyDef();
 		circleDef.type = BodyType.StaticBody;

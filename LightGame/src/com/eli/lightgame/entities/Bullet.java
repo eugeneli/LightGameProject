@@ -25,6 +25,7 @@ public class Bullet extends Entity
 		originalLife = life = laifu;
 		angle = ang;
 		color = aColor;
+		immortal = true;
 		
 		canChangeColor = false;
 		canChangeSize = false;
@@ -112,7 +113,7 @@ public class Bullet extends Entity
 	{
 		super.update();
 		
-		if(startShrinking)
+		/*if(startShrinking)
 		{
 			radius -= 0.5f;
 			updateSizes();
@@ -123,7 +124,7 @@ public class Bullet extends Entity
 		else if(life <= 0.65f * originalLife)
 		{
 			startShrinking = true;
-		}
+		}*/
 		//flicker the core's light
 		float currentCoreLightDistance = lights.get(0).getDistance();
 		

@@ -7,13 +7,13 @@
         },
         "1": {
             "id": 1,
-            "Title": "(2) - Go Towards The Light",
+            "Title": "(2) - It Brightens",
             "Path": "data/levels/level2/level2.json"
         },
         "1": {
             "id": 2,
-            "Title": "(1) - It Begins",
-            "Path": "data/levels/level1/level1.json"
+            "Title": "(3) - It gets crowded",
+            "Path": "data/levels/level3/level3.json"
         },
         "1": {
             "id": 3,
