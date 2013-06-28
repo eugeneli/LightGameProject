@@ -32,5 +32,4 @@ public class OnlyEntityLeft extends WinCondition
 	    }
 		return (entityCount == 1 && bulletHandler.getBulletNumber() == 0);
 	}
-
 }

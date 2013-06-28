@@ -129,11 +129,12 @@ public class Chaser extends NPC
 		}
 	}
 	
+	
 
 	@Override
 	public void doAI()
 	{
-		target = bulletHandler.getSomeBullet();
+		target = bulletHandler.getSomeBullet(target);
 		
 		if(target != null)
 		{

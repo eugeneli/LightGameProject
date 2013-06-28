@@ -13,11 +13,11 @@
     "MaxZoom": 7.3,
     "DefZoom": 6,
     "PlayerColor": "WHITE",
-    "PlayerRadius": 3.5,
-    "PlayerCritRadiusMult": 4,
+    "PlayerRadius": 5,
+    "PlayerCritRadiusMult": 3,
     "PlayerSpawn": [
         0,
-        0
+        -10
         ],
     "Ambience": [
         0.2,
@@ -37,44 +37,111 @@
         "Drifter": {
             "EnemyType": "1",
             "Color": "BLUE",
-            "x": -150,
+            "x": -170,
             "y": 50,
-            "Radius": 5,
+            "Radius": 7,
             "Direction": 0,
             "CritRadiusMult": 1.3,
-            "Velocity": 100
+            "Velocity": 200
         },
         "Drifter": {
             "EnemyType": "1",
             "Color": "BLUE",
             "x": 150,
             "y": 50,
-            "Radius": 6,
+            "Radius": 8,
             "Direction": 3.14159,
             "CritRadiusMult": 1.3,
-            "Velocity": 100
+            "Velocity": 200
         },
         "Drifter": {
             "EnemyType": "1",
             "Color": "RED",
             "x": -175,
-            "y":  30,
-            "Radius": 6,
+            "y":  10,
+            "Radius": 7,
             "Direction": 0,
             "CritRadiusMult": 1.3,
-            "Velocity": 75
+            "Velocity": 250
         },
         "Drifter": {
             "EnemyType": "1",
             "Color": "RED",
             "x": 175,
-            "y": 30,
-            "Radius": 5,
+            "y": 10,
+            "Radius": 8,
             "Direction": 3.14159,
             "CritRadiusMult": 1.3,
-            "Velocity": 75
+            "Velocity": 250
         },
-       
+       "Drifter": {
+            "EnemyType": "1",
+            "Color": "YELLOW",
+            "x": -5,
+            "y":  -200,
+            "Radius": 7,
+            "Direction": -3.2,
+            "CritRadiusMult": 1.3,
+            "Velocity": 70
+        },
+        "Drifter": {
+            "EnemyType": "1",
+            "Color": "YELLOW",
+            "x": -100,
+            "y":  -150,
+            "Radius": 5,
+            "Direction": -1.9,
+            "CritRadiusMult": 1.3,
+            "Velocity": 60
+        },
+        "Drifter": {
+            "EnemyType": "1",
+            "Color": "GREEN",
+            "x": -170,
+            "y": 80,
+            "Radius": 8,
+            "Direction": 0,
+            "CritRadiusMult": 1.2,
+            "Velocity": 100
+        },
+        "Drifter": {
+            "EnemyType": "1",
+            "Color": "GREEN",
+            "x": 170,
+            "y": 80,
+            "Radius": 10,
+            "Direction": 3.14159,
+            "CritRadiusMult": 1.2,
+            "Velocity": 175
+        },
+        "Drifter": {
+            "EnemyType": "1",
+            "Color": "GREEN",
+            "x": -120,
+            "y": -80,
+            "Radius": 10,
+            "Direction": -3.92,
+            "CritRadiusMult": 1.1,
+            "Velocity": 100
+        },
+        "Chaser": {
+            "EnemyType": "4",
+            "Color": "RED",
+            "x": "145",
+            "y": "-100",
+            "Radius": 4,
+            "Direction": 0.5,
+            "CritRadiusMult": 3,
+        },
+        "Chaser": {
+            "EnemyType": "4",
+            "Color": "RED",
+            "x": "-115",
+            "y": "210",
+            "Radius": 5,
+            "Direction": 0.5,
+            "CritRadiusMult": 2.5,
+        },
         "Bullet": {
             "EnemyType": "3",
             "Color": "WHITE",

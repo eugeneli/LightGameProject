@@ -15,6 +15,7 @@ public class Bullet extends Entity
 	private float angle;
 	private boolean startShrinking = false;
 	private boolean immortal = false;
+	private Entity target;
 	
 	private Entity source;
 	
@@ -109,6 +110,11 @@ public class Bullet extends Entity
 		return source;
 	}
 	
+	public void setTarget(Entity bulTarget)
+	{
+		target = bulTarget;
+	}
+	
 	public void update()
 	{
 		super.update();
@@ -125,6 +131,18 @@ public class Bullet extends Entity
 		{
 			startShrinking = true;
 		}*/
+		
+		if(target != null)
+		{
+			float toTargetX = (float)((target.getPosition().x - getPosition().x));
+			float toTargetY = (float)((target.getPosition().y - getPosition().y));
+			float rotAngle = (float)Math.atan2(toTargetY,toTargetX);
+			
+			entityBody.setTransform(entityBody.getPosition(), rotAngle);
+			entityBody.setLinearVelocity(new Vector2((float)(Math.cos(entityBody.getAngle()) * (500)),(float)(Math.sin(entityBody.getAngle()) * (500))));
+		}
+		
+		
 		//flicker the core's light
 		float currentCoreLightDistance = lights.get(0).getDistance();
 		

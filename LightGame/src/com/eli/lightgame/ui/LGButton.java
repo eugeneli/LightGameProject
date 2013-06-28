@@ -1,5 +1,6 @@
 package com.eli.lightgame.ui;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,6 +16,7 @@ public class LGButton extends Actor
 	protected Sprite downSprite;
 	
 	protected InputListener defaultInputListener;
+	protected boolean tint = false;
 	
 	public float width;
 	public float height;
@@ -53,6 +55,10 @@ public class LGButton extends Actor
 	@Override
     public void draw(SpriteBatch batch, float parentAlpha)
 	{
+		if(tint)
+			batch.setColor(Color.GRAY);
+		else
+			batch.setColor(Color.WHITE);
         batch.draw(currentSprite, getX(), getY());
     }  
 }

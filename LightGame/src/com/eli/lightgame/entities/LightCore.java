@@ -32,6 +32,9 @@ public class LightCore extends Entity
 		canChangeColor = true;
 		canChangeSize = true;
 		lightSize = 12f * radius;
+		ignoreSize = true;
+		ignoreExistence = true;
+		
 		BodyDef circleDef = new BodyDef();
 		circleDef.type = BodyType.DynamicBody;
 		circleDef.position.set(xPos, yPos);
@@ -61,7 +64,7 @@ public class LightCore extends Entity
 		
 		//Set the variables in Entity
 		entityBody = circleBody;
-		lights = (ArrayList<Light>) coreLights.clone();
+		lights = coreLights;
 		
 		particleEffect = new ParticleEffect();
 	    particleEffect.load(Gdx.files.internal("data/particleeffects/insides.p"), Gdx.files.internal("data"));

@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 
 import com.eli.lightgame.EntityHandler;
+import com.eli.lightgame.entities.Entity;
 import com.eli.lightgame.entities.Player;
 
 public class LGInput extends ActorGestureListener
@@ -44,7 +45,7 @@ public class LGInput extends ActorGestureListener
 		float toTargetY = (float)((worldCoordinates.y - player.getPosition().y));
 		float rotAngle = (float)Math.atan2(toTargetY,toTargetX);
 		
-		if(!entityHandler.isTargetingEntity(worldCoordinates.x,worldCoordinates.y))
+		if(entityHandler.targetingEntity(worldCoordinates.x,worldCoordinates.y) == null)
 		{
 			player.move(rotAngle);
 		}
@@ -60,9 +61,11 @@ public class LGInput extends ActorGestureListener
 		float toTargetY = (float)((worldCoordinates.y - player.getPosition().y));
 		float rotAngle = (float)Math.atan2(toTargetY,toTargetX);
 		
-		if(entityHandler.isTargetingEntity(worldCoordinates.x,worldCoordinates.y))
+		Entity targettedEntity = entityHandler.targetingEntity(worldCoordinates.x,worldCoordinates.y);
+		if(targettedEntity != null)
 		{
-			player.turnAndShoot(rotAngle);
+			player.turnAndShootTracking(rotAngle,targettedEntity);
+			//player.turnAndShoot(rotAngle);
 		}
 	}
 
@@ -87,7 +90,7 @@ public class LGInput extends ActorGestureListener
 		float toTargetY = (float)((worldCoordinates.y - player.getPosition().y));
 		float rotAngle = (float)Math.atan2(toTargetY,toTargetX);
 		
-		if(!entityHandler.isTargetingEntity(worldCoordinates.x,worldCoordinates.y))
+		if(entityHandler.targetingEntity(worldCoordinates.x,worldCoordinates.y) == null)
 		{
 			player.move(rotAngle);
 		}

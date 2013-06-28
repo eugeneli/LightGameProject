@@ -9,10 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -20,15 +17,11 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.eli.lightgame.LightGame.GAMESTATE;
 import com.eli.lightgame.entities.Bullet;
-import com.eli.lightgame.entities.NPC;
 import com.eli.lightgame.entities.Player;
-import com.eli.lightgame.ui.LGInput;
 import com.eli.lightgame.ui.LightGameStage;
 import com.eli.lightgame.util.LGPreferences;
 
@@ -61,7 +54,7 @@ public class LightGameEngine
 	private BulletHandler bulletHandler;
 	private EntityHandler entityHandler;
 	private Player player;
-	private int levelOverTimer = 100;
+	private int levelOverTimer = 160;
 	
 	public LightGameEngine(SpriteBatch sb, float w, float h, LGPreferences pref, boolean presentation)
 	{
@@ -86,6 +79,7 @@ public class LightGameEngine
 	public void initialize(boolean presentation, int levelIndex)
 	{
 		presentationMode = presentation;
+		levelOverTimer = 160;
 		
 		//Create and position camera
 		camera = new OrthographicCamera(width, height);
@@ -133,30 +127,47 @@ public class LightGameEngine
 			rayHandler.setAmbientLight(0.2f, 0.1f, 0.5f, 0.3f);
 			camera.zoom = 8.0f;
 			camera.position.set(0, 0, 0);
+			
+			LGstage = null;
 		}
 	}
 	
-	public void setOnScreenControls(boolean bool)
+	/*public void setOnScreenControls(boolean bool)
 	{
 	//	usingOnScreenControls = bool;
-	/*	
+		
 		if(usingOnScreenControls)
 			Gdx.input.setInputProcessor(LGstage.getStage());
 		else
-			Gdx.input.setInputProcessor(new GestureDetector(input));*/
-	}
+			Gdx.input.setInputProcessor(new GestureDetector(input));
+	}*/
 	
 	public boolean hasNextLevel()
 	{
-		return currentLevel < levelPaths.size();
+		return currentLevel != levelPaths.size()-1;
+	}
+	
+	public void reloadLevel()
+	{
+		dispose();
+		initialize(false, currentLevel);
 	}
 	
 	public void loadNextLevel()
 	{
-		dispose();
-		initialize(false, ++currentLevel);
-		//Engine.setOnScreenControls(preferences.useOnScreenControls());
-		LightGame.CURRENT_GAMESTATE = GAMESTATE.INGAME;
+		if(hasNextLevel())
+		{
+			dispose();
+			initialize(false, ++currentLevel);
+			//Engine.setOnScreenControls(preferences.useOnScreenControls());
+			LightGame.CURRENT_GAMESTATE = GAMESTATE.INGAME;
+		}
+		else
+		{
+			dispose();
+			initialize(true, -1);
+			LightGame.CURRENT_GAMESTATE = GAMESTATE.IN_MENU;
+		}
 	}
 	
 	public void dispose()
@@ -233,8 +244,6 @@ public class LightGameEngine
 				&& !playerCamera.frustum.boundsInFrustum(levelBounds[2]) && !playerCamera.frustum.boundsInFrustum(levelBounds[3]))
 				camera.position.set(playerCamera.position);
 		}
-		
-		
 	}
 	
 	public void render()
@@ -244,10 +253,11 @@ public class LightGameEngine
 			update();
 		}
 		else
-		{
-			LGstage.displayEndMenu();
-		}
+			LGstage.displayEndMenu(true);
 		
+		if(player != null && player.getRadius() == 0)
+			LGstage.displayEndMenu(false);
+
 		camera.update();
 		playerCamera.update();
 		batch.setProjectionMatrix(camera.combined);

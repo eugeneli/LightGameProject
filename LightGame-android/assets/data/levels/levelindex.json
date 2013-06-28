@@ -15,15 +15,5 @@
             "Title": "(3) - It gets crowded",
             "Path": "data/levels/level3/level3.json"
         },
-        "1": {
-            "id": 3,
-            "Title": "(1) - It Begins",
-            "Path": "data/levels/level1/level1.json"
-        },
-        "1": {
-            "id": 4,
-            "Title": "(68.99) - lelelelelelelele",
-            "Path": "data/levels/level1/level1.json"
-        }
     }
 }

@@ -215,6 +215,7 @@ public abstract class Entity
 		bulletHandler.createBulletsAndFire(this, radius+5, color, getPosition().x, getPosition().y, 10, 15f);
 		
 		radius = 0;
+		toBeDeleted(true);
 		updateSizes();
 	}
 	

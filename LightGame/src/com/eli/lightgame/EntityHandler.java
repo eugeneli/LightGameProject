@@ -119,7 +119,7 @@ public class EntityHandler
 		return entities;
 	}
 	
-	public boolean isTargetingEntity(float x, float y)
+	public Entity targetingEntity(float x, float y)
 	{
 		Iterator<Integer> it = entities.keySet().iterator();
 	    while (it.hasNext())
@@ -130,27 +130,27 @@ public class EntityHandler
 	    	//Hard to target small bodies so I did a nasty stupid hack :(
 	    	Fixture fixture = entity.getBody().getFixtureList().get(0);
 	    	if(fixture.testPoint(x, y))
-	    		return true;
+	    		return entity;
 	    	
 	    	if(fixture.testPoint(x+5, y+5))
-	    		return true;
+	    		return entity;
 	    	
 	    	if(fixture.testPoint(x-5, y-5))
-	    		return true;
+	    		return entity;
 	    	
 	    	if(fixture.testPoint(x-5, y))
-	    		return true;
+	    		return entity;
 	    	
 	    	if(fixture.testPoint(x+5, y))
-	    		return true;
+	    		return entity;
 	    	
 	    	if(fixture.testPoint(x, y-5))
-	    		return true;
+	    		return entity;
 	    	
 	    	if(fixture.testPoint(x, y+5))
-	    		return true;
+	    		return entity;
 	    }
-		return false;
+		return null;
 	}
 	
 	public void changeColor(Entity entity, Color bulletColor)
@@ -195,21 +195,9 @@ public class EntityHandler
 	public void collideWithBullet(int entityID, Bullet aBullet)
 	{
 		Entity entity = entities.get(entityID);
-		/*System.out.println("Current radius: " + entity.getRadius());
-		System.out.println("Bul Radius:" + aBullet.getRadius());
-		System.out.println("New radius: " + (float)(entity.getRadius()+aBullet.getRadius()));*/
 		entity.grow(entity.getRadius()+aBullet.getRadius(), aBullet.getRadius()/20);
 		
 		aBullet.kill();
-		
-		//if(entity.canChangeColor())
-		//	changeColor(entity, aBullet.getColor());
-		
-		//if(entity.canChangeSize())
-			//changeSize(entity, aBullet.getRadius());
-		
-		//aBullet.setDying(true);
-		//aBullet.kill();
 	}
 	
 	public void collideNPCs(int firstEnt, int secondEnt)
@@ -345,7 +333,7 @@ public class EntityHandler
 	    	//Update Box2D sizes
 	    	if(entity.waitingToUpdateSize())
 	    	{
-	    		if(entity.getRadius() >= 1)
+	    		if(entity.getRadius() >= 2)
 	    		{
 	    			entity.getBody().destroyFixture(entity.getBody().getFixtureList().get(0));
 					
@@ -363,20 +351,24 @@ public class EntityHandler
 					entity.isWaitingToUpdateSize(false);
 	    		}
 	    		else
+	    		{
 	    			removeEntity(entity);
+	    		}
 	    	}
 
 	    	if(entity.waitingToBeDeleted())
 	    	{
-	    		entity.dispose();
 	    		world.destroyBody(entity.getBody());
-	    		
+	    		entity.setRadius(0);
+	    		entity.dispose();
 	    		it.remove();
 	    		
 	    		if(gravityEntities.contains(entity))
 	    			gravityEntities.remove(entity);
+	    		
+	    		entity = null;
 	    	}
-	    } 
+	    }
 	}
 	
 	public void draw(SpriteBatch batch)

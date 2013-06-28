@@ -50,6 +50,18 @@ public class LGMenuHandler
 		}
 	}
 	
+	public LGMenu getCurrentMenu()
+	{
+		return currentMenu;
+	}
+	
+	public void dispose()
+	{
+		mainMenu.dispose();
+		optionsMenu.dispose();
+		levelSelectMenu.dispose();
+	}
+	
 	public void render()
 	{
 		currentMenu.render();

@@ -50,12 +50,13 @@ public class LightGame extends Game
 		
 		menuHandler = new LGMenuHandler(mainMenu, levelSelect, options);
 	}
-
+	
 	@Override
-	public void dispose(){
+	public void dispose()
+	{
 		batch.dispose();
 		Engine.dispose();
-		levelSelect.dispose();
+		menuHandler.dispose();
 	}
 	
 	@Override
@@ -64,6 +65,7 @@ public class LightGame extends Game
 		switch(CURRENT_GAMESTATE)
 		{
 			case IN_MENU:
+				Gdx.input.setInputProcessor(menuHandler.getCurrentMenu().getStage());
 				menuHandler.render();
 				break;
 			case INGAME:

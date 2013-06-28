@@ -38,7 +38,12 @@ public class BulletHandler
 		createBulletsAndFire(null, shooterRadius, aColor, entityX, entityY, forceScalar, rotAngle);
 	}
 	
-	public Bullet createBulletsAndFire(Entity bulletSource, float shooterRadius, Color aColor, float entityX, float entityY, int forceScalar, float rotAngle)
+	public void createBulletsAndFire(Entity bulletSource, float shooterRadius, Color aColor, float entityX, float entityY, int forceScalar, float rotAngle)
+	{
+		createBulletsAndFire(bulletSource, null, shooterRadius, aColor, entityX, entityY, forceScalar, rotAngle);
+	}
+	
+	public Bullet createBulletsAndFire(Entity bulletSource, Entity target, float shooterRadius, Color aColor, float entityX, float entityY, int forceScalar, float rotAngle)
 	{
 		//Box2D stuff
 		BodyDef bulletDef = new BodyDef();
@@ -72,6 +77,9 @@ public class BulletHandler
 		
 		//Bullet b = new Bullet("data/blankbullet.png", bulletBody, bulletLights, 200, bulletPattern.angles.get(i).floatValue());
 		Bullet b = new Bullet(bulletSource, "data/blankbullet.png", aColor, shooterRadius/10, bulletBody, bulletLights, (int)(shooterRadius*50), bulletBody.getAngle());
+		
+		b.setTarget(target);
+		
 		bullets.add(b);
 		
 		//Let the bullet body carry a pointer back to the bullet object
@@ -110,20 +118,27 @@ public class BulletHandler
 		bullets.remove(b);
 	}
 	
-	public Bullet getSomeBullet()
+	public Bullet getSomeBullet(Bullet currentTarget)
 	{
 		if(bullets.size() == 1)
 			return bullets.get(0);
 		
-		for(int i = 0; i < bullets.size(); i++)
+		if(bullets.contains(currentTarget))
+			return currentTarget;
+		else
 		{
-			Bullet b = bullets.get(i);
-			if(b != null && b != recentlyReturnedBullet)
+			for(int i = 0; i < bullets.size(); i++)
 			{
-				recentlyReturnedBullet = b;
-				return bullets.get(i);
+				Bullet b = bullets.get(i);
+				if(b != null && b != recentlyReturnedBullet)
+				{
+					recentlyReturnedBullet = b;
+					return bullets.get(i);
+				}
 			}
 		}
+		
+		
 		return null;
 	}
 	
@@ -136,14 +151,15 @@ public class BulletHandler
 	{
 		for(int i = 0; i < bullets.size(); i++)
 		{
-			bullets.get(i).update();
+			Bullet b = bullets.get(i);
+			b.update();
 			
-			if(!bullets.get(i).isImmortal())	
-				bullets.get(i).decrementLife();
+			if(!b.isImmortal())	
+				b.decrementLife();
 			
-			if(bullets.get(i).getLife() <= 0)
+			if(b.getLife() <= 0)
 			{
-				removeBullet(bullets.get(i));
+				removeBullet(b);
 				i--;
 			}
 		}

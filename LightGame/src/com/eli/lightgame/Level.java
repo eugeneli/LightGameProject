@@ -170,7 +170,7 @@ public class Level
 					float bulFacingDirec = enemy.getFloat("Direction");
 					int bulVelocity = enemy.getInt("Velocity");
 					
-					Bullet b = bulletHandler.createBulletsAndFire(entityHandler.getPlayer(), bulRadius, bulColor, bulSpawnX, bulSpawnY, bulVelocity, bulFacingDirec);
+					Bullet b = bulletHandler.createBulletsAndFire(entityHandler.getPlayer(), null, bulRadius, bulColor, bulSpawnX, bulSpawnY, bulVelocity, bulFacingDirec);
 					b.setFlickerRate(bulFlickerRate);
 					b.setImmortal(true);
 					break;

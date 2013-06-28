@@ -94,11 +94,11 @@ public class LightGameStage
     	stage.addListener(dissmissTipListener);
     }
     
-    public void displayEndMenu()
+    public void displayEndMenu(boolean victory)
     {
-    	if(engine.hasNextLevel())
+    	if(victory)
     	{
-            middleMessage = new Label("Level Complete\n\nTap to continue", style);
+    		middleMessage = new Label("Level Complete\n\nTap to continue", style);
             middleMessage.setPosition(stage.getWidth()/2 - middleMessage.getWidth()/2, stage.getHeight()/2-50);
             middleMessage.addAction(Actions.fadeIn(0.3f));
         	
@@ -108,7 +108,13 @@ public class LightGameStage
     	}
     	else
     	{
-    		
+    		middleMessage = new Label("Failure\n\nTap to retry", style);
+            middleMessage.setPosition(stage.getWidth()/2 - middleMessage.getWidth()/2, stage.getHeight()/2-50);
+            middleMessage.addAction(Actions.fadeIn(0.3f));
+        	
+        	stage.addActor(middleMessage);
+        	
+        	stage.addListener(levelEndLoserListener);
     	}
     }
     
@@ -158,6 +164,16 @@ public class LightGameStage
     		middleMessage.addAction(Actions.fadeOut(0.5f));
     		stage.removeListener(this);
     		engine.loadNextLevel();
+    		return false;
+    	}
+    };
+    
+    InputListener levelEndLoserListener = new InputListener(){
+    	public boolean touchDown(InputEvent event, float x, float y, int pointer, int button)
+    	{
+    		middleMessage.addAction(Actions.fadeOut(0.5f));
+    		stage.removeListener(this);
+    		engine.reloadLevel();
     		return false;
     	}
     };
