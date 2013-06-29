@@ -1,0 +1,184 @@
+{
+    "LevelType": "GET_BIG",
+    "WorldShape": "RECTANGLE",
+    "Title": "Blue Yourself",
+    "Mission": "Turn blue",
+    "Tips":[
+        ""
+        ],
+    "Background": "data/levels/level4/bg.jpg",
+    "MinZoom": 6,
+    "MaxZoom": 6,
+    "DefZoom": 6,
+    "PlayerColor": "WHITE",
+    "PlayerRadius": 6,
+    "PlayerCritRadiusMult": 3,
+    "PlayerSpawn": [
+        -470,
+        0
+        ],
+    "Ambience": [
+        0.2,
+        0.1,
+        0.5,
+        0.12
+        ],
+    "WinConditions": [
+        "PlayerIsBlue",
+        ],
+    "ParticleEffect": {
+            "Path": "",
+            "x": 0,
+            "y": 0,
+        },
+    "Enemies": {
+        "Giant": {
+            "EnemyType": "0",
+            "Color": "BLUE",
+            "x": 500,
+            "y": 0,
+            "Radius": 50,
+            "CritRadiusMult": 1.5,
+            "CanBlackHole": false,
+            "ParticlePath": "data/particleeffects/bluegiant.p"
+        },
+        "Drifter": {
+            "EnemyType": "1",
+            "Color": "BLUE",
+            "x": 625,
+            "y": 0,
+            "Radius": 13,
+            "Direction": 1.571,
+            "AngularVelocity": 0.3,
+            "CritRadiusMult": 1.5,
+            "Velocity": 30
+        },
+        "Drifter": {
+            "EnemyType": "1",
+            "Color": "BLUE",
+            "x": 350,
+            "y": 0,
+            "Radius": 6,
+            "Direction": 1.571,
+            "AngularVelocity": 0.3,
+            "CritRadiusMult": 1.5,
+            "Velocity": 30
+        },
+        "Drifter": {
+            "EnemyType": "1",
+            "Color": "RED",
+            "x": -450,
+            "y": -250,
+            "Radius": 15,
+            "Direction": 3.94,
+            "AngularVelocity": 0.3,
+            "CritRadiusMult": 1.5,
+            "Velocity": 15
+        },
+        "Drifter": {
+            "EnemyType": "1",
+            "Color": "RED",
+            "x": -200,
+            "y": -300,
+            "Radius": 17,
+            "Direction": -1.5,
+            "AngularVelocity": -0.3,
+            "CritRadiusMult": 1.5,
+            "Velocity": 2
+        },
+        "Drifter": {
+            "EnemyType": "1",
+            "Color": "RED",
+            "x": -300,
+            "y": 100,
+            "Radius": 10,
+            "Direction": -3.94,
+            "AngularVelocity": 0.2,
+            "CritRadiusMult": 1.5,
+            "Velocity": 3
+        },
+        "Drifter": {
+            "EnemyType": "1",
+            "Color": "RED",
+            "x": -370,
+            "y": 150,
+            "Radius": 20,
+            "Direction": -3.94,
+            "AngularVelocity": -0.2,
+            "CritRadiusMult": 1.5,
+            "Velocity": 10
+        },
+         "Drifter": {
+            "EnemyType": "1",
+            "Color": "RED",
+            "x": -550,
+            "y": 0,
+            "Radius": 20,
+            "Direction": -3,
+            "AngularVelocity": -0.2,
+            "CritRadiusMult": 1.5,
+            "Velocity": 7
+        },
+        "Drifter": {
+            "EnemyType": "1",
+            "Color": "RED",
+            "x": -300,
+            "y": -300,
+            "Radius": 11,
+            "Direction": -2,
+            "AngularVelocity": -1,
+            "CritRadiusMult": 1.5,
+            "Velocity": 6
+        },
+        "Bullet": {
+            "EnemyType": "3",
+            "Color": "RED",
+            "x": -400,
+            "y": 115,
+            "Radius": 6,
+            "FlickerRate": 0.5,
+            "Direction": 3.1,
+            "Velocity": 50
+        },
+        "Bullet": {
+            "EnemyType": "3",
+            "Color": "RED",
+            "x": -380,
+            "y": -155,
+            "Radius": 7,
+            "FlickerRate": 0.7,
+            "Direction": 2,
+            "Velocity": 60
+        },
+        "Bullet": {
+            "EnemyType": "3",
+            "Color": "RED",
+            "x": -500,
+            "y": -15,
+            "Radius": 10,
+            "FlickerRate": 1.2,
+            "Direction": -3,
+            "Velocity": 85
+        },
+        "Bullet": {
+            "EnemyType": "3",
+            "Color": "RED",
+            "x": -550,
+            "y": -10,
+            "Radius": 10,
+            "FlickerRate": 1.2,
+            "Direction": 3,
+            "Velocity": 80
+        },
+        "Bullet": {
+            "EnemyType": "3",
+            "Color": "RED",
+            "x": -480,
+            "y": -115,
+            "Radius": 10,
+            "FlickerRate": 1.2,
+            "Direction": -1.5,
+            "Velocity": 60
+        },
+    }
+}

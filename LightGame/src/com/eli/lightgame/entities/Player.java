@@ -30,7 +30,7 @@ public class Player extends Entity
 	private float targetRotAngle;
 	private boolean rotateInstantly = true;
 	private boolean needsToRotate = false;
-	//private boolean moveQueued = false;
+	private boolean moveQueued = false;
 	private boolean shotQueued = false;
 	
 	private Entity target;
@@ -102,7 +102,7 @@ public class Player extends Entity
 	
 	public void fireTargeted(int forceScalar, Entity bulTarget)
 	{
-		bulletHandler.createBulletsAndFire(this, bulTarget, radius, color, getPosition().x, getPosition().y, forceScalar, entityBody.getAngle());
+		bulletHandler.createBulletsAndFire(bulTarget, radius, color, getPosition().x, getPosition().y, forceScalar, entityBody.getAngle());
 		
 		addToRadius(-radius/10); //Decrease in radius equal to bullet's radius
 	}
@@ -147,22 +147,22 @@ public class Player extends Entity
 	
 	public void move(float rotAngle)
 	{	
-		/*if(!rotateInstantly)
+		if(!rotateInstantly)
 		{
 			turnToAngle(rotAngle);
 			moveQueued = true;
 		}
 		else
-		{*/
+		{
 			entityBody.setAngularVelocity(0);
 			entityBody.setTransform(entityBody.getPosition(), rotAngle);
 			
-		//	if(entityBody.getLinearVelocity().x/Math.cos(entityBody.getAngle()) < 500 && entityBody.getLinearVelocity().y/Math.sin(entityBody.getAngle()) < 500)
-			//	entityBody.applyForceToCenter(new Vector2((float)(Math.cos(entityBody.getAngle()) * (1000*radius)),(float)(Math.sin(entityBody.getAngle()) * (1000*radius))), true);
+		//	if(entityBody.getLinearVelocity().x/Math.cos(entityBody.getAngle()) < (30 + 1 * radius) && entityBody.getLinearVelocity().y/Math.sin(entityBody.getAngle()) < (30 + 1 * radius))
+			//	entityBody.applyForceToCenter(new Vector2((float)(Math.cos(entityBody.getAngle()) * (5500*radius)),(float)(Math.sin(entityBody.getAngle()) * (5500*radius))), true);
 			
 		//	entityBody.applyForceToCenter(new Vector2((float)(Math.cos(entityBody.getAngle()) * (10*radius)),(float)(Math.sin(entityBody.getAngle()) * (10*radius))), true);
 			entityBody.setLinearVelocity(new Vector2((float)(Math.cos(entityBody.getAngle()) * (30 + 1 * radius)),(float)(Math.sin(entityBody.getAngle()) * (30 + 1 * radius))));
-		//}
+		}
 	}
 	
 	@Override
@@ -202,12 +202,12 @@ public class Player extends Entity
 				
 			entityBody.setTransform(entityBody.getPosition(), newAngle);
 		}
-		/*else if(moveQueued)
+		else if(moveQueued)
 		{
 			entityBody.applyForceToCenter(new Vector2((float)(Math.cos(entityBody.getAngle()) * (10*radius)),(float)(Math.sin(entityBody.getAngle()) * (10*radius))), true);
 			entityBody.setLinearVelocity(new Vector2((float)(Math.cos(entityBody.getAngle()) * (40 + 1 * radius)),(float)(Math.sin(entityBody.getAngle()) * (40 + 1 * radius))));
 			moveQueued = false;
-		}*/
+		}
 		else if(shotQueued)
 		{
 			//fire(500);

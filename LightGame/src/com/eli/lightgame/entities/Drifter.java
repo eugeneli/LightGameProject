@@ -1,6 +1,7 @@
 package com.eli.lightgame.entities;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import box2dLight.Light;
 import box2dLight.PointLight;
@@ -12,7 +13,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.eli.lightgame.BulletHandler;
@@ -23,8 +23,9 @@ public class Drifter extends NPC
 	private boolean alreadyMoving = false;
 	private float originalDirection;
 	private float originalVelocity;
+	private float angularVelocity;
 	
-	public Drifter(World world, RayHandler rayHandler, BulletHandler bh, Color aColor, float rad, float critSize, float xPos, float yPos, float facingDirection, float velocity)
+	public Drifter(World world, RayHandler rayHandler, BulletHandler bh, Color aColor, float rad, float critSize, float xPos, float yPos, float facingDirection, float velocity, float angularVel)
 	{
 		super("data/drifter.png", aColor, rad);
 		
@@ -33,6 +34,7 @@ public class Drifter extends NPC
 		canChangeColor = true;
 		canChangeSize = true;
 		lightSize = 1.5f * radius;
+		angularVelocity = angularVel;
 		
 		BodyDef circleDef = new BodyDef();
 		circleDef.type = BodyType.DynamicBody;
@@ -74,6 +76,11 @@ public class Drifter extends NPC
 	{
 		if(!alreadyMoving)
 		{
+			if(angularVelocity == -1)
+				entityBody.setAngularVelocity(new Random().nextFloat()*3.0f+0.35f);
+			else
+				entityBody.setAngularVelocity(angularVelocity);
+			
 			entityBody.setLinearVelocity(new Vector2((float)(Math.cos(originalDirection) * originalVelocity),(float)(Math.sin(originalDirection) * originalVelocity)));
 			alreadyMoving = true;
 		}

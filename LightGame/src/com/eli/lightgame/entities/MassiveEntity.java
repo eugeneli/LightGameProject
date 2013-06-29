@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 public class MassiveEntity extends Entity
 {
 	private float gravityMagnitude;
+	private boolean canBlackHole = false;
 	
 	public MassiveEntity(String spritePath, Color aColor, float rad)
 	{
@@ -19,6 +20,16 @@ public class MassiveEntity extends Entity
 	public void setGravityMagnitude(float mag)
 	{
 		gravityMagnitude = mag;
+	}
+	
+	public boolean canBlackHole()
+	{
+		return canBlackHole;
+	}
+	
+	public void setCanBlackHole(boolean bool)
+	{
+		canBlackHole = bool;
 	}
 
 	@Override

@@ -17,12 +17,9 @@ public class Bullet extends Entity
 	private boolean immortal = false;
 	private Entity target;
 	
-	private Entity source;
-	
-	public Bullet(Entity bulletSource, String spritePath, Color aColor, float rad, Body b, ArrayList<Light> pl, int laifu, float ang)
+	public Bullet(String spritePath, Color aColor, float rad, Body b, ArrayList<Light> pl, int laifu, float ang)
 	{
 		super(spritePath, b, pl, rad);
-		source = bulletSource;
 		originalLife = life = laifu;
 		angle = ang;
 		color = aColor;
@@ -103,11 +100,6 @@ public class Bullet extends Entity
 	public float getAngleY()
 	{
 		return (float) Math.sin(angle);
-	}
-	
-	public Entity getSource()
-	{
-		return source;
 	}
 	
 	public void setTarget(Entity bulTarget)

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Random;
 
 import box2dLight.RayHandler;
 
@@ -21,10 +22,10 @@ import com.eli.lightgame.entities.Bullet;
 import com.eli.lightgame.entities.Chaser;
 import com.eli.lightgame.entities.Drifter;
 import com.eli.lightgame.entities.Entity;
+import com.eli.lightgame.entities.Giant;
 import com.eli.lightgame.entities.LightCore;
 import com.eli.lightgame.entities.MassiveEntity;
 import com.eli.lightgame.entities.Player;
-import com.eli.lightgame.entities.RedGiant;
 import com.eli.lightgame.util.LGMath;
 
 public class EntityHandler
@@ -36,6 +37,7 @@ public class EntityHandler
 		public Vector2 position;
 	}
 	
+	private Random random = new Random();
 	private int currentEntityID = 0;
 	private World world;
 	private RayHandler rayHandler;
@@ -52,7 +54,7 @@ public class EntityHandler
 	private Queue<EntityDefinition> queuedEntities = new LinkedList<EntityDefinition>();
 	
 	public static enum EntityType{
-		PLAYER, RED_GIANT, DRIFTER, CORE, BLINKER, CHASER
+		PLAYER, GIANT, DRIFTER, CORE, BLINKER, CHASER
 	}
 	
 	public EntityHandler(World w, RayHandler rh, BulletHandler bh, float theWidth, float theHeight)
@@ -64,6 +66,16 @@ public class EntityHandler
 	
 	public Entity createEntity(EntityType type, Color aColor, float radius, float critRadiusMult, float xPos, float yPos, float facingDirection, float velocity)
 	{
+		return createEntity(type, aColor, radius, critRadiusMult, xPos, yPos, facingDirection, velocity, 0, null);
+	}
+	
+	public Entity createEntity(EntityType type, Color aColor, float radius, float critRadiusMult, float xPos, float yPos, float facingDirection, float velocity, float angularVel)
+	{
+		return createEntity(type, aColor, radius, critRadiusMult, xPos, yPos, facingDirection, velocity, angularVel, null);
+	}
+
+	public Entity createEntity(EntityType type, Color aColor, float radius, float critRadiusMult, float xPos, float yPos, float facingDirection, float velocity, float angularVel, String particlePath)
+	{
 		switch(type)
 		{
 			case PLAYER:
@@ -72,16 +84,16 @@ public class EntityHandler
 				entities.put(currentEntityID, player); //Player always has ID of 0
 				currentEntityID++;
 				return player;
-			case RED_GIANT:
-				RedGiant rg = new RedGiant(world, rayHandler, bulletHandler, aColor, radius, critRadiusMult*radius, xPos, yPos);
-				rg.setID(currentEntityID);
-				rg.setGravityMagnitude(2500); //100000 is kinda high. So is 5000
-				entities.put(currentEntityID, rg);
-				gravityEntities.add(rg);
+			case GIANT:
+				Giant giant = new Giant(world, rayHandler, bulletHandler, aColor, radius, critRadiusMult*radius, xPos, yPos, particlePath);
+				giant.setID(currentEntityID);
+				giant.setGravityMagnitude(2500); //100000 is kinda high. So is 5000
+				entities.put(currentEntityID, giant);
+				gravityEntities.add(giant);
 				currentEntityID++;
-				return rg;
+				return giant;
 			case DRIFTER:
-				Drifter dr = new Drifter(world, rayHandler, bulletHandler, aColor, radius, critRadiusMult*radius, xPos, yPos, facingDirection, velocity);
+				Drifter dr = new Drifter(world, rayHandler, bulletHandler, aColor, radius, critRadiusMult*radius, xPos, yPos, facingDirection, velocity, angularVel);
 				dr.setID(currentEntityID);
 				entities.put(currentEntityID, dr);
 				currentEntityID++;
@@ -223,12 +235,12 @@ public class EntityHandler
 			}
 			removeEntity(secondEntity);
 		}
-		else if(firstEntity.getColor().equals(secondEntity.getColor()))
+		else if(firstEntity.getColor().equals(secondEntity.getColor()) || firstEntity instanceof MassiveEntity || secondEntity instanceof MassiveEntity)
 		{
 			if(firstEntity.getRadius() > secondEntity.getRadius())
 			{
 				float tmpRadius = secondEntity.getRadius()-SIZE_CHANGE_RATE;
-				if(tmpRadius <= 1)
+				if(tmpRadius <= 2)
 				{
 					firstEntity.addToRadius(SIZE_CHANGE_RATE);
 					removeEntity(secondEntity);
@@ -238,14 +250,14 @@ public class EntityHandler
 					firstEntity.addToRadius(SIZE_CHANGE_RATE);
 					secondEntity.addToRadius(-SIZE_CHANGE_RATE);
 				
-					if(secondEntity.getRadius() <= 1)
+					if(secondEntity.getRadius() <= 2)
 						removeEntity(secondEntity);
 				}
 			}
 			else
 			{
 				float tmpRadius = secondEntity.getRadius()-SIZE_CHANGE_RATE;
-				if(tmpRadius <= 1)
+				if(tmpRadius <= 2)
 				{
 					secondEntity.addToRadius(SIZE_CHANGE_RATE);
 					removeEntity(firstEntity);
@@ -255,7 +267,7 @@ public class EntityHandler
 					secondEntity.addToRadius(SIZE_CHANGE_RATE);
 					firstEntity.addToRadius(-SIZE_CHANGE_RATE);
 					
-					if(firstEntity.getRadius() <= 1)
+					if(firstEntity.getRadius() <= 2)
 						removeEntity(firstEntity);
 				}
 			}
@@ -288,7 +300,7 @@ public class EntityHandler
 			{
 				//Gravity field is 6 times the radius of the body
 				float distance = LGMath.distanceBetween(entity.getPosition(),gravEntity.getPosition());
-				if(distance <= 20*gravEntity.getRadius())
+				if(distance <= 5*gravEntity.getRadius())
 				{
 					Body entityBody = entity.getBody();
 					
@@ -309,12 +321,6 @@ public class EntityHandler
 		
 	public void update()
 	{
-		if(queuedEntities.size() > 0)
-    	{
-    		EntityDefinition ed = queuedEntities.remove();
-    		createEntity(EntityType.CORE, ed.color, ed.radius, 10, ed.position.x, ed.position.y, 0f, 0f);
-    	}
-		
 		Iterator<Integer> it = entities.keySet().iterator();
 	    while (it.hasNext())
 	    {
@@ -323,52 +329,68 @@ public class EntityHandler
 	    	
 	    	entity.update();
 	    	
-	    	doGravity(entity);
-	    	
-	    	if(entity.getRadius() >= entity.getCritRadius())
-	    	{
-	    		explodeEntity(entity);
-	    	}
+	    	if(gravityEntities.size() > 0)
+	    		doGravity(entity);
 	    	
 	    	//Update Box2D sizes
 	    	if(entity.waitingToUpdateSize())
 	    	{
 	    		if(entity.getRadius() >= 2)
 	    		{
-	    			entity.getBody().destroyFixture(entity.getBody().getFixtureList().get(0));
-					
-					CircleShape newShape = new CircleShape();
-					newShape.setRadius(entity.getRadius());
-					
-					FixtureDef circleFixture = new FixtureDef();
-					circleFixture.shape = newShape;
-					circleFixture.density = 1.0f;
-					circleFixture.friction = 1.0f;
-					circleFixture.restitution = 0.0f;
-					
-					entity.getBody().createFixture(circleFixture);
-					
-					entity.isWaitingToUpdateSize(false);
+	    			if(!world.isLocked())
+					{
+		    			entity.getBody().destroyFixture(entity.getBody().getFixtureList().get(0));
+						
+						CircleShape newShape = new CircleShape();
+						newShape.setRadius(entity.getRadius());
+						
+						FixtureDef circleFixture = new FixtureDef();
+						circleFixture.shape = newShape;
+						circleFixture.density = 1.0f;
+						circleFixture.friction = 1.0f;
+						circleFixture.restitution = 0.0f;
+						
+						entity.getBody().createFixture(circleFixture);
+						
+						entity.isWaitingToUpdateSize(false);
+					}
 	    		}
 	    		else
 	    		{
 	    			removeEntity(entity);
 	    		}
 	    	}
+	    	
+	    	if(entity.getRadius() >= entity.getCritRadius())
+	    	{
+	    		explodeEntity(entity);
+	    	}
 
 	    	if(entity.waitingToBeDeleted())
 	    	{
-	    		world.destroyBody(entity.getBody());
-	    		entity.setRadius(0);
-	    		entity.dispose();
-	    		it.remove();
-	    		
-	    		if(gravityEntities.contains(entity))
-	    			gravityEntities.remove(entity);
-	    		
-	    		entity = null;
+	    		if(!world.isLocked())
+				{
+		    		world.destroyBody(entity.getBody());
+		    		entity.setRadius(0);
+		    		entity.dispose();
+		    		it.remove();
+		    		
+		    		if(gravityEntities.contains(entity))
+		    			gravityEntities.remove(entity);
+		    		
+		    		entity = null;
+				}
 	    	}
 	    }
+	    
+	    if(queuedEntities.size() > 0)
+    	{
+	    	if(!world.isLocked())
+			{
+	    		EntityDefinition ed = queuedEntities.remove();
+	    		createEntity(EntityType.CORE, ed.color, ed.radius, 10, ed.position.x, ed.position.y, 0f, 0f);
+			}
+    	}
 	}
 	
 	public void draw(SpriteBatch batch)
@@ -377,17 +399,6 @@ public class EntityHandler
 	    while (it.hasNext())
 	    {
 	    	Integer entityID = (Integer)it.next();
-	    	entities.get(entityID).draw(batch);
-	    }
-	}
-	
-	public void updateAndDraw(SpriteBatch batch)
-	{
-		Iterator<Integer> it = entities.keySet().iterator();
-	    while (it.hasNext())
-	    {
-	    	Integer entityID = (Integer)it.next();
-	    	entities.get(entityID).update();
 	    	entities.get(entityID).draw(batch);
 	    }
 	}
@@ -401,5 +412,6 @@ public class EntityHandler
 	    }
 		
 		entities = null;
+		currentEntityID = 0;
 	}
 }

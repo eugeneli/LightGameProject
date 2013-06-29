@@ -182,12 +182,12 @@ public class LightGameEngine
 	{
 		//Step box2D physics
 		world.step(1/30f, 8, 3);
-
-		//Update bullets
-		bulletHandler.updateBullets();
 		
 		//Update Entities
 		entityHandler.update();
+
+		//Update bullets
+		bulletHandler.updateBullets();
 		
 		rayHandler.update();
 		
@@ -253,10 +253,13 @@ public class LightGameEngine
 			update();
 		}
 		else
-			LGstage.displayEndMenu(true);
-		
-		if(player != null && player.getRadius() == 0)
-			LGstage.displayEndMenu(false);
+		{
+			if(player != null && player.getRadius() == 0)
+				LGstage.displayEndMenu(false);
+			else
+				LGstage.displayEndMenu(true);
+		}
+			
 
 		camera.update();
 		playerCamera.update();

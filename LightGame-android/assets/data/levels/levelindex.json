@@ -12,8 +12,13 @@
         },
         "1": {
             "id": 2,
-            "Title": "(3) - It gets crowded",
+            "Title": "(3) - It Gets Crowded",
             "Path": "data/levels/level3/level3.json"
+        },
+        "1": {
+            "id": 3,
+            "Title": "(4) - It Gets Bigger",
+            "Path": "data/levels/level4/level4.json"
         },
     }
 }

@@ -1,6 +1,8 @@
 package com.eli.lightgame;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import box2dLight.Light;
 import box2dLight.PointLight;
@@ -20,11 +22,22 @@ import com.eli.lightgame.entities.Entity;
 
 public class BulletHandler
 {
+	private class BulletDefinition
+	{
+		public float radius;
+		public Color color;
+		public Vector2 position;
+		public int force;
+		public float rotAngle;
+	}
+	
 	private ArrayList<Bullet> bullets;
 	
 	private World world;
 	private RayHandler rayHandler;
 	private Bullet recentlyReturnedBullet;
+	
+	private Queue<BulletDefinition> queuedExplosion = new LinkedList<BulletDefinition>();
 	
 	public BulletHandler(World w, RayHandler rh)
 	{
@@ -38,12 +51,7 @@ public class BulletHandler
 		createBulletsAndFire(null, shooterRadius, aColor, entityX, entityY, forceScalar, rotAngle);
 	}
 	
-	public void createBulletsAndFire(Entity bulletSource, float shooterRadius, Color aColor, float entityX, float entityY, int forceScalar, float rotAngle)
-	{
-		createBulletsAndFire(bulletSource, null, shooterRadius, aColor, entityX, entityY, forceScalar, rotAngle);
-	}
-	
-	public Bullet createBulletsAndFire(Entity bulletSource, Entity target, float shooterRadius, Color aColor, float entityX, float entityY, int forceScalar, float rotAngle)
+	public Bullet createBulletsAndFire(Entity target, float shooterRadius, Color aColor, float entityX, float entityY, int forceScalar, float rotAngle)
 	{
 		//Box2D stuff
 		BodyDef bulletDef = new BodyDef();
@@ -54,7 +62,7 @@ public class BulletHandler
 		
 		CircleShape circleShape = new CircleShape();
 		circleShape.setRadius(shooterRadius/3);
-		
+
 		FixtureDef bulletFixture = new FixtureDef();
 		bulletFixture.shape = circleShape;
 		bulletFixture.density = 0.1f;
@@ -67,16 +75,15 @@ public class BulletHandler
 		
 		//Lighting stuff
 		ArrayList<Light> bulletLights = new ArrayList<Light>();
-		PointLight bl = new PointLight(rayHandler, 6, aColor, shooterRadius*5f, 0, 0);
+		PointLight bl = new PointLight(rayHandler, (int) shooterRadius, aColor, shooterRadius*5f, 0, 0);
 		bl.attachToBody(bulletBody, 0,  0);
 		bulletLights.add(bl);
 		
 		//Rotate bullet
 		bulletBody.setTransform(bulletBody.getPosition(), rotAngle);
-		bulletBody.setAngularVelocity(0);
 		
 		//Bullet b = new Bullet("data/blankbullet.png", bulletBody, bulletLights, 200, bulletPattern.angles.get(i).floatValue());
-		Bullet b = new Bullet(bulletSource, "data/blankbullet.png", aColor, shooterRadius/10, bulletBody, bulletLights, (int)(shooterRadius*50), bulletBody.getAngle());
+		Bullet b = new Bullet("data/blankbullet.png", aColor, shooterRadius/10, bulletBody, bulletLights, (int)(shooterRadius*50), bulletBody.getAngle());
 		
 		b.setTarget(target);
 		
@@ -88,6 +95,17 @@ public class BulletHandler
 		fireSingle(b, forceScalar);
 		
 		return b;
+	}
+	
+	public void queueExplosionBullet(float shooterRadius, Color aColor, float entityX, float entityY, int forceScalar, float rotAngle)
+	{
+		BulletDefinition bulDef = new BulletDefinition();
+		bulDef.radius = shooterRadius;
+		bulDef.color = aColor;
+		bulDef.position = new Vector2(entityX, entityY);
+		bulDef.force = forceScalar;
+		bulDef.rotAngle = rotAngle;
+		queuedExplosion.add(bulDef);
 	}
 	
 	public void fireSingle(Bullet bullet, int forceScalar)
@@ -137,8 +155,6 @@ public class BulletHandler
 				}
 			}
 		}
-		
-		
 		return null;
 	}
 	
@@ -161,6 +177,15 @@ public class BulletHandler
 			{
 				removeBullet(b);
 				i--;
+			}
+		}
+				
+		if(queuedExplosion.size() > 0)
+		{
+			if(!world.isLocked())
+			{
+				BulletDefinition bulDef = queuedExplosion.remove();
+				createBulletsAndFire(bulDef.radius, bulDef.color, bulDef.position.x, bulDef.position.y, bulDef.force, bulDef.rotAngle);
 			}
 		}
 	}

@@ -24,11 +24,13 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.eli.lightgame.EntityHandler.EntityType;
 import com.eli.lightgame.entities.Blinker;
 import com.eli.lightgame.entities.Bullet;
+import com.eli.lightgame.entities.Giant;
 import com.eli.lightgame.entities.Player;
 import com.eli.lightgame.ui.LightGameStage;
 import com.eli.lightgame.winconditions.NoOtherLumis;
 import com.eli.lightgame.winconditions.OnlyEntityLeft;
 import com.eli.lightgame.winconditions.NoMoreBullets;
+import com.eli.lightgame.winconditions.PlayerIsBlue;
 import com.eli.lightgame.winconditions.PlayerIsLargest;
 
 public class Level
@@ -132,13 +134,17 @@ public class Level
 			int enemyType = enemy.getInt("EnemyType");
 			switch(enemyType)
 			{
-				case 0: //Case 0: Red Giant
-					Color rgColor = convertStringToColor(enemy.getString("Color"));
-					float rgRadius = enemy.getFloat("Radius");
-					float rgSpawnX = enemy.getFloat("x");
-					float rgSpawnY = enemy.getFloat("y");
+				case 0: //Case 0: Giant
+					Color gColor = convertStringToColor(enemy.getString("Color"));
+					float gRadius = enemy.getFloat("Radius");
+					float gSpawnX = enemy.getFloat("x");
+					float gSpawnY = enemy.getFloat("y");
+					float gCritMult = enemy.getFloat("CritRadiusMult");
+					String gParticlePath = enemy.getString("ParticlePath");
+					boolean gCanBlackHole = enemy.getBoolean("CanBlackHole");
 					
-					entityHandler.createEntity(EntityType.RED_GIANT, rgColor, rgRadius, 1.3f, rgSpawnX, rgSpawnY, 0f, 0f); //create a red giant
+					Giant g = (Giant) entityHandler.createEntity(EntityType.GIANT, gColor, gRadius, gCritMult, gSpawnX, gSpawnY, 0f, 0f, 0f, gParticlePath); //create a giant
+					g.setCanBlackHole(gCanBlackHole);
 					break;
 				case 1: //Case 1: Drifter
 					Color dColor = convertStringToColor(enemy.getString("Color"));
@@ -148,8 +154,9 @@ public class Level
 					float dSpawnY = enemy.getFloat("y");
 					float dFacingDirec = enemy.getFloat("Direction");
 					float dVelocity = enemy.getFloat("Velocity");
+					float dAngularVel = enemy.getFloat("AngularVelocity");
 					
-					entityHandler.createEntity(EntityType.DRIFTER, dColor, dRadius, dCritMult, dSpawnX, dSpawnY, dFacingDirec, dVelocity); //create a drifter
+					entityHandler.createEntity(EntityType.DRIFTER, dColor, dRadius, dCritMult, dSpawnX, dSpawnY, dFacingDirec, dVelocity, dAngularVel); //create a drifter
 					break;
 				case 2: //Case 2: Blinker
 					Color bColor = convertStringToColor(enemy.getString("Color"));
@@ -170,7 +177,7 @@ public class Level
 					float bulFacingDirec = enemy.getFloat("Direction");
 					int bulVelocity = enemy.getInt("Velocity");
 					
-					Bullet b = bulletHandler.createBulletsAndFire(entityHandler.getPlayer(), null, bulRadius, bulColor, bulSpawnX, bulSpawnY, bulVelocity, bulFacingDirec);
+					Bullet b = bulletHandler.createBulletsAndFire(null, bulRadius, bulColor, bulSpawnX, bulSpawnY, bulVelocity, bulFacingDirec);
 					b.setFlickerRate(bulFlickerRate);
 					b.setImmortal(true);
 					break;
@@ -269,16 +276,16 @@ public class Level
 		BoundingBox[] boxes = new BoundingBox[4];
 		
 		//Left bound
-		boxes[0] = new BoundingBox(new Vector3(-background.getWidth()/2 - 10, -background.getHeight()/2,0), new Vector3(-background.getWidth()/2 - 9, background.getHeight()/2, 0));
+		boxes[0] = new BoundingBox(new Vector3(-background.getWidth()/2 - 5, -background.getHeight()/2,0), new Vector3(-background.getWidth()/2 - 4, background.getHeight()/2, 0));
 		
 		//Top bound
-		boxes[1] = new BoundingBox(new Vector3(-background.getWidth()/2, background.getHeight()/2 + 9, 0), new Vector3(background.getWidth()/2, background.getHeight()/2 + 10,0));
+		boxes[1] = new BoundingBox(new Vector3(-background.getWidth()/2, background.getHeight()/2 + 4, 0), new Vector3(background.getWidth()/2, background.getHeight()/2 + 5,0));
 		
 		//Right bound
-		boxes[2] = new BoundingBox(new Vector3(background.getWidth()/2 + 9, -background.getHeight()/2, 0), new Vector3(background.getWidth()/2 + 10, background.getHeight()/2,0));
+		boxes[2] = new BoundingBox(new Vector3(background.getWidth()/2 + 4, -background.getHeight()/2, 0), new Vector3(background.getWidth()/2 + 5, background.getHeight()/2,0));
 		
 		//Bottom bound
-		boxes[3] = new BoundingBox(new Vector3(-background.getWidth()/2, -background.getHeight()/2 - 10, 0), new Vector3(background.getWidth()/2, -background.getHeight()/2 - 9,0));
+		boxes[3] = new BoundingBox(new Vector3(-background.getWidth()/2, -background.getHeight()/2 - 5, 0), new Vector3(background.getWidth()/2, -background.getHeight()/2 - 4,0));
 		
 		return boxes;
 	}
@@ -286,7 +293,7 @@ public class Level
 	public boolean isOver()
 	{
 		if(!isPresentation)
-			return levelState.allConditionsSatisfied();
+			return levelState.allConditionsSatisfied() || entityHandler.getPlayer().getRadius() == 0;
 		else return false;
 	}
 	
@@ -304,6 +311,10 @@ public class Level
 			return Color.ORANGE;
 		else if(colorString.equals("GREEN"))
 			return Color.GREEN;
+		else if(colorString.equals("PINK"))
+			return Color.PINK;
+		else if(colorString.equals("PURPLE"))
+			return new Color(1,0,1, 1);
 		
 		return Color.WHITE;
 	}
@@ -318,5 +329,7 @@ public class Level
 			levelState.addWinCondition(new PlayerIsLargest(entityHandler, bulletHandler));
 		else if(condition.equals("NoOtherLumis"))
 			levelState.addWinCondition(new NoOtherLumis(entityHandler, bulletHandler));
+		else if(condition.equals("PlayerIsBlue"))
+			levelState.addWinCondition(new PlayerIsBlue(entityHandler, bulletHandler));
 	}
 }

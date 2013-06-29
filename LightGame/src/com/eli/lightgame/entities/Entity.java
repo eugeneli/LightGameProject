@@ -209,10 +209,10 @@ public abstract class Entity
 	
 	public void explode()
 	{
-		bulletHandler.createBulletsAndFire(this,radius+5, color, getPosition().x, getPosition().y, 10, 0f);
-		bulletHandler.createBulletsAndFire(this, radius+5, color, getPosition().x, getPosition().y, 10, 5.0f);
-		bulletHandler.createBulletsAndFire(this, radius+5, color, getPosition().x, getPosition().y, 10, 10.0f);
-		bulletHandler.createBulletsAndFire(this, radius+5, color, getPosition().x, getPosition().y, 10, 15f);
+		bulletHandler.queueExplosionBullet(radius/2, color, getPosition().x, getPosition().y, (int) (2 * radius), 0f);
+		bulletHandler.queueExplosionBullet(radius/2, color, getPosition().x, getPosition().y, (int) (2 * radius), 5.0f);
+		bulletHandler.queueExplosionBullet(radius/2, color, getPosition().x, getPosition().y, (int) (2 * radius), 10.0f);
+		bulletHandler.queueExplosionBullet(radius/2, color, getPosition().x, getPosition().y, (int) (2 * radius), 15f);
 		
 		radius = 0;
 		toBeDeleted(true);
