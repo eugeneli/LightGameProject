@@ -141,9 +141,12 @@ public class Level
 					float gSpawnY = enemy.getFloat("y");
 					float gCritMult = enemy.getFloat("CritRadiusMult");
 					String gParticlePath = enemy.getString("ParticlePath");
+					float gFacingDirec = enemy.getFloat("Direction");
+					float gVelocity = enemy.getFloat("Velocity");
+					float gAngularVel = enemy.getFloat("AngularVelocity");
 					boolean gCanBlackHole = enemy.getBoolean("CanBlackHole");
 					
-					Giant g = (Giant) entityHandler.createEntity(EntityType.GIANT, gColor, gRadius, gCritMult, gSpawnX, gSpawnY, 0f, 0f, 0f, gParticlePath); //create a giant
+					Giant g = (Giant) entityHandler.createEntity(EntityType.GIANT, gColor, gRadius, gCritMult, gSpawnX, gSpawnY, gFacingDirec, gVelocity, gAngularVel, gParticlePath); //create a giant
 					g.setCanBlackHole(gCanBlackHole);
 					break;
 				case 1: //Case 1: Drifter

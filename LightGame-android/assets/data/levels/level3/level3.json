@@ -78,37 +78,15 @@
             "CritRadiusMult": 1.3,
             "Velocity": 250
         },
-       "Drifter": {
-            "EnemyType": "1",
-            "Color": "YELLOW",
-            "x": -5,
-            "y":  -210,
-            "Radius": 7,
-            "Direction": 3.2,
-            "AngularVelocity": -1,
-            "CritRadiusMult": 1.5,
-            "Velocity": 70
-        },
-        "Drifter": {
-            "EnemyType": "1",
-            "Color": "YELLOW",
-            "x": 100,
-            "y":  -175,
-            "Radius": 5,
-            "Direction": -1.9,
-            "AngularVelocity": -1,
-            "CritRadiusMult": 1.3,
-            "Velocity": 60
-        },
         "Drifter": {
             "EnemyType": "1",
             "Color": "GREEN",
             "x": -170,
             "y": 80,
-            "Radius": 8,
+            "Radius": 10,
             "Direction": 0,
             "AngularVelocity": 0,
-            "CritRadiusMult": 1.5,
+            "CritRadiusMult": 1.4,
             "Velocity": 100
         },
         "Drifter": {
@@ -118,9 +96,31 @@
             "y": 80,
             "Radius": 10,
             "Direction": 3.14159,
-            "AngularVelocity": -1,
+            "AngularVelocity": 0,
             "CritRadiusMult": 1.2,
             "Velocity": 175
+        },
+       "Drifter": {
+            "EnemyType": "1",
+            "Color": "YELLOW",
+            "x": -5,
+            "y":  -210,
+            "Radius": 7,
+            "Direction": 3.2,
+            "AngularVelocity": -1,
+            "CritRadiusMult": 1.3,
+            "Velocity": 70
+        },
+        "Drifter": {
+            "EnemyType": "1",
+            "Color": "YELLOW",
+            "x": 100,
+            "y":  -175,
+            "Radius": 8,
+            "Direction": -1.9,
+            "AngularVelocity": -1,
+            "CritRadiusMult": 1.3,
+            "Velocity": 60
         },
         "Drifter": {
             "EnemyType": "1",
@@ -128,19 +128,21 @@
             "x": -120,
             "y": -80,
             "Radius": 10,
-            "Direction": -3.92,
+            "Direction": 3.92,
             "AngularVelocity": -1,
             "CritRadiusMult": 1.3,
-            "Velocity": 100
+            "Velocity": 50
         },
-        "Chaser": {
-            "EnemyType": "4",
-            "Color": "RED",
-            "x": "-115",
-            "y": "210",
-            "Radius": 5,
-            "Direction": 0.5,
-            "CritRadiusMult": 2.2,
+        "Drifter": {
+            "EnemyType": "1",
+            "Color": "GREEN",
+            "x": -120,
+            "y": -80,
+            "Radius": 12,
+            "Direction": 0.2,
+            "AngularVelocity": -1,
+            "CritRadiusMult": 1.2,
+            "Velocity": 70
         },
         "Bullet": {
             "EnemyType": "3",
@@ -211,6 +213,36 @@
             "FlickerRate": 0.5,
             "Direction": 3.1,
             "Velocity": 99
+        },
+        "Bullet": {
+            "EnemyType": "3",
+            "Color": "WHITE",
+            "x": "150",
+            "y": "-100",
+            "Radius": 8,
+            "FlickerRate": 0.8,
+            "Direction": 3,
+            "Velocity": 60
+        },
+        "Bullet": {
+            "EnemyType": "3",
+            "Color": "WHITE",
+            "x": "-150",
+            "y": "100",
+            "Radius": 10,
+            "FlickerRate": 0.8,
+            "Direction": 2.5,
+            "Velocity": 70
+        },
+        "Bullet": {
+            "EnemyType": "3",
+            "Color": "WHITE",
+            "x": "70",
+            "y": "-10",
+            "Radius": 7,
+            "FlickerRate": 0.4,
+            "Direction": -1,
+            "Velocity": 58
         },
     }
 }

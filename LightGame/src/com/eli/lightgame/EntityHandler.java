@@ -37,7 +37,6 @@ public class EntityHandler
 		public Vector2 position;
 	}
 	
-	private Random random = new Random();
 	private int currentEntityID = 0;
 	private World world;
 	private RayHandler rayHandler;
@@ -73,8 +72,13 @@ public class EntityHandler
 	{
 		return createEntity(type, aColor, radius, critRadiusMult, xPos, yPos, facingDirection, velocity, angularVel, null);
 	}
-
+	
 	public Entity createEntity(EntityType type, Color aColor, float radius, float critRadiusMult, float xPos, float yPos, float facingDirection, float velocity, float angularVel, String particlePath)
+	{
+		return createEntity(type, aColor, radius, critRadiusMult, xPos, yPos, facingDirection, velocity, angularVel, particlePath, true);
+	}
+
+	public Entity createEntity(EntityType type, Color aColor, float radius, float critRadiusMult, float xPos, float yPos, float facingDirection, float velocity, float angularVel, String particlePath, boolean isDynamic)
 	{
 		switch(type)
 		{
@@ -85,7 +89,7 @@ public class EntityHandler
 				currentEntityID++;
 				return player;
 			case GIANT:
-				Giant giant = new Giant(world, rayHandler, bulletHandler, aColor, radius, critRadiusMult*radius, xPos, yPos, particlePath);
+				Giant giant = new Giant(world, rayHandler, bulletHandler, aColor, radius, critRadiusMult*radius, xPos, yPos, particlePath, this, facingDirection, velocity, angularVel);
 				giant.setID(currentEntityID);
 				giant.setGravityMagnitude(2500); //100000 is kinda high. So is 5000
 				entities.put(currentEntityID, giant);
@@ -279,15 +283,29 @@ public class EntityHandler
 		entity.toBeDeleted(true);
 	}
 	
+	public void createCore(Color color, float radius, Vector2 position)
+	{
+		EntityDefinition ed = new EntityDefinition();
+		ed.color = color;
+		ed.radius = radius;
+		ed.position = position;
+	
+		queuedEntities.add(ed);
+	}
+	
 	public void explodeEntity(Entity entity)
 	{
 		//createEntity(EntityType.CORE, entity.getColor(), entity.getRadius(), entity.getPosition().x, entity.getPosition().y, 0f, 0f);
-		EntityDefinition ed = new EntityDefinition();
-		ed.color = entity.getColor();
-		ed.radius = entity.getRadius();
-		ed.position = entity.getPosition();
-	
-		queuedEntities.add(ed);
+		
+		if(!(entity instanceof MassiveEntity))
+		{
+			EntityDefinition ed = new EntityDefinition();
+			ed.color = entity.getColor();
+			ed.radius = entity.getRadius();
+			ed.position = entity.getPosition();
+		
+			queuedEntities.add(ed);
+		}
 		
 		entity.explode();
 	}
@@ -300,7 +318,7 @@ public class EntityHandler
 			{
 				//Gravity field is 6 times the radius of the body
 				float distance = LGMath.distanceBetween(entity.getPosition(),gravEntity.getPosition());
-				if(distance <= 5*gravEntity.getRadius())
+				if(distance <= 7*gravEntity.getRadius())
 				{
 					Body entityBody = entity.getBody();
 					

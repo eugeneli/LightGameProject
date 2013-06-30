@@ -39,7 +39,10 @@
             "Radius": 50,
             "CritRadiusMult": 1.3,
             "CanBlackHole": false,
-            "ParticlePath": "data/particleeffects/redgiant2.p"
+            "ParticlePath": "data/particleeffects/redgiant2.p",
+            "Direction": 0,
+            "AngularVelocity": -1,
+            "Velocity": 0
         },
         "Drifter": {
             "EnemyType": "1",

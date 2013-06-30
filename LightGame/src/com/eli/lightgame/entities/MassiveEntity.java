@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.Color;
 
 public class MassiveEntity extends Entity
 {
-	private float gravityMagnitude;
-	private boolean canBlackHole = false;
+	protected float gravityMagnitude;
+	protected boolean canBlackHole = false;
 	
 	public MassiveEntity(String spritePath, Color aColor, float rad)
 	{

@@ -75,7 +75,7 @@ public class BulletHandler
 		
 		//Lighting stuff
 		ArrayList<Light> bulletLights = new ArrayList<Light>();
-		PointLight bl = new PointLight(rayHandler, (int) shooterRadius, aColor, shooterRadius*5f, 0, 0);
+		PointLight bl = new PointLight(rayHandler, 20, aColor, shooterRadius*5f, 0, 0);
 		bl.attachToBody(bulletBody, 0,  0);
 		bulletLights.add(bl);
 		
