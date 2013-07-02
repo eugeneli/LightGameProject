@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.eli.lightgame.EntityHandler;
 
 import box2dLight.Light;
 
@@ -16,7 +17,7 @@ public class Bullet extends Entity
 	private boolean startShrinking = false;
 	private boolean immortal = false;
 	private Entity target;
-	
+
 	public Bullet(String spritePath, Color aColor, float rad, Body b, ArrayList<Light> pl, int laifu, float ang)
 	{
 		super(spritePath, b, pl, rad);

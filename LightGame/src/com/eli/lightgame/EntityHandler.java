@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Random;
 
 import box2dLight.RayHandler;
 
@@ -17,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.eli.lightgame.entities.BlackHole;
 import com.eli.lightgame.entities.Blinker;
 import com.eli.lightgame.entities.Bullet;
 import com.eli.lightgame.entities.Chaser;
@@ -32,9 +32,13 @@ public class EntityHandler
 {
 	private class EntityDefinition
 	{
+		public EntityType type;
 		public Color color;
 		public float radius;
 		public Vector2 position;
+		
+		public Vector2 velocity = null;
+		public float facingDirection = 0f;
 	}
 	
 	private int currentEntityID = 0;
@@ -53,7 +57,7 @@ public class EntityHandler
 	private Queue<EntityDefinition> queuedEntities = new LinkedList<EntityDefinition>();
 	
 	public static enum EntityType{
-		PLAYER, GIANT, DRIFTER, CORE, BLINKER, CHASER
+		PLAYER, GIANT, DRIFTER, CORE, BLINKER, CHASER, BLACKHOLE
 	}
 	
 	public EntityHandler(World w, RayHandler rh, BulletHandler bh, float theWidth, float theHeight)
@@ -61,6 +65,7 @@ public class EntityHandler
 		world = w;
 		rayHandler = rh;
 		bulletHandler = bh;
+		bulletHandler.setEntityHandler(this);
 	}
 	
 	public Entity createEntity(EntityType type, Color aColor, float radius, float critRadiusMult, float xPos, float yPos, float facingDirection, float velocity)
@@ -120,6 +125,19 @@ public class EntityHandler
 				entities.put(currentEntityID, chaser);
 				currentEntityID++;
 				return chaser;
+			case BLACKHOLE:
+				BlackHole bh = null;
+				if(aColor.equals(Color.RED))
+					bh = new BlackHole(world, rayHandler, bulletHandler, aColor, radius, critRadiusMult*radius, xPos, yPos, "data/particleeffects/redhole.p", facingDirection, velocity);
+				else if(aColor.equals(Color.BLUE))
+					bh = new BlackHole(world, rayHandler, bulletHandler, aColor, radius, critRadiusMult*radius, xPos, yPos, "data/particleeffects/bluehole.p", facingDirection, velocity);
+				
+				bh.setID(currentEntityID);
+				bh.setGravityMagnitude(5000);
+				entities.put(currentEntityID, bh);
+				gravityEntities.add(bh);
+				currentEntityID++;
+				return bh;
 			default:
 				return null;
 		}
@@ -133,6 +151,11 @@ public class EntityHandler
 	public HashMap<Integer, Entity> getEntities()
 	{
 		return entities;
+	}
+	
+	public ArrayList<MassiveEntity> getGravityEntities()
+	{
+		return gravityEntities;
 	}
 	
 	public Entity targetingEntity(float x, float y)
@@ -241,7 +264,8 @@ public class EntityHandler
 		}
 		else if(firstEntity.getColor().equals(secondEntity.getColor()) || firstEntity instanceof MassiveEntity || secondEntity instanceof MassiveEntity)
 		{
-			if(firstEntity.getRadius() > secondEntity.getRadius())
+			if((firstEntity.getRadius() > secondEntity.getRadius() && !(secondEntity instanceof BlackHole))//Non blackholes can't absorb blackholes
+			    || (firstEntity.getRadius() > secondEntity.getRadius() && firstEntity instanceof BlackHole && secondEntity instanceof BlackHole)) 
 			{
 				float tmpRadius = secondEntity.getRadius()-SIZE_CHANGE_RATE;
 				if(tmpRadius <= 2)
@@ -258,7 +282,8 @@ public class EntityHandler
 						removeEntity(secondEntity);
 				}
 			}
-			else
+			else if((secondEntity.getRadius() > firstEntity.getRadius() && !(firstEntity instanceof BlackHole))
+					|| (secondEntity.getRadius() > firstEntity.getRadius() && firstEntity instanceof BlackHole && secondEntity instanceof BlackHole)) 
 			{
 				float tmpRadius = secondEntity.getRadius()-SIZE_CHANGE_RATE;
 				if(tmpRadius <= 2)
@@ -283,14 +308,39 @@ public class EntityHandler
 		entity.toBeDeleted(true);
 	}
 	
-	public void createCore(Color color, float radius, Vector2 position)
+	public void queueEntityCreation(EntityType type, Entity parentEntity)
 	{
-		EntityDefinition ed = new EntityDefinition();
-		ed.color = color;
-		ed.radius = radius;
-		ed.position = position;
-	
-		queuedEntities.add(ed);
+		switch(type)
+		{
+			case CORE:
+				EntityDefinition ed = new EntityDefinition();
+				ed.type = EntityType.CORE;
+				ed.color = parentEntity.getColor();
+				
+				if(parentEntity instanceof Giant)
+					ed.radius = ((Giant)parentEntity).getOriginalRadius();
+				else
+					ed.radius = parentEntity.getRadius();
+				
+				ed.position = parentEntity.getPosition();
+			
+				queuedEntities.add(ed);
+				break;
+			case BLACKHOLE:
+				EntityDefinition ed2 = new EntityDefinition();
+				Giant giantEnt = (Giant) parentEntity;
+				ed2.type = EntityType.BLACKHOLE;
+				ed2.color = giantEnt.getColor();
+				ed2.radius = giantEnt.getOriginalRadius();
+				ed2.position = giantEnt.getPosition();
+				ed2.velocity = giantEnt.getBody().getLinearVelocity();
+				ed2.facingDirection = giantEnt.getBody().getAngle();
+			
+				queuedEntities.add(ed2);
+				break;
+			default:
+				break;
+		}
 	}
 	
 	public void explodeEntity(Entity entity)
@@ -299,13 +349,24 @@ public class EntityHandler
 		
 		if(!(entity instanceof MassiveEntity))
 		{
-			EntityDefinition ed = new EntityDefinition();
-			ed.color = entity.getColor();
-			ed.radius = entity.getRadius();
-			ed.position = entity.getPosition();
-		
-			queuedEntities.add(ed);
+			queueEntityCreation(EntityType.CORE, entity);
 		}
+		
+	/*	if(entity instanceof MassiveEntity)
+		{
+			if(((MassiveEntity) entity).canBlackHole())
+				queueEntityCreation(EntityType.BLACKHOLE, entity);
+			else
+			{
+				System.out.println("asd");
+				queueEntityCreation(EntityType.CORE, entity);
+			}
+		}
+		else
+		{
+			System.out.println("asd");
+			queueEntityCreation(EntityType.CORE, entity);
+		}*/
 		
 		entity.explode();
 	}
@@ -328,6 +389,23 @@ public class EntityHandler
 					if(forceMultiplier != (Float.POSITIVE_INFINITY))
 						entityBody.applyForceToCenter(new Vector2((float)(Math.cos(rotAngle) * forceMultiplier),(float)(Math.sin(rotAngle) * forceMultiplier)), true);
 				}
+				
+				if(distance-entity.getRadius() <= 2.2*gravEntity.getRadius())
+				{
+					if(gravEntity instanceof BlackHole)
+					{
+						float rotAngle = LGMath.getRotationTo(entity.getPosition(), gravEntity.getPosition());
+						
+						long currentFireTime = System.currentTimeMillis();
+						if(currentFireTime - entity.lastTimeFired > 200)
+						{
+							bulletHandler.createBulletsAndFire(gravEntity, entity.getRadius(), entity.getColor(), entity.getPosition().x, entity.getPosition().y, 500, rotAngle);
+							entity.addToRadius(-entity.getRadius()/50);
+							entity.lastTimeFired = currentFireTime;
+						}
+						
+					}
+				}
 			}
 		}
 	}
@@ -347,6 +425,7 @@ public class EntityHandler
 	    	
 	    	entity.update();
 	    	
+	    	//Gravity
 	    	if(gravityEntities.size() > 0)
 	    		doGravity(entity);
 	    	
@@ -379,11 +458,13 @@ public class EntityHandler
 	    		}
 	    	}
 	    	
+	    	//Do explosion
 	    	if(entity.getRadius() >= entity.getCritRadius())
 	    	{
 	    		explodeEntity(entity);
 	    	}
 
+	    	//Delete entities
 	    	if(entity.waitingToBeDeleted())
 	    	{
 	    		if(!world.isLocked())
@@ -401,12 +482,16 @@ public class EntityHandler
 	    	}
 	    }
 	    
+	    //Create the entities now
 	    if(queuedEntities.size() > 0)
     	{
 	    	if(!world.isLocked())
 			{
 	    		EntityDefinition ed = queuedEntities.remove();
-	    		createEntity(EntityType.CORE, ed.color, ed.radius, 10, ed.position.x, ed.position.y, 0f, 0f);
+	    		if(ed.type == EntityType.CORE)
+	    			createEntity(EntityType.CORE, ed.color, ed.radius, 10, ed.position.x, ed.position.y, 0f, 0f);
+	    		else if(ed.type == EntityType.BLACKHOLE)
+	    			createEntity(EntityType.BLACKHOLE, ed.color, ed.radius, 20, ed.position.x, ed.position.y, ed.facingDirection, LGMath.getMagnitude(ed.velocity));
 			}
     	}
 	}

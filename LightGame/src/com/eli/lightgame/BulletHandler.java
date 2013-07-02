@@ -17,8 +17,11 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.World;
+import com.eli.lightgame.entities.BlackHole;
 import com.eli.lightgame.entities.Bullet;
 import com.eli.lightgame.entities.Entity;
+import com.eli.lightgame.entities.MassiveEntity;
+import com.eli.lightgame.util.LGMath;
 
 public class BulletHandler
 {
@@ -36,6 +39,7 @@ public class BulletHandler
 	private World world;
 	private RayHandler rayHandler;
 	private Bullet recentlyReturnedBullet;
+	private EntityHandler entityHandler;
 	
 	private Queue<BulletDefinition> queuedExplosion = new LinkedList<BulletDefinition>();
 	
@@ -44,6 +48,11 @@ public class BulletHandler
 		world = w;
 		rayHandler = rh;
 		bullets = new ArrayList<Bullet>();
+	}
+	
+	public void setEntityHandler(EntityHandler eh)
+	{
+		entityHandler = eh;
 	}
 	
 	public void createBulletsAndFire(float shooterRadius, Color aColor, float entityX, float entityY, int forceScalar, float rotAngle)
@@ -163,11 +172,35 @@ public class BulletHandler
 		return bullets.size();
 	}
 	
+	public void doGravity(Bullet bullet)
+	{
+		ArrayList<MassiveEntity> massiveEnts = entityHandler.getGravityEntities();
+		for(MassiveEntity gravEntity : massiveEnts)
+		{
+			if(gravEntity instanceof BlackHole)
+			{
+				float distance = LGMath.distanceBetween(bullet.getPosition(),gravEntity.getPosition());
+				if(distance <= 7*gravEntity.getRadius())
+				{
+					Body entityBody = bullet.getBody();
+					
+					float rotAngle = LGMath.getRotationTo(bullet.getPosition(), gravEntity.getPosition());
+					float forceMultiplier = (float)(0.3f*gravEntity.getGravityMagnitude()*bullet.getMass()*gravEntity.getRadius() * 1/Math.pow(distance,2));
+		
+					if(forceMultiplier != (Float.POSITIVE_INFINITY))
+						entityBody.applyForceToCenter(new Vector2((float)(Math.cos(rotAngle) * forceMultiplier),(float)(Math.sin(rotAngle) * forceMultiplier)), true);
+				}
+			}
+			
+		}
+	}
+	
 	public void updateBullets()
 	{
 		for(int i = 0; i < bullets.size(); i++)
 		{
 			Bullet b = bullets.get(i);
+			doGravity(b);
 			b.update();
 			
 			if(!b.isImmortal())	

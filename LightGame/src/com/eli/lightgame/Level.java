@@ -35,7 +35,7 @@ import com.eli.lightgame.winconditions.PlayerIsLargest;
 
 public class Level
 {
-	private Texture background;
+	public Texture background;
 	private Texture outerBackground;
 	private ParticleEffect particles;
 	
@@ -219,7 +219,7 @@ public class Level
 	
 	public void draw(SpriteBatch batch)
 	{
-		batch.draw(outerBackground, -outerBackground.getWidth()/2, -outerBackground.getHeight()/2);
+	//	batch.draw(outerBackground, -outerBackground.getWidth()/2, -outerBackground.getHeight()/2);
 		batch.draw(background,-background.getWidth()/2,-background.getHeight()/2);
 		
 		if(particles != null)

@@ -39,6 +39,8 @@ public abstract class Entity
 	protected boolean ignoreSize = false;
 	protected boolean ignoreExistence = false; //Used for win conditions
 	
+	public long lastTimeFired = 0;
+	
 	//Array to hold the lights
 	protected ArrayList<Light> lights = new ArrayList<Light>();
 	protected float flickerRate = 0.1f;

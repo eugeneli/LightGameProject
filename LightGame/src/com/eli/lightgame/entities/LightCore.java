@@ -1,8 +1,5 @@
 package com.eli.lightgame.entities;
 
-import java.util.ArrayList;
-
-import box2dLight.Light;
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
 
@@ -55,14 +52,12 @@ public class LightCore extends Entity
 		sprite.setSize(size, size);
 		
 		//Lights
-		ArrayList<Light> coreLights = new ArrayList<Light>();
 		PointLight pl = new PointLight(rayHandler, 200, aColor, lightSize, 0, 0);
 		pl.attachToBody(circleBody, 0,  0);
-		coreLights.add(pl);
+		lights.add(pl);
 		
 		//Set the variables in Entity
 		entityBody = circleBody;
-		lights = coreLights;
 		
 		particleEffect = new ParticleEffect();
 	    particleEffect.load(Gdx.files.internal("data/particleeffects/insides.p"), Gdx.files.internal("data"));

@@ -8,7 +8,13 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -19,6 +25,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.eli.lightgame.LightGame.GAMESTATE;
 import com.eli.lightgame.entities.Bullet;
 import com.eli.lightgame.entities.Player;
@@ -56,8 +63,16 @@ public class LightGameEngine
 	private Player player;
 	private int levelOverTimer = 160;
 	
+	ShaderProgram shader = new ShaderProgram(Gdx.files.internal("data/default.vert"), Gdx.files.internal("data/fisheye.frag"));
+	
+	
 	public LightGameEngine(SpriteBatch sb, float w, float h, LGPreferences pref, boolean presentation)
 	{
+		if(shader.isCompiled())
+			System.out.println("asd");
+		else
+			System.out.println(shader.getLog());
+			
 		presentationMode = presentation;
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		width = w;
@@ -268,18 +283,54 @@ public class LightGameEngine
 		
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+
+		
+		//	shader.setUniformf("resolution", new Vector2(1280,720));
+		
+	/*	batch.begin();
+		
+		batch.setShader(shader);
+		
+		level.background.bind(0);
+		shader.setUniformi("u_texture", 0);
+		shader.setUniformf("v_texCoords", new Vector2(0f,0f));
+		
+		//draw level bg
+			level.draw(batch);
+			batch.setShader(null);
+			//draw entities
+			entityHandler.draw(batch);
+			
+			//draw bullets
+			bulletHandler.drawBullets(batch);
+		batch.end();
+		*/
+		
+	/*	batch.setShader(shader);
+		batch.begin();
+		level.background.bind(0);
+		shader.setUniformi("u_texture;", 0);
+		shader.setUniformf("v_texCoords;", new Vector2(0f,0.0f));
+		shader.setUniformf("center;", new Vector2(0.5f,0.5f));
+		shader.setUniformf("radius;", 0.5f);
+		//shader.setUniformf("scale;", 1.0f);
+		//draw level bg
+		//level.draw(batch);
+		batch.draw(level.background,-level.background.getWidth()/2,-level.background.getHeight()/2);
+
+		batch.setShader(null);*/
 		
 		batch.begin();
 		
 		//draw level bg
 		level.draw(batch);
-
+		
 		//draw entities
 		entityHandler.draw(batch);
-		
+
 		//draw bullets
 		bulletHandler.drawBullets(batch);
-		
+
 		batch.end();
 		
 		//Render box2D physics and lights

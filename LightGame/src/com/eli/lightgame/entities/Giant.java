@@ -20,6 +20,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.eli.lightgame.BulletHandler;
 import com.eli.lightgame.EntityHandler;
+import com.eli.lightgame.EntityHandler.EntityType;
 import com.eli.lightgame.LightGameFilters;
 
 public class Giant extends MassiveEntity
@@ -90,8 +91,18 @@ public class Giant extends MassiveEntity
 		giantEffect.start();
 	}
 	
+	public float getOriginalRadius()
+	{
+		return originalRadius;
+	}
+	
 	public void doExplosion()
 	{
+		if(canBlackHole)
+			entityHandler.queueEntityCreation(EntityType.BLACKHOLE, this);
+		else
+			entityHandler.queueEntityCreation(EntityType.CORE, this);
+		
 		bulletHandler.queueExplosionBullet(originalRadius*0.7f, color, getPosition().x, getPosition().y, (int) (2 * originalRadius), 0f);
 		bulletHandler.queueExplosionBullet(originalRadius*0.7f, color, getPosition().x, getPosition().y, (int) (2 * originalRadius), 0.4f); //
 		bulletHandler.queueExplosionBullet(originalRadius*0.7f, color, getPosition().x, getPosition().y, (int) (2 * originalRadius), 0.79f);
@@ -114,8 +125,6 @@ public class Giant extends MassiveEntity
 		radius = 0;
 		toBeDeleted(true);
 		updateSizes();
-		
-		entityHandler.createCore(color, originalRadius, getPosition());
 	}
 	
 	public void explode()
@@ -168,12 +177,12 @@ public class Giant extends MassiveEntity
 	{
 		super.update();
 		
-		if(radius - 3 <= 2)
-			doExplosion();
-		
 		if(dying)
 		{
 			addToRadius(-3);
+			
+			if(radius - 3 <= 2)
+				doExplosion();
 		}
 		
 		if(!alreadyMoving)

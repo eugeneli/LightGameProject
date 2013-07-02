@@ -35,4 +35,9 @@ public class LGMath
 		float toTargetY = (float)((target.y - me.y));
 		return (float)Math.atan2(toTargetY,toTargetX);
 	}
+	
+	public static float getMagnitude(Vector2 vec)
+	{
+		return (float)(Math.abs(Math.sqrt(Math.pow(vec.x, 2) + Math.pow(vec.y, 2))));
+	}
 }

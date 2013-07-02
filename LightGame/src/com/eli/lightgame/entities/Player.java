@@ -37,7 +37,7 @@ public class Player extends Entity
 	
 	public Player(World world, RayHandler rayHandler, BulletHandler bh, Color aColor, float rad, float critRadius, float xPos, float yPos)
 	{
-		super("data/galaxy2.png", aColor, rad);
+		super("data/galaxy2.png", aColor, rad);	
 		criticalRadius = critRadius;
 		bulletHandler = bh;
 		canChangeColor = true;
@@ -66,21 +66,19 @@ public class Player extends Entity
 		circleBody.createFixture(circleFixture);
 		
 		//player lights
-		ArrayList<Light> playerLights = new ArrayList<Light>();
 		ConeLight cl = new ConeLight(rayHandler, 50, color, lightSize, 0, 0, 0, 30);
 		cl.attachToBody(circleBody, 2, 0);
-		playerLights.add(cl);
+		lights.add(cl);
 		
 		PointLight pl = new PointLight(rayHandler, 100, color, lightSize, 0, 0);
 		PointLight pl2 = new PointLight(rayHandler, 50, Color.GRAY, radius, 0, 0);
 		pl.attachToBody(circleBody, 0,  0);
 		pl2.attachToBody(circleBody, 0, 0);
-		playerLights.add(pl);
-		playerLights.add(pl2);
+		lights.add(pl);
+		lights.add(pl2);
 		
 		//Set the variables in Entity
 		entityBody = circleBody;
-		lights = playerLights;
 		
 		particleEffect = new ParticleEffect();
 	    particleEffect.load(Gdx.files.internal("data/particleeffects/insides.p"), Gdx.files.internal("data"));
