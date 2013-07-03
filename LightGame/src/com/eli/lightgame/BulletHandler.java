@@ -55,12 +55,17 @@ public class BulletHandler
 		entityHandler = eh;
 	}
 	
-	public void createBulletsAndFire(float shooterRadius, Color aColor, float entityX, float entityY, int forceScalar, float rotAngle)
+	public Bullet createBulletsAndFire(float shooterRadius, Color aColor, float entityX, float entityY, int forceScalar, float rotAngle)
 	{
-		createBulletsAndFire(null, shooterRadius, aColor, entityX, entityY, forceScalar, rotAngle);
+		return createBulletsAndFire(null, shooterRadius, aColor, entityX, entityY, forceScalar, rotAngle, 3);
 	}
 	
 	public Bullet createBulletsAndFire(Entity target, float shooterRadius, Color aColor, float entityX, float entityY, int forceScalar, float rotAngle)
+	{
+		return createBulletsAndFire(target, shooterRadius, aColor, entityX, entityY, forceScalar, rotAngle, 3);
+	}
+	
+	public Bullet createBulletsAndFire(Entity target, float shooterRadius, Color aColor, float entityX, float entityY, int forceScalar, float rotAngle, int bulRadScalar)
 	{
 		//Box2D stuff
 		BodyDef bulletDef = new BodyDef();
@@ -70,7 +75,7 @@ public class BulletHandler
 		Body bulletBody = world.createBody(bulletDef);
 		
 		CircleShape circleShape = new CircleShape();
-		circleShape.setRadius(shooterRadius/3);
+		circleShape.setRadius(shooterRadius/bulRadScalar);
 
 		FixtureDef bulletFixture = new FixtureDef();
 		bulletFixture.shape = circleShape;
@@ -95,6 +100,54 @@ public class BulletHandler
 		Bullet b = new Bullet("data/blankbullet.png", aColor, shooterRadius/10, bulletBody, bulletLights, (int)(shooterRadius*50), bulletBody.getAngle());
 		
 		b.setTarget(target);
+		
+		bullets.add(b);
+		
+		//Let the bullet body carry a pointer back to the bullet object
+		bulletBody.setUserData(b);
+		
+		fireSingle(b, forceScalar);
+		
+		return b;
+	}
+	
+	//new method for boss bullet
+	public Bullet createBossBulletsAndFire(float shooterRadius, Color aColor, float entityX, float entityY, int forceScalar, float rotAngle, int bulRadScalar, String particlePath)
+	{
+		//Box2D stuff
+		BodyDef bulletDef = new BodyDef();
+		bulletDef.type = BodyType.DynamicBody;
+		bulletDef.position.set((float)(entityX + (1.3*shooterRadius)*Math.cos(rotAngle)), (float)(entityY + (1.3*shooterRadius)*Math.sin(rotAngle)));
+		
+		Body bulletBody = world.createBody(bulletDef);
+		
+		CircleShape circleShape = new CircleShape();
+		circleShape.setRadius(shooterRadius/bulRadScalar);
+
+		FixtureDef bulletFixture = new FixtureDef();
+		bulletFixture.shape = circleShape;
+		bulletFixture.density = 0.1f;
+		bulletFixture.friction = 1.0f;
+		bulletFixture.restitution = 0.0f;
+		bulletFixture.filter.categoryBits = LightGameFilters.CATEGORY_NEUTRAL_ENTITY;
+		bulletFixture.filter.maskBits = LightGameFilters.MASK_NEUTRAL_ENTITY;
+		
+		bulletBody.createFixture(bulletFixture);
+		
+		//Lighting stuff
+		ArrayList<Light> bulletLights = new ArrayList<Light>();
+		PointLight bl = new PointLight(rayHandler, 20, aColor, shooterRadius, 0, 0);
+		bl.attachToBody(bulletBody, 0,  0);
+		bulletLights.add(bl);
+		
+		//Rotate bullet
+		bulletBody.setTransform(bulletBody.getPosition(), rotAngle);
+		
+		//Bullet b = new Bullet("data/blankbullet.png", bulletBody, bulletLights, 200, bulletPattern.angles.get(i).floatValue());
+		Bullet b = new Bullet("data/blankbullet.png", aColor, shooterRadius/10, bulletBody, bulletLights, (int)(shooterRadius*10.5), bulletBody.getAngle());
+		b.loadParticle(particlePath);
+		b.setTarget(null);
+		b.setImmortal(false);
 		
 		bullets.add(b);
 		

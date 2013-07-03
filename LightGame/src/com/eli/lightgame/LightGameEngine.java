@@ -283,42 +283,36 @@ public class LightGameEngine
 		
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-
-		
-		//	shader.setUniformf("resolution", new Vector2(1280,720));
-		
-	/*	batch.begin();
-		
-		batch.setShader(shader);
-		
-		level.background.bind(0);
-		shader.setUniformi("u_texture", 0);
-		shader.setUniformf("v_texCoords", new Vector2(0f,0f));
-		
-		//draw level bg
-			level.draw(batch);
-			batch.setShader(null);
-			//draw entities
-			entityHandler.draw(batch);
-			
-			//draw bullets
-			bulletHandler.drawBullets(batch);
-		batch.end();
-		*/
 		
 	/*	batch.setShader(shader);
 		batch.begin();
 		level.background.bind(0);
-		shader.setUniformi("u_texture;", 0);
-		shader.setUniformf("v_texCoords;", new Vector2(0f,0.0f));
-		shader.setUniformf("center;", new Vector2(0.5f,0.5f));
-		shader.setUniformf("radius;", 0.5f);
-		//shader.setUniformf("scale;", 1.0f);
+		shader.setUniformi("inputImageTexture", 0);
+		//shader.setUniformf("v_texCoords;", new Vector2(0f,0.0f));
+		shader.setUniformf("center", new Vector2(0.5f,0.5f));
+		shader.setUniformf("radius", 0.1f);
+		shader.setUniformf("scale", 1.0f);
+		//shader.setUniformf("aspectRatio", 1280f/720f);
 		//draw level bg
-		//level.draw(batch);
-		batch.draw(level.background,-level.background.getWidth()/2,-level.background.getHeight()/2);
-
+		level.draw(batch);
+		//batch.draw(level.background,-level.background.getWidth()/2,-level.background.getHeight()/2);
+		//batch.setShader(null);
+		batch.end();
 		batch.setShader(null);*/
+		
+		/*
+		 * http://pastebin.com/8crbWAFW
+			batch.setShader(shader); //sets the shader
+			batch.begin(); //"starts" the batch with the current shader
+			 
+			//since the shader is now active, you can send it some uniforms
+			shader.setUniformf(...)
+			 
+			... draw your sprites here ...
+			 
+			//end the batch, sending data to GPU
+			batch.end();
+		 */
 		
 		batch.begin();
 		

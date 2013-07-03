@@ -25,6 +25,7 @@ import com.eli.lightgame.EntityHandler.EntityType;
 import com.eli.lightgame.entities.Blinker;
 import com.eli.lightgame.entities.Bullet;
 import com.eli.lightgame.entities.Giant;
+import com.eli.lightgame.entities.GiantBoss;
 import com.eli.lightgame.entities.Player;
 import com.eli.lightgame.ui.LightGameStage;
 import com.eli.lightgame.winconditions.NoOtherLumis;
@@ -193,6 +194,21 @@ public class Level
 					float cFacingDirec = enemy.getFloat("Direction");
 					
 					entityHandler.createEntity(EntityType.CHASER, cColor, cRadius, cCritMult, cSpawnX, cSpawnY, cFacingDirec, 0f); //create a drifter
+					break;
+				case 5: //Case 4: Chasers. They chase bullets to get big.
+					Color gbColor = convertStringToColor(enemy.getString("Color"));
+					float gbRadius = enemy.getFloat("Radius");
+					float gbSpawnX = enemy.getFloat("x");
+					float gbSpawnY = enemy.getFloat("y");
+					float gbCritMult = enemy.getFloat("CritRadiusMult");
+					String gbParticlePath = enemy.getString("ParticlePath");
+					float gbFacingDirec = enemy.getFloat("Direction");
+					float gbVelocity = enemy.getFloat("Velocity");
+					float gbAngularVel = enemy.getFloat("AngularVelocity");
+					boolean gbCanBlackHole = enemy.getBoolean("CanBlackHole");
+					
+					GiantBoss gb = (GiantBoss) entityHandler.createEntity(EntityType.GIANTBOSS, gbColor, gbRadius, gbCritMult, gbSpawnX, gbSpawnY, gbFacingDirec, gbVelocity, gbAngularVel, gbParticlePath); //create a giant
+					gb.setCanBlackHole(gbCanBlackHole);
 					break;
 			}
 		}

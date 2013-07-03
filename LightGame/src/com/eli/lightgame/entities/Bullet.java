@@ -2,7 +2,10 @@ package com.eli.lightgame.entities;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.eli.lightgame.EntityHandler;
@@ -17,6 +20,8 @@ public class Bullet extends Entity
 	private boolean startShrinking = false;
 	private boolean immortal = false;
 	private Entity target;
+	
+	private ParticleEffect effect = null;
 
 	public Bullet(String spritePath, Color aColor, float rad, Body b, ArrayList<Light> pl, int laifu, float ang)
 	{
@@ -41,6 +46,18 @@ public class Bullet extends Entity
 		{
 			aLight.setDistance(lightSize);
 		}
+	}
+	
+	public void loadParticle(String particlePath)
+	{
+		effect = new ParticleEffect();
+		effect.load(Gdx.files.internal(particlePath), Gdx.files.internal("data"));
+		effect.setPosition(entityBody.getPosition().x, entityBody.getPosition().y);
+		effect.start();
+		
+		//Increase particle size
+		effect.getEmitters().get(0).getScale().setLow(10 * radius);
+		effect.getEmitters().get(0).getScale().setHigh(10 * radius);
 	}
 	
 	public void move(Vector2 force)
@@ -108,11 +125,18 @@ public class Bullet extends Entity
 		target = bulTarget;
 	}
 	
+	public void dispose()
+	{
+		super.dispose();
+		
+		effect = null;
+	}
+	
 	public void update()
 	{
 		super.update();
 		
-		/*if(startShrinking)
+		if(startShrinking)
 		{
 			radius -= 0.5f;
 			updateSizes();
@@ -123,7 +147,7 @@ public class Bullet extends Entity
 		else if(life <= 0.65f * originalLife)
 		{
 			startShrinking = true;
-		}*/
+		}
 		
 		if(target != null)
 		{
@@ -158,5 +182,20 @@ public class Bullet extends Entity
 			lights.get(0).setDistance(currentCoreLightDistance+flickerRate);
 			
 		}
+		
+		if(effect != null)
+		{
+			//update particle emitter's position
+			effect.setPosition(entityBody.getPosition().x, entityBody.getPosition().y);
+			effect.update(Gdx.graphics.getDeltaTime());
+		}
+	}
+	
+	public void draw(SpriteBatch batch)
+	{
+		super.draw(batch);
+		
+		if(effect != null)
+			effect.draw(batch, Gdx.graphics.getDeltaTime());
 	}
 }

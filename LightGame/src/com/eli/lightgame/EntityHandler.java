@@ -23,6 +23,7 @@ import com.eli.lightgame.entities.Chaser;
 import com.eli.lightgame.entities.Drifter;
 import com.eli.lightgame.entities.Entity;
 import com.eli.lightgame.entities.Giant;
+import com.eli.lightgame.entities.GiantBoss;
 import com.eli.lightgame.entities.LightCore;
 import com.eli.lightgame.entities.MassiveEntity;
 import com.eli.lightgame.entities.Player;
@@ -57,7 +58,7 @@ public class EntityHandler
 	private Queue<EntityDefinition> queuedEntities = new LinkedList<EntityDefinition>();
 	
 	public static enum EntityType{
-		PLAYER, GIANT, DRIFTER, CORE, BLINKER, CHASER, BLACKHOLE
+		PLAYER, GIANT, DRIFTER, CORE, BLINKER, CHASER, BLACKHOLE, GIANTBOSS
 	}
 	
 	public EntityHandler(World w, RayHandler rh, BulletHandler bh, float theWidth, float theHeight)
@@ -101,6 +102,14 @@ public class EntityHandler
 				gravityEntities.add(giant);
 				currentEntityID++;
 				return giant;
+			case GIANTBOSS:
+				GiantBoss giantBoss = new GiantBoss(world, rayHandler, bulletHandler, aColor, radius, critRadiusMult*radius, xPos, yPos, particlePath, this, facingDirection, velocity, angularVel);
+				giantBoss.setID(currentEntityID);
+				giantBoss.setGravityMagnitude(5000); //100000 is kinda high. So is 5000
+				entities.put(currentEntityID, giantBoss);
+				gravityEntities.add(giantBoss);
+				currentEntityID++;
+				return giantBoss;
 			case DRIFTER:
 				Drifter dr = new Drifter(world, rayHandler, bulletHandler, aColor, radius, critRadiusMult*radius, xPos, yPos, facingDirection, velocity, angularVel);
 				dr.setID(currentEntityID);
@@ -331,7 +340,7 @@ public class EntityHandler
 				Giant giantEnt = (Giant) parentEntity;
 				ed2.type = EntityType.BLACKHOLE;
 				ed2.color = giantEnt.getColor();
-				ed2.radius = giantEnt.getOriginalRadius();
+				ed2.radius = giantEnt.getOriginalRadius()*0.7f;
 				ed2.position = giantEnt.getPosition();
 				ed2.velocity = giantEnt.getBody().getLinearVelocity();
 				ed2.facingDirection = giantEnt.getBody().getAngle();
@@ -377,9 +386,9 @@ public class EntityHandler
 		{
 			if(entity != gravEntity)
 			{
-				//Gravity field is 6 times the radius of the body
+				//Gravity field is 10 times the radius of the body
 				float distance = LGMath.distanceBetween(entity.getPosition(),gravEntity.getPosition());
-				if(distance <= 7*gravEntity.getRadius())
+				if(distance <= 10*gravEntity.getRadius())
 				{
 					Body entityBody = entity.getBody();
 					
@@ -399,11 +408,10 @@ public class EntityHandler
 						long currentFireTime = System.currentTimeMillis();
 						if(currentFireTime - entity.lastTimeFired > 200)
 						{
-							bulletHandler.createBulletsAndFire(gravEntity, entity.getRadius(), entity.getColor(), entity.getPosition().x, entity.getPosition().y, 500, rotAngle);
-							entity.addToRadius(-entity.getRadius()/50);
+							bulletHandler.createBulletsAndFire(gravEntity, entity.getRadius(), entity.getColor(), entity.getPosition().x, entity.getPosition().y, 500, rotAngle, 10);
+							entity.addToRadius(-entity.getRadius()/20);
 							entity.lastTimeFired = currentFireTime;
 						}
-						
 					}
 				}
 			}

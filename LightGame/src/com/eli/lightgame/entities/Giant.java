@@ -33,7 +33,7 @@ public class Giant extends MassiveEntity
 	private float originalVelocity;
 	private float angularVelocity;
 	
-	private EntityHandler entityHandler;
+	protected EntityHandler entityHandler;
 	private RayHandler rayHandler;
 
 	public Giant(World world, RayHandler rh, BulletHandler bh, Color aColor, float rad, float critSize, float xPos, float yPos, String particlePath, EntityHandler eh, float facingDirection, float velocity, float angularVel)
