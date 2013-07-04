@@ -22,6 +22,8 @@ public class Bullet extends Entity
 	private Entity target;
 	
 	private ParticleEffect effect = null;
+	
+	private float worth; //Usually worth = radius. Used for bullet-entity collisions
 
 	public Bullet(String spritePath, Color aColor, float rad, Body b, ArrayList<Light> pl, int laifu, float ang)
 	{
@@ -33,6 +35,8 @@ public class Bullet extends Entity
 		
 		canChangeColor = false;
 		canChangeSize = false;
+		
+		worth = rad;
 	}
 	
 	@Override
@@ -63,6 +67,16 @@ public class Bullet extends Entity
 	public void move(Vector2 force)
 	{
 		entityBody.setLinearVelocity(force);
+	}
+	
+	public void setWorth(float w)
+	{
+		worth = w;
+	}
+	
+	public float getWorth()
+	{
+		return worth;
 	}
 	
 	public void setDying(boolean isDying)

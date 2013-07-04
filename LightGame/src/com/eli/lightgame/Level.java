@@ -146,8 +146,9 @@ public class Level
 					float gVelocity = enemy.getFloat("Velocity");
 					float gAngularVel = enemy.getFloat("AngularVelocity");
 					boolean gCanBlackHole = enemy.getBoolean("CanBlackHole");
+					boolean gIsDynamic = enemy.getBoolean("IsDynamic");
 					
-					Giant g = (Giant) entityHandler.createEntity(EntityType.GIANT, gColor, gRadius, gCritMult, gSpawnX, gSpawnY, gFacingDirec, gVelocity, gAngularVel, gParticlePath); //create a giant
+					Giant g = (Giant) entityHandler.createEntity(EntityType.GIANT, gColor, gRadius, gCritMult, gSpawnX, gSpawnY, gFacingDirec, gVelocity, gAngularVel, gParticlePath, gIsDynamic); //create a giant
 					g.setCanBlackHole(gCanBlackHole);
 					break;
 				case 1: //Case 1: Drifter
@@ -206,8 +207,9 @@ public class Level
 					float gbVelocity = enemy.getFloat("Velocity");
 					float gbAngularVel = enemy.getFloat("AngularVelocity");
 					boolean gbCanBlackHole = enemy.getBoolean("CanBlackHole");
+					boolean gbIsDynamic = enemy.getBoolean("IsDynamic");
 					
-					GiantBoss gb = (GiantBoss) entityHandler.createEntity(EntityType.GIANTBOSS, gbColor, gbRadius, gbCritMult, gbSpawnX, gbSpawnY, gbFacingDirec, gbVelocity, gbAngularVel, gbParticlePath); //create a giant
+					GiantBoss gb = (GiantBoss) entityHandler.createEntity(EntityType.GIANTBOSS, gbColor, gbRadius, gbCritMult, gbSpawnX, gbSpawnY, gbFacingDirec, gbVelocity, gbAngularVel, gbParticlePath, gbIsDynamic); //create a giant
 					gb.setCanBlackHole(gbCanBlackHole);
 					break;
 			}

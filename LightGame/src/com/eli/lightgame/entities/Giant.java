@@ -28,7 +28,7 @@ public class Giant extends MassiveEntity
 	private ParticleEffect giantEffect;
 	private boolean dying = false;
 	private boolean alreadyMoving = false;
-	private float originalRadius;
+	protected float originalRadius;
 	private float originalDirection;
 	private float originalVelocity;
 	private float angularVelocity;
@@ -36,7 +36,7 @@ public class Giant extends MassiveEntity
 	protected EntityHandler entityHandler;
 	private RayHandler rayHandler;
 
-	public Giant(World world, RayHandler rh, BulletHandler bh, Color aColor, float rad, float critSize, float xPos, float yPos, String particlePath, EntityHandler eh, float facingDirection, float velocity, float angularVel)
+	public Giant(World world, RayHandler rh, BulletHandler bh, Color aColor, float rad, float critSize, float xPos, float yPos, String particlePath, EntityHandler eh, float facingDirection, float velocity, float angularVel, boolean isDynamic)
 	{
 		super("data/particle-fire.png", aColor, rad);
 		
@@ -57,7 +57,12 @@ public class Giant extends MassiveEntity
 		originalRadius = rad; //Used for exploding
 		
 		BodyDef circleDef = new BodyDef();
-		circleDef.type = BodyType.DynamicBody;
+		
+		if(isDynamic)
+			circleDef.type = BodyType.DynamicBody;
+		else
+			circleDef.type = BodyType.StaticBody;
+		
 		circleDef.position.set(xPos, yPos);
 		
 		Body circleBody = world.createBody(circleDef);
@@ -78,6 +83,7 @@ public class Giant extends MassiveEntity
 		//Lights
 		ArrayList<Light> blueGiantLights = new ArrayList<Light>();
 		PointLight pl = new PointLight(rayHandler, 400, aColor, rad*10, 0, 0);
+		pl.setXray(true);
 		pl.attachToBody(circleBody, 0,  0);
 		blueGiantLights.add(pl);
 		

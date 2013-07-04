@@ -42,7 +42,8 @@
             "ParticlePath": "data/particleeffects/redgiant2.p",
             "Direction": 0,
             "AngularVelocity": -1,
-            "Velocity": 0
+            "Velocity": 0,
+            "IsDynamic": true
         },
         "Drifter": {
             "EnemyType": "1",

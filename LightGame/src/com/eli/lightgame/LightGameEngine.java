@@ -63,15 +63,15 @@ public class LightGameEngine
 	private Player player;
 	private int levelOverTimer = 160;
 	
-	ShaderProgram shader = new ShaderProgram(Gdx.files.internal("data/default.vert"), Gdx.files.internal("data/fisheye.frag"));
+	//ShaderProgram shader = new ShaderProgram(Gdx.files.internal("data/default.vert"), Gdx.files.internal("data/fisheye.frag"));
 	
 	
 	public LightGameEngine(SpriteBatch sb, float w, float h, LGPreferences pref, boolean presentation)
 	{
-		if(shader.isCompiled())
+	/*	if(shader.isCompiled())
 			System.out.println("asd");
 		else
-			System.out.println(shader.getLog());
+			System.out.println(shader.getLog());*/
 			
 		presentationMode = presentation;
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);

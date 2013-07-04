@@ -95,7 +95,7 @@ public class EntityHandler
 				currentEntityID++;
 				return player;
 			case GIANT:
-				Giant giant = new Giant(world, rayHandler, bulletHandler, aColor, radius, critRadiusMult*radius, xPos, yPos, particlePath, this, facingDirection, velocity, angularVel);
+				Giant giant = new Giant(world, rayHandler, bulletHandler, aColor, radius, critRadiusMult*radius, xPos, yPos, particlePath, this, facingDirection, velocity, angularVel, isDynamic);
 				giant.setID(currentEntityID);
 				giant.setGravityMagnitude(2500); //100000 is kinda high. So is 5000
 				entities.put(currentEntityID, giant);
@@ -103,7 +103,7 @@ public class EntityHandler
 				currentEntityID++;
 				return giant;
 			case GIANTBOSS:
-				GiantBoss giantBoss = new GiantBoss(world, rayHandler, bulletHandler, aColor, radius, critRadiusMult*radius, xPos, yPos, particlePath, this, facingDirection, velocity, angularVel);
+				GiantBoss giantBoss = new GiantBoss(world, rayHandler, bulletHandler, aColor, radius, critRadiusMult*radius, xPos, yPos, particlePath, this, facingDirection, velocity, angularVel, isDynamic);
 				giantBoss.setID(currentEntityID);
 				giantBoss.setGravityMagnitude(5000); //100000 is kinda high. So is 5000
 				entities.put(currentEntityID, giantBoss);
@@ -243,7 +243,7 @@ public class EntityHandler
 	public void collideWithBullet(int entityID, Bullet aBullet)
 	{
 		Entity entity = entities.get(entityID);
-		entity.grow(entity.getRadius()+aBullet.getRadius(), aBullet.getRadius()/20);
+		entity.grow(entity.getRadius()+aBullet.getWorth(), aBullet.getWorth()/20);
 		
 		aBullet.kill();
 	}

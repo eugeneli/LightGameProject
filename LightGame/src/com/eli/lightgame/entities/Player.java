@@ -1,7 +1,5 @@
 package com.eli.lightgame.entities;
 
-import java.util.ArrayList;
-
 import box2dLight.ConeLight;
 import box2dLight.Light;
 import box2dLight.PointLight;

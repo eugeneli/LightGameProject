@@ -112,17 +112,17 @@ public class BulletHandler
 	}
 	
 	//new method for boss bullet
-	public Bullet createBossBulletsAndFire(float shooterRadius, Color aColor, float entityX, float entityY, int forceScalar, float rotAngle, int bulRadScalar, String particlePath)
+	public Bullet createBossBulletsAndFire(float shooterRadius, float bulletWorth, Color aColor, float entityX, float entityY, int forceScalar, float rotAngle, String particlePath)
 	{
 		//Box2D stuff
 		BodyDef bulletDef = new BodyDef();
 		bulletDef.type = BodyType.DynamicBody;
-		bulletDef.position.set((float)(entityX + (1.3*shooterRadius)*Math.cos(rotAngle)), (float)(entityY + (1.3*shooterRadius)*Math.sin(rotAngle)));
+		bulletDef.position.set((float)(entityX + (1.8*shooterRadius)*Math.cos(rotAngle)), (float)(entityY + (1.8*shooterRadius)*Math.sin(rotAngle)));
 		
 		Body bulletBody = world.createBody(bulletDef);
 		
 		CircleShape circleShape = new CircleShape();
-		circleShape.setRadius(shooterRadius/bulRadScalar);
+		circleShape.setRadius(shooterRadius/2);
 
 		FixtureDef bulletFixture = new FixtureDef();
 		bulletFixture.shape = circleShape;
@@ -137,6 +137,7 @@ public class BulletHandler
 		//Lighting stuff
 		ArrayList<Light> bulletLights = new ArrayList<Light>();
 		PointLight bl = new PointLight(rayHandler, 20, aColor, shooterRadius, 0, 0);
+		bl.setXray(false);
 		bl.attachToBody(bulletBody, 0,  0);
 		bulletLights.add(bl);
 		
@@ -148,6 +149,7 @@ public class BulletHandler
 		b.loadParticle(particlePath);
 		b.setTarget(null);
 		b.setImmortal(false);
+		b.setWorth(bulletWorth);
 		
 		bullets.add(b);
 		

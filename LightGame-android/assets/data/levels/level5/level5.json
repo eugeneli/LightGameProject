@@ -33,7 +33,7 @@
         },
     "Enemies": {
         "Giant": {
-            "EnemyType": "5",
+            "EnemyType": "0",
             "Color": "RED",
             "x": -80,
             "y": 80,
@@ -43,7 +43,8 @@
             "ParticlePath": "data/particleeffects/redgiant.p",
             "Direction": 0,
             "AngularVelocity": -1,
-            "Velocity": 0
+            "Velocity": 0,
+            "IsDynamic": true
         },
         "Drifter": {
             "EnemyType": "1",

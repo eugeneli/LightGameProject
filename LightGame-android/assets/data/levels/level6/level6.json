@@ -1,0 +1,50 @@
+{
+    "LevelType": "GET_BIG",
+    "WorldShape": "RECTANGLE",
+    "Title": "",
+    "Mission": "",
+    "Tips":[
+        ""
+        ],
+    "Background": "data/levels/level6/bg.jpg",
+    "MinZoom": 6,
+    "MaxZoom": 6,
+    "DefZoom": 6,
+    "PlayerColor": "WHITE",
+    "PlayerRadius": 6,
+    "PlayerCritRadiusMult": 3,
+    "PlayerSpawn": [
+        0,
+        0
+        ],
+    "Ambience": [
+        0.2,
+        0.1,
+        0.5,
+        0.12
+        ],
+    "WinConditions": [
+        "NoOtherLumis",
+        ],
+    "ParticleEffect": {
+            "Path": "",
+            "x": 0,
+            "y": 0,
+        },
+    "Enemies": {
+        "Giant": {
+            "EnemyType": "5",
+            "Color": "RED",
+            "x": 250,
+            "y": 0,
+            "Radius": 90,
+            "CritRadiusMult": 1.28,
+            "CanBlackHole": false,
+            "ParticlePath": "data/particleeffects/redgiant.p",
+            "Direction": 0,
+            "AngularVelocity": -1,
+            "Velocity": 0,
+            "IsDynamic": true
+        },
+    }
+}
