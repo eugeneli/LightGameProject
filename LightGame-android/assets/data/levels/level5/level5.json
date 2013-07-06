@@ -1,8 +1,8 @@
 {
     "LevelType": "GET_BIG",
     "WorldShape": "RECTANGLE",
-    "Title": "Oh god",
-    "Mission": "Kill it",
+    "Title": "No win conditions yet",
+    "Mission": "Skip this and go to lvl 6 for boss",
     "Tips":[
         ""
         ],

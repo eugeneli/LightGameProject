@@ -116,6 +116,7 @@ public class LightGameEngine
 		createCollisionListener();
 		bulletHandler = new BulletHandler(world, rayHandler);
 		entityHandler = new EntityHandler(world, rayHandler, bulletHandler, width, height);
+		AudioHandler.getInstance(); //first call to getInstance creates the singleton object
 		
 		levelState = new LevelStateManager();
 		
@@ -144,6 +145,9 @@ public class LightGameEngine
 			camera.position.set(0, 0, 0);
 			
 			LGstage = null;
+			
+			AudioHandler.getInstance().loadBackgroundMusic("data/audio/music/lullaby.ogg");
+			AudioHandler.getInstance().startBackgroundMusic();
 		}
 	}
 	
