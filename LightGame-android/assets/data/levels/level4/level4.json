@@ -6,6 +6,7 @@
     "Tips":[
         ],
     "Background": "data/levels/level4/bg.jpg",
+    "Music": "data/audio/music/colorful.ogg",
     "MinZoom": 3,
     "MaxZoom": 7.3,
     "DefZoom": 6,

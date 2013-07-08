@@ -7,6 +7,7 @@
         "Pinch to zoom out"
         ],
     "Background": "data/levels/level2/bg.jpg",
+    "Music": "data/audio/music/competition.ogg",
     "MinZoom": 3,
     "MaxZoom": 7.3,
     "DefZoom": 3,

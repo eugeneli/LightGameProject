@@ -16,7 +16,7 @@ public class LGAttackButton extends LGButton
 		InputListener inputListener = new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
             	currentSprite = downSprite;
-            	player.fire(1000);
+            //	player.fire(1000);
                 return true;  // must return true for touchUp event to occur
             }
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {

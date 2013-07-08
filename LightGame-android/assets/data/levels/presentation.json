@@ -7,6 +7,7 @@
         ""
         ],
     "Background": "data/levels/presentationbg.jpg",
+    "Music": "data/audio/music/lullaby.ogg",
     "MinZoom": 8,
     "MaxZoom": 8,
     "DefZoom": 8,
@@ -153,7 +154,7 @@
         "Blinker": {
             "EnemyType": "2",
             "Color": "WHITE",
-            "x": 175,
+            "x": 178,
             "y": 115,
             "FlickerRate": 2,
             "AngularVelocity": -1,

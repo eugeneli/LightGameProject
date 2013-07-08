@@ -7,6 +7,7 @@ import box2dLight.RayHandler;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.physics.box2d.World;
+import com.eli.lightgame.AudioHandler;
 import com.eli.lightgame.BulletHandler;
 import com.eli.lightgame.EntityHandler;
 import com.eli.lightgame.EntityHandler.EntityType;
@@ -20,6 +21,7 @@ public class GiantBoss extends Giant
 	private long gravityIncreaseStart = 0;
 	private boolean gravityIncreased = false;
 	private Random rand = new Random();
+	private AudioHandler audio;
 	
 	private final float percentageOfOriginal = 0.7f; //Percentage of original radius to allow shrinking from own attacks
 	private final float percentageOfCritRadius = 0.9f; //Percentage of critical radius to allow growing from own attacks
@@ -32,6 +34,13 @@ public class GiantBoss extends Giant
 		
 		ignoreExistence = false;
 		updateSizes();
+		
+		audio = AudioHandler.getInstance();
+		audio.loadTmpSound("fireball", "data/audio/sounds/fireball.ogg");
+		audio.loadTmpSound("fireblast", "data/audio/sounds/fireblast.ogg");
+		audio.loadTmpSound("sunnoise", "data/audio/sounds/sunnoise.ogg");
+		
+		audio.loopTmpSound("sunnoise");
 	}
 	
 	public void doExplosion()
@@ -69,6 +78,9 @@ public class GiantBoss extends Giant
 			entityBody.setAngularVelocity(new Random().nextFloat()*3.0f+0.35f);
 			gravityIncreaseStart = System.currentTimeMillis();
 			gravityIncreased = false;
+			
+			audio.stopTmpSound("sunnoise");
+			audio.loopTmpSound("sunnoise");
 		}
 		
 		//Chance of attacking
@@ -84,6 +96,8 @@ public class GiantBoss extends Giant
 					addToRadius(-radius/60);
 					lastTimeFired = currentFireTime;
 					
+					audio.playTmpSound("fireball");
+					
 					//fire another 2 times?
 					for(int i = 0; i < 3; i++)
 					{
@@ -96,6 +110,8 @@ public class GiantBoss extends Giant
 							//Only decrease size if over a certain radius
 							if(radius >= percentageOfOriginal * criticalRadius)
 								addToRadius(-radius/50);
+							
+							audio.playTmpSound("fireball");
 						}
 					}
 				}
@@ -121,6 +137,8 @@ public class GiantBoss extends Giant
 						addToRadius(-radius/20);
 					
 					lastTimeWaved = currentFireTime;
+					
+					audio.playTmpSound("fireblast");
 				}
 			}
 			
@@ -139,9 +157,20 @@ public class GiantBoss extends Giant
 						addToRadius(radius/20);
 					
 					lastTimeGravIncreased = currentFireTime;
+					
+					audio.stopTmpSound("sunnoise");
+					audio.loopTmpSound("sunnoise", 0.5f, 1.5f, 0);
 				}
 			}
-		}
+		}	
+	}
+	
+	public void dispose()
+	{
+		super.dispose();
 		
+		audio.removeTmpSound("sunnoise");
+		audio.removeTmpSound("fireball");
+		audio.removeTmpSound("fireblast");
 	}
 }

@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.eli.lightgame.AudioHandler;
 import com.eli.lightgame.BulletHandler;
 
 public abstract class Entity
@@ -219,6 +220,8 @@ public abstract class Entity
 		radius = 0;
 		toBeDeleted(true);
 		updateSizes();
+		
+		AudioHandler.getInstance().playExplosion();
 	}
 	
 	public void dispose()

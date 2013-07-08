@@ -8,6 +8,7 @@
         "    Big things explode \n Small things disappear",
         ],
     "Background": "data/levels/level3/bg.jpg",
+    "Music": "data/audio/music/ambience2.ogg",
     "MinZoom": 6,
     "MaxZoom": 6,
     "DefZoom": 6,

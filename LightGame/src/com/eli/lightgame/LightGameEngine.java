@@ -121,7 +121,7 @@ public class LightGameEngine
 		levelState = new LevelStateManager();
 		
 		//Create level object
-		level = new Level(levelState, entityHandler, bulletHandler, rayHandler, world, width, height);
+		level = new Level(levelState, entityHandler, bulletHandler, rayHandler, world, preferences, width, height);
 		
 		if(!presentationMode)
 		{
@@ -145,9 +145,6 @@ public class LightGameEngine
 			camera.position.set(0, 0, 0);
 			
 			LGstage = null;
-			
-			AudioHandler.getInstance().loadBackgroundMusic("data/audio/music/lullaby.ogg");
-			AudioHandler.getInstance().startBackgroundMusic();
 		}
 	}
 	

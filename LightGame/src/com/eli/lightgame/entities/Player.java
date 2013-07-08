@@ -16,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.eli.lightgame.AudioHandler;
 import com.eli.lightgame.BulletHandler;
 import com.eli.lightgame.LightGameFilters;
 import com.eli.lightgame.util.LGMath;
@@ -89,18 +90,20 @@ public class Player extends Entity
 	    }*/
 	}
 	
-	public void fire(int forceScalar)
+	/*public void fire(int forceScalar)
 	{
 		bulletHandler.createBulletsAndFire(this, radius, color, getPosition().x, getPosition().y, forceScalar, entityBody.getAngle());
 		
 		addToRadius(-radius/10); //Decrease in radius equal to bullet's radius
-	}
+	}*/
 	
 	public void fireTargeted(int forceScalar, Entity bulTarget)
 	{
 		bulletHandler.createBulletsAndFire(bulTarget, radius, color, getPosition().x, getPosition().y, forceScalar, entityBody.getAngle());
 		
 		addToRadius(-radius/10); //Decrease in radius equal to bullet's radius
+		
+		AudioHandler.getInstance().playDing(radius, criticalRadius);
 	}
 	
 	public void turnToAngle(float rotAngle)
@@ -157,7 +160,7 @@ public class Player extends Entity
 			//	entityBody.applyForceToCenter(new Vector2((float)(Math.cos(entityBody.getAngle()) * (5500*radius)),(float)(Math.sin(entityBody.getAngle()) * (5500*radius))), true);
 			
 		//	entityBody.applyForceToCenter(new Vector2((float)(Math.cos(entityBody.getAngle()) * (10*radius)),(float)(Math.sin(entityBody.getAngle()) * (10*radius))), true);
-			entityBody.setLinearVelocity(new Vector2((float)(Math.cos(entityBody.getAngle()) * (30 + 1 * radius)),(float)(Math.sin(entityBody.getAngle()) * (30 + 1 * radius))));
+			entityBody.setLinearVelocity(new Vector2((float)(Math.cos(entityBody.getAngle()) * (30 + 3 * radius)),(float)(Math.sin(entityBody.getAngle()) * (30 + 3 * radius))));
 		}
 	}
 	

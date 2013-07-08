@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.eli.lightgame.EntityHandler;
+import com.eli.lightgame.util.LGMath;
 
 import box2dLight.Light;
 
@@ -165,12 +166,10 @@ public class Bullet extends Entity
 		
 		if(target != null)
 		{
-			float toTargetX = (float)((target.getPosition().x - getPosition().x));
-			float toTargetY = (float)((target.getPosition().y - getPosition().y));
-			float rotAngle = (float)Math.atan2(toTargetY,toTargetX);
+			float rotAngle = LGMath.getRotationTo(getPosition(), target.getPosition());
 			
 			entityBody.setTransform(entityBody.getPosition(), rotAngle);
-			entityBody.setLinearVelocity(new Vector2((float)(Math.cos(entityBody.getAngle()) * (500)),(float)(Math.sin(entityBody.getAngle()) * (500))));
+			entityBody.setLinearVelocity(new Vector2((float)(Math.cos(entityBody.getAngle()) * (1000)),(float)(Math.sin(entityBody.getAngle()) * (1000))));
 		}
 		
 		

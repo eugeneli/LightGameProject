@@ -7,6 +7,7 @@
         "Touch the screen to move",
         ],
     "Background": "data/levels/level1/bg.jpg",
+    "Music": "data/audio/music/ambience.ogg",
     "MinZoom": 2,
     "MaxZoom": 3,
     "DefZoom": 3,
@@ -69,7 +70,7 @@
             "Radius": 5,
             "FlickerRate": 1.2,
             "Direction": 2.5,
-            "Velocity": 60
+            "Velocity": 23
         },
         "Bullet": {
             "EnemyType": "3",
@@ -79,7 +80,7 @@
             "Radius": 6,
             "FlickerRate": 0.5,
             "Direction": -0.5,
-            "Velocity": 70
+            "Velocity": 18
         },
         "Bullet": {
             "EnemyType": "3",
@@ -89,7 +90,7 @@
             "Radius": 10,
             "FlickerRate": 1.8,
             "Direction": 5.2,
-            "Velocity": 55
+            "Velocity": 40
         },
         "Bullet": {
             "EnemyType": "3",
@@ -99,7 +100,7 @@
             "Radius": 5,
             "FlickerRate": 1.1,
             "Direction": -5.1,
-            "Velocity": 66
+            "Velocity": 25
         },
         "Bullet": {
             "EnemyType": "3",
@@ -109,7 +110,7 @@
             "Radius": 10,
             "FlickerRate": 1.2,
             "Direction": -2.5,
-            "Velocity": 45
+            "Velocity": 20
         },
         "Bullet": {
             "EnemyType": "3",
@@ -119,7 +120,7 @@
             "Radius": 7,
             "FlickerRate": 0.7,
             "Direction": -0.5,
-            "Velocity": 64
+            "Velocity": 30
         },
         "Bullet": {
             "EnemyType": "3",
@@ -129,7 +130,7 @@
             "Radius": 9,
             "FlickerRate": 1,
             "Direction": -3.94,
-            "Velocity": 32
+            "Velocity": 28
         },
     }
 }

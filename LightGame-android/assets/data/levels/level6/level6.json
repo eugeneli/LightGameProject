@@ -7,6 +7,7 @@
         ""
         ],
     "Background": "data/levels/level6/bg.jpg",
+    "Music": "data/audio/music/competition.ogg",
     "MinZoom": 6,
     "MaxZoom": 6,
     "DefZoom": 6,

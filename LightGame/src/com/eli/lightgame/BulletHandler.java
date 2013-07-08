@@ -270,7 +270,7 @@ public class BulletHandler
 				
 		if(queuedExplosion.size() > 0)
 		{
-			if(!world.isLocked())
+			if(!world.isLocked() && (entityHandler.getPlayer() == null || !entityHandler.getPlayer().waitingToBeDeleted())) //for some reason is player is being deleted and bullets are made, it crashes
 			{
 				BulletDefinition bulDef = queuedExplosion.remove();
 				createBulletsAndFire(bulDef.radius, bulDef.color, bulDef.position.x, bulDef.position.y, bulDef.force, bulDef.rotAngle);

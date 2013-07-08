@@ -28,6 +28,7 @@ import com.eli.lightgame.entities.Giant;
 import com.eli.lightgame.entities.GiantBoss;
 import com.eli.lightgame.entities.Player;
 import com.eli.lightgame.ui.LightGameStage;
+import com.eli.lightgame.util.LGPreferences;
 import com.eli.lightgame.winconditions.NoOtherLumis;
 import com.eli.lightgame.winconditions.OnlyEntityLeft;
 import com.eli.lightgame.winconditions.NoMoreBullets;
@@ -37,7 +38,7 @@ import com.eli.lightgame.winconditions.PlayerIsLargest;
 public class Level
 {
 	public Texture background;
-	private Texture outerBackground;
+	//private Texture outerBackground;
 	private ParticleEffect particles;
 	
 	private World world;
@@ -53,11 +54,12 @@ public class Level
 	private EntityHandler entityHandler;
 	private BulletHandler bulletHandler;
 	private RayHandler rayHandler;
+	private LGPreferences preferences;
 	
 	private String[] titleMessage = new String[2];
 	private Queue<String> tips = new LinkedList<String>();
 	
-	public Level(LevelStateManager levstate, EntityHandler eh, BulletHandler bh, RayHandler rh, World theWorld, float w, float h)
+	public Level(LevelStateManager levstate, EntityHandler eh, BulletHandler bh, RayHandler rh, World theWorld, LGPreferences p, float w, float h)
 	{
 		entityHandler = eh;
 		bulletHandler = bh;
@@ -66,6 +68,7 @@ public class Level
 		width = w;
 		height = h;
 		levelState = levstate;
+		preferences = p;
 	}
 
 	public void loadLevel(FileHandle levelJson)
@@ -76,10 +79,18 @@ public class Level
 		String levelType = jsonVal.getString("LevelType");
 		
 		background = new Texture(jsonVal.getString("Background"));
-		outerBackground = new Texture("data/levels/outerspace.gif");
+	//	outerBackground = new Texture("data/levels/outerspace.gif");
 		
 		if(jsonVal.getString("WorldShape").equals("RECTANGLE"))
 			createWorldBoundary(0);
+		
+		//Background music
+		if(preferences.isMusicEnabled())
+		{
+			AudioHandler.getInstance().stopBackgroundMusic();
+			AudioHandler.getInstance().loadBackgroundMusic(jsonVal.getString("Music"));
+			AudioHandler.getInstance().startBackgroundMusic();
+		}
 		
 		//Get player data and create player
 		if(!levelType.equals("NONE"))
@@ -297,16 +308,16 @@ public class Level
 		BoundingBox[] boxes = new BoundingBox[4];
 		
 		//Left bound
-		boxes[0] = new BoundingBox(new Vector3(-background.getWidth()/2 - 5, -background.getHeight()/2,0), new Vector3(-background.getWidth()/2 - 4, background.getHeight()/2, 0));
+		boxes[0] = new BoundingBox(new Vector3(-background.getWidth()/2, -background.getHeight()/2,0), new Vector3(-background.getWidth()/2, background.getHeight()/2, 0));
 		
 		//Top bound
-		boxes[1] = new BoundingBox(new Vector3(-background.getWidth()/2, background.getHeight()/2 + 4, 0), new Vector3(background.getWidth()/2, background.getHeight()/2 + 5,0));
+		boxes[1] = new BoundingBox(new Vector3(-background.getWidth()/2, background.getHeight()/2, 0), new Vector3(background.getWidth()/2, background.getHeight()/2,0));
 		
 		//Right bound
-		boxes[2] = new BoundingBox(new Vector3(background.getWidth()/2 + 4, -background.getHeight()/2, 0), new Vector3(background.getWidth()/2 + 5, background.getHeight()/2,0));
+		boxes[2] = new BoundingBox(new Vector3(background.getWidth()/2, -background.getHeight()/2, 0), new Vector3(background.getWidth()/2, background.getHeight()/2,0));
 		
 		//Bottom bound
-		boxes[3] = new BoundingBox(new Vector3(-background.getWidth()/2, -background.getHeight()/2 - 5, 0), new Vector3(background.getWidth()/2, -background.getHeight()/2 - 4,0));
+		boxes[3] = new BoundingBox(new Vector3(-background.getWidth()/2, -background.getHeight()/2, 0), new Vector3(background.getWidth()/2, -background.getHeight()/2,0));
 		
 		return boxes;
 	}
