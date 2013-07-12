@@ -77,10 +77,6 @@ public abstract class Entity
 	//Call this when changing the radius of the body
 	public abstract void updateSizes();
 	
-	public void move(Vector2 force)
-	{
-		entityBody.applyForceToCenter(force, true);
-	}
 	
 	public void setFlickerRate(float flicker)
 	{

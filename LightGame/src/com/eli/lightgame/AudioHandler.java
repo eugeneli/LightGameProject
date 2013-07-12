@@ -13,6 +13,7 @@ public class AudioHandler //is singleton
 	
 	private Music backgroundMusic;
 	private Sound ding = Gdx.audio.newSound(Gdx.files.internal("data/audio/sounds/ding.ogg"));
+	private Sound ding2 = Gdx.audio.newSound(Gdx.files.internal("data/audio/sounds/ding2.ogg"));
 	private Sound explode = Gdx.audio.newSound(Gdx.files.internal("data/audio/sounds/player_explode.ogg"));
 	
 	private HashMap<String, Sound> tmpSounds = new HashMap<String, Sound>();
@@ -56,7 +57,12 @@ public class AudioHandler //is singleton
 		
 		float pitch = ((radius - 2)*(2 - 0.5f))/(criticalRadius - 2) + 0.5f; 
 
-		ding.play(0.2f, 2-pitch, 0);
+		ding.play(0.25f, 2-pitch, 0);
+	}
+	
+	public void playDing2()
+	{
+		ding.play(0.25f, (float)(Math.random() * (2 - 0.5) + 1), (float)(Math.random() * 2 - 1));
 	}
 	
 	public void playExplosion()
@@ -81,7 +87,7 @@ public class AudioHandler //is singleton
 	
 	public void loopTmpSound(String key)
 	{
-		tmpSounds.get(key).loop(0.2f, 1, 0);
+		tmpSounds.get(key).loop(0.3f, 1, 0);
 	}
 	
 	public void loopTmpSound(String key, float volume, float pitch, float pan)

@@ -197,7 +197,7 @@ public class LightGameEngine
 	public void update()
 	{
 		//Step box2D physics
-		world.step(1/30f, 8, 3);
+		world.step(1/30f, 3, 8);
 		
 		//Update Entities
 		entityHandler.update();

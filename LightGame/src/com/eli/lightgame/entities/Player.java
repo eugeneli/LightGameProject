@@ -211,7 +211,7 @@ public class Player extends Entity
 		{
 			//fire(500);
 			
-			fireTargeted(500,target);
+			fireTargeted(1000,target);
 			shotQueued = false;
 			target = null;
 		}

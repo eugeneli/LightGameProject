@@ -26,7 +26,6 @@
         ],
     "WinConditions": [
         "NoMoreBullets",
-        "PlayerIsLargest"
         ],
     "ParticleEffect": {
             "Path": "",

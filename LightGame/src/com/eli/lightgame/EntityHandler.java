@@ -57,6 +57,8 @@ public class EntityHandler
 	//Can't create new bodies until box2d is done so need to queue
 	private Queue<EntityDefinition> queuedEntities = new LinkedList<EntityDefinition>();
 	
+	private AudioHandler audio = AudioHandler.getInstance();
+	
 	public static enum EntityType{
 		PLAYER, GIANT, DRIFTER, CORE, BLINKER, CHASER, BLACKHOLE, GIANTBOSS
 	}
@@ -246,6 +248,7 @@ public class EntityHandler
 		entity.grow(entity.getRadius()+aBullet.getWorth(), aBullet.getWorth()/20);
 		
 		aBullet.kill();
+		audio.playDing2();
 	}
 	
 	public void collideNPCs(int firstEnt, int secondEnt)
@@ -503,6 +506,21 @@ public class EntityHandler
 			}
     	}
 	}
+	
+	/*public int numWaitingToBeDeleted()
+	{
+		int count = 0;
+		Iterator<Integer> it = entities.keySet().iterator();
+	    while (it.hasNext())
+	    {
+	    	Integer entityID = (Integer)it.next();
+	    	Entity entity = entities.get(entityID);
+	    	
+	    	if(entity.waitingToBeDeleted() || entity.waitingToUpdateSize())
+	    		count++;
+	    }
+	    return count+queuedEntities.size();
+	}*/
 	
 	public void draw(SpriteBatch batch)
 	{

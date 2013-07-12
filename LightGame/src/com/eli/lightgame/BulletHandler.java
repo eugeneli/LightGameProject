@@ -177,22 +177,6 @@ public class BulletHandler
 		bullet.move(new Vector2(bullet.getAngleX() * forceScalar, bullet.getAngleY() * forceScalar));
 	}
 	
-	public void fire(int forceScalar)
-	{
-		for(Bullet bullet : bullets)
-		{
-			bullet.move(new Vector2(bullet.getAngleX() * forceScalar, bullet.getAngleY() * forceScalar));
-		}
-	}
-	
-	public void directedFire(int forceScalar, float rotAngle)
-	{
-		for(Bullet bullet : bullets)
-		{
-			bullet.move(new Vector2(rotAngle * forceScalar, rotAngle * forceScalar));
-		}
-	}
-	
 	public void removeBullet(Bullet b)
 	{
 		b.dispose(); //Disables the lights - inherited from Entity
@@ -270,7 +254,7 @@ public class BulletHandler
 				
 		if(queuedExplosion.size() > 0)
 		{
-			if(!world.isLocked() && (entityHandler.getPlayer() == null || !entityHandler.getPlayer().waitingToBeDeleted())) //for some reason is player is being deleted and bullets are made, it crashes
+			if(!world.isLocked() && (entityHandler.getPlayer() == null || !entityHandler.getPlayer().waitingToBeDeleted() || entityHandler.getEntities().size() == 2)) //for some reason is player is being deleted and bullets are made, it crashes
 			{
 				BulletDefinition bulDef = queuedExplosion.remove();
 				createBulletsAndFire(bulDef.radius, bulDef.color, bulDef.position.x, bulDef.position.y, bulDef.force, bulDef.rotAngle);
