@@ -25,10 +25,5 @@
             "Title": "(5) - Unnamed",
             "Path": "data/levels/level5/level5.json"
         },
-        "1": {
-            "id": 5,
-            "Title": "(6) - Unnamed",
-            "Path": "data/levels/level6/level6.json"
-        },
     }
 }

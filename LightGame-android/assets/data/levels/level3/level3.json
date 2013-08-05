@@ -43,7 +43,8 @@
             "Direction": 1.571,
             "AngularVelocity": 0.3,
             "CritRadiusMult": 1.7,
-            "Velocity": 30
+            "Velocity": 30,
+            "CanChangeColor": false
         },
         "Drifter": {
             "EnemyType": "1",

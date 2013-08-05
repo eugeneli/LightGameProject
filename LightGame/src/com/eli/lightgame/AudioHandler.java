@@ -30,7 +30,7 @@ public class AudioHandler //is singleton
 	
 	public void loadBackgroundMusic(String path)
 	{
-		stopBackgroundMusic();
+		//stopBackgroundMusic();
 		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal(path));
 	}
 	
@@ -43,7 +43,7 @@ public class AudioHandler //is singleton
 	
 	public void stopBackgroundMusic()
 	{
-		if(backgroundMusic != null && backgroundMusic.isPlaying())
+		if(backgroundMusic != null)
 		{
 			backgroundMusic.stop();
 			backgroundMusic.dispose();

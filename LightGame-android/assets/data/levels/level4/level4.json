@@ -8,7 +8,7 @@
     "Background": "data/levels/level4/bg.jpg",
     "Music": "data/audio/music/colorful.ogg",
     "MinZoom": 3,
-    "MaxZoom": 7.3,
+    "MaxZoom": 6,
     "DefZoom": 6,
     "PlayerColor": "WHITE",
     "PlayerRadius": 5,

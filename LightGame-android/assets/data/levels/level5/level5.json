@@ -1,12 +1,13 @@
 {
     "LevelType": "GET_BIG",
     "WorldShape": "RECTANGLE",
-    "Title": "No win conditions yet",
-    "Mission": "Skip this and go to lvl 6 for boss",
+    "Title": "",
+    "Mission": "",
     "Tips":[
         ""
         ],
-    "Background": "data/levels/level5/bg.jpg",
+    "Background": "data/levels/level6/bg.jpg",
+    "Music": "data/audio/music/competition.ogg",
     "MinZoom": 6,
     "MaxZoom": 6,
     "DefZoom": 6,
@@ -14,8 +15,8 @@
     "PlayerRadius": 6,
     "PlayerCritRadiusMult": 3,
     "PlayerSpawn": [
-        -270,
-        -100
+        0,
+        0
         ],
     "Ambience": [
         0.2,
@@ -24,7 +25,7 @@
         0.12
         ],
     "WinConditions": [
-        "PlayerIsBlue",
+        "NoOtherLumis",
         ],
     "ParticleEffect": {
             "Path": "",
@@ -33,106 +34,18 @@
         },
     "Enemies": {
         "Giant": {
-            "EnemyType": "0",
+            "EnemyType": "5",
             "Color": "RED",
-            "x": -80,
-            "y": 80,
-            "Radius": 65,
-            "CritRadiusMult": 1.75,
+            "x": 250,
+            "y": 0,
+            "Radius": 90,
+            "CritRadiusMult": 1.28,
             "CanBlackHole": false,
             "ParticlePath": "data/particleeffects/redgiant.p",
             "Direction": 0,
             "AngularVelocity": -1,
             "Velocity": 0,
             "IsDynamic": true
-        },
-        "Drifter": {
-            "EnemyType": "1",
-            "Color": "RED",
-            "x": -158,
-            "y": 80,
-            "Radius": 8,
-            "Direction": 1.571,
-            "AngularVelocity": 0.3,
-            "CritRadiusMult": 1.5,
-            "Velocity": 50
-        },
-        "Drifter": {
-            "EnemyType": "1",
-            "Color": "RED",
-            "x": 2,
-            "y": 80,
-            "Radius": 8,
-            "Direction": -1.571,
-            "AngularVelocity": 0.3,
-            "CritRadiusMult": 1.5,
-            "Velocity": 50
-        },
-        "Drifter": {
-            "EnemyType": "1",
-            "Color": "BLUE",
-            "x": 160,
-            "y": 0,
-            "Radius": 13,
-            "Direction": 1.571,
-            "AngularVelocity": 0.3,
-            "CritRadiusMult": 1.5,
-            "Velocity": 25
-        },
-        "Drifter": {
-            "EnemyType": "1",
-            "Color": "BLUE",
-            "x": 185,
-            "y": 0,
-            "Radius": 5,
-            "Direction": 1.571,
-            "AngularVelocity": -1,
-            "CritRadiusMult": 1.2,
-            "Velocity": 25
-        },
-        "Drifter": {
-            "EnemyType": "1",
-            "Color": "BLUE",
-            "x": 185,
-            "y": -20,
-            "Radius": 7,
-            "Direction": 1.571,
-            "AngularVelocity": -1,
-            "CritRadiusMult": 1.2,
-            "Velocity": 25
-        },
-        "Drifter": {
-            "EnemyType": "1",
-            "Color": "BLUE",
-            "x": -250,
-            "y": 0,
-            "Radius": 7,
-            "Direction": 1.571,
-            "AngularVelocity": 0.3,
-            "CritRadiusMult": 1.5,
-            "Velocity": 32
-        },
-        "Drifter": {
-            "EnemyType": "1",
-            "Color": "BLUE",
-            "x": -300,
-            "y": 0,
-            "Radius": 7,
-            "Direction": 1.571,
-            "AngularVelocity": 0.3,
-            "CritRadiusMult": 1.5,
-            "Velocity": 32
-        },
-        "Drifter": {
-            "EnemyType": "1",
-            "Color": "BLUE",
-            "x": -260,
-            "y": -20,
-            "Radius": 8,
-            "Direction": 1.571,
-            "AngularVelocity": 0.3,
-            "CritRadiusMult": 1.5,
-            "Velocity": 30
         },
     }
 }

@@ -181,6 +181,11 @@ public abstract class Entity
 		return canChangeColor;
 	}
 	
+	public void setCanChangeColor(boolean bool)
+	{
+		canChangeColor = bool;
+	}
+	
 	public boolean canChangeSize()
 	{
 		return canChangeSize;

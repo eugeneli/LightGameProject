@@ -51,10 +51,10 @@ public class EntityHandler
 	private HashMap<Integer, Entity> entities = new HashMap<Integer, Entity>();
 	private ArrayList<MassiveEntity> gravityEntities = new ArrayList<MassiveEntity>(); //Entities that give off gravity. Remove from here also if removing from entities.
 	
-	private final float COLOR_CHANGE_RATE = 0.1f;
+	//private final float COLOR_CHANGE_RATE = 0.1f;
 	private final float SIZE_CHANGE_RATE = 0.5f;
 	
-	//Can't create new bodies until box2d is done so need to queue
+	//Can't create new bodies until box2d is done doing its thing so need to queue
 	private Queue<EntityDefinition> queuedEntities = new LinkedList<EntityDefinition>();
 	
 	private AudioHandler audio = AudioHandler.getInstance();
@@ -203,7 +203,7 @@ public class EntityHandler
 		return null;
 	}
 	
-	public void changeColor(Entity entity, Color bulletColor)
+	/*public void changeColor(Entity entity, Color bulletColor)
 	{
 		if(entity.getColor().equals(Color.WHITE))
 		{
@@ -234,7 +234,7 @@ public class EntityHandler
 			
 			entity.setColor(new Color(r,g,b,a));
 		}
-	}
+	}*/
 	
 	public void changeSize(Entity entity, float newRad)
 	{

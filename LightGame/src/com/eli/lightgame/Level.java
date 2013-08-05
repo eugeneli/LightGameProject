@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.eli.lightgame.EntityHandler.EntityType;
 import com.eli.lightgame.entities.Blinker;
 import com.eli.lightgame.entities.Bullet;
+import com.eli.lightgame.entities.Drifter;
 import com.eli.lightgame.entities.Giant;
 import com.eli.lightgame.entities.GiantBoss;
 import com.eli.lightgame.entities.Player;
@@ -172,7 +173,15 @@ public class Level
 					float dVelocity = enemy.getFloat("Velocity");
 					float dAngularVel = enemy.getFloat("AngularVelocity");
 					
-					entityHandler.createEntity(EntityType.DRIFTER, dColor, dRadius, dCritMult, dSpawnX, dSpawnY, dFacingDirec, dVelocity, dAngularVel); //create a drifter
+					Drifter d = (Drifter) entityHandler.createEntity(EntityType.DRIFTER, dColor, dRadius, dCritMult, dSpawnX, dSpawnY, dFacingDirec, dVelocity, dAngularVel); //create a drifter
+					try
+					{
+						boolean canChange = enemy.getBoolean("CanChangeColor");
+						d.setCanChangeColor(canChange);	
+					}
+					catch (IllegalArgumentException e)
+					{}
+					
 					break;
 				case 2: //Case 2: Blinker
 					Color bColor = convertStringToColor(enemy.getString("Color"));
